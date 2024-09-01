@@ -5,11 +5,12 @@ go 1.21
 toolchain go1.22.2
 
 require (
-	github.com/google/martian v2.1.0+incompatible
-	github.com/wailsapp/wails/v2 v2.9.1
+	github.com/AdguardTeam/gomitmproxy v0.2.1
+	github.com/wailsapp/wails/v2 v2.8.1
 )
 
 require (
+	github.com/AdguardTeam/golibs v0.4.0 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
