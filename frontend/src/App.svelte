@@ -3,9 +3,9 @@
   import RequestRedirectScreen from "./screens/request_redirect/RequestRedirectScreen.svelte";
 </script>
 
-<aside class="flex bg-white dark:bg-gray-900">
+<aside class="flex bg-gray-900">
   <div
-    class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-white dark:bg-gray-900 dark:border-gray-700"
+    class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-900 border-gray-700"
   >
     <a href="#">
       <img
@@ -37,7 +37,7 @@
 
     <a
       href="#"
-      class="p-1.5 text-blue-500 transition-colors duration-200 bg-blue-100 rounded-lg dark:text-blue-400 dark:bg-gray-800"
+      class="p-1.5 text-blue-500 transition-colors duration-200 rounded-lg dark:text-blue-400 bg-gray-800"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +127,7 @@
   </div>
 
   <div
-    class="h-screen py-8 overflow-y-auto bg-white border-l border-r sm:w-64 w-60 min-w-60 dark:bg-gray-900 dark:border-gray-700"
+    class="h-screen py-8 overflow-y-auto  border-l border-r sm:w-64 w-60 min-w-60 bg-gray-900 border-gray-700"
   >
     <!-- <h2 class="px-5 text-lg font-medium text-gray-800 dark:text-white">Accounts</h2> -->
 
