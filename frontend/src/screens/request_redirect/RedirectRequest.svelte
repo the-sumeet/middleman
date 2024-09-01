@@ -1,5 +1,5 @@
-<div class="w-full p-6 mx-auto bg-white rounded-md shadow-md dark:bg-gray-800">
-    <h2 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+<div class="w-full p-6 mx-auto rounded-md shadow-md bg-gray-800">
+    <h2 class="text-lg font-semibold capitalize text-white">
         If
     </h2>
 
@@ -8,7 +8,7 @@
             <div class="flex space-x-2">
                 <!-- ENTITY -->
                 <select
-                    class="w-min bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="w-min bg-white border text-sm rounded-lg  block p-3 bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                 >
                     <option selected>URL</option>
                     <option selected>Query</option>
@@ -18,13 +18,13 @@
 
                 <!-- AS -->
                 <label
-                    class="p-2 text-gray-700 dark:text-gray-200"
+                    class="p-2 text-gray-200"
                     for="username">As</label
                 >
 
                 <!-- TYPE -->
                 <select
-                    class="w-min bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="w-min border  text-sm rounded-lg  block p-3 bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                 >
                     <option selected>String</option>
                     <option selected>Number</option>
@@ -33,13 +33,13 @@
 
                 <!-- IS -->
                 <label
-                    class="p-2 text-gray-700 dark:text-gray-200"
+                    class="p-2 text-gray-200"
                     for="username">Is</label
                 >
 
                 <!-- OP -->
                 <select
-                    class="w-min bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="w-min border  text-sm rounded-lg  block p-3 bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                 >
                     <option selected>Equal</option>
                     <option selected>Contain</option>
@@ -54,13 +54,13 @@
                 
                 <input
                     type="text"
-                    class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                    class="block w-full px-4 py-2 text-gray-700  border border-gray-200 rounded-md bg-gray-800 text-gray-300 border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:border-blue-300 focus:outline-none focus:ring"
                 />
             </div>
         </div>
     </div>
 
-    <h2 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+    <h2 class="text-lg font-semibold  capitalize text-white">
         Then
     </h2>
 
@@ -69,13 +69,13 @@
             <div class="">
                 <!-- Redirect To -->
                 <label
-                    class="text-gray-700 dark:text-gray-200"
+                    class=" text-gray-200"
                     for="username">Redirect To</label
                 >
                 <input
                     type="text"
                     placeholder="https://example.com"
-                    class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                    class="block w-full px-4 py-2   border  rounded-md bg-gray-800 text-gray-300 border-gray-600  focus:ring-blue-300 focus:ring-opacity-40 focus:border-blue-300 focus:outline-none focus:ring"
                 />
             </div>
         </div>
