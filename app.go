@@ -7,12 +7,15 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx   context.Context
+	proxy *Proxy
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		proxy: NewProxy("example.crt", "example.key"),
+	}
 }
 
 // startup is called when the app starts. The context is saved
