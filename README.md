@@ -1,4 +1,4 @@
-# README
+# Middleman
 
 ## About
 
@@ -14,4 +14,9 @@ to this in your browser, and you can call your Go code from devtools.
 ## Building
 
 To build a redistributable, production mode package, use `wails build`.
-# middleman
+
+## AnTLR
+
+```
+java -jar antlr-4.13.2-complete.jar -Dlanguage=Go -visitor Expression.g4 -o parser
+```
