@@ -31,6 +31,15 @@ type Expression struct {
 	Type  int
 }
 
+type CustomErrorListener struct {
+	*antlr.DefaultErrorListener // Embed default which ensures we fit the interface
+	Errors                      []error
+}
+
+func (c *CustomErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
+	c.Errors = append(c.Errors, fmt.Errorf("line %d:%d %s", line, column, msg))
+}
+
 type MyVisitor struct {
 	Request http.Request
 	parser.BaseExpressionVisitor
@@ -168,20 +177,6 @@ func (v *MyVisitor) VisitStringOprand(ctx *parser.StringOprandContext) string {
 	return stringVal[1 : len(stringVal)-1]
 }
 
-func parse(expr string, request http.Request) bool {
-	input := antlr.NewInputStream(expr)
-	lexer := parser.NewExpressionLexer(input)
-	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
-
-	parser := parser.NewExpressionParser(stream)
-	tree := parser.Expr()
-
-	visitor := &MyVisitor{Request: request}
-	result := visitor.Visit(tree)
-	resultBool := result.(bool)
-	return resultBool
-}
-
 func getRequestValue(request http.Request, identifier int) any {
 	switch identifier {
 	case URL:
@@ -291,4 +286,26 @@ func compareContains(request http.Request, identifier int, oprand string) bool {
 	default:
 		return false
 	}
+}
+
+func parse(expr string, request http.Request) (bool, []error) {
+	input := antlr.NewInputStream(expr)
+	lexer := parser.NewExpressionLexer(input)
+	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
+
+	parser := parser.NewExpressionParser(stream)
+	parser.RemoveErrorListeners() // Remove default listeners
+	errorListener := CustomErrorListener{}
+	parser.AddErrorListener(&errorListener)
+
+	tree := parser.Expr()
+
+	if errorListener.Errors != nil {
+		return false, errorListener.Errors
+	}
+
+	visitor := &MyVisitor{Request: request}
+	result := visitor.Visit(tree)
+	resultBool := result.(bool)
+	return resultBool, nil
 }
