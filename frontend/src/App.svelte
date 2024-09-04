@@ -1,9 +1,13 @@
 <script>
   import "bootstrap-icons/font/bootstrap-icons.css";
   import RequestRedirectScreen from "./screens/request_redirect/RequestRedirectScreen.svelte";
+  import Collections from "./Collections.svelte";
 </script>
 
 <aside class="flex bg-gray-900">
+
+
+  <!-- Sidebar 1 -->
   <div
     class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-900 border-gray-700"
   >
@@ -126,30 +130,10 @@
     </a>
   </div>
 
-  <div
-    class="h-screen py-8 overflow-y-auto  border-l border-r sm:w-64 w-60 min-w-60 bg-gray-900 border-gray-700"
-  >
-    <!-- <h2 class="px-5 text-lg font-medium text-gray-800 dark:text-white">Accounts</h2> -->
+  <!-- Sidebar Collections -->
+  <Collections />
 
-    <div class="space-y-4">
-      <button
-        class="flex space-x-2 items-center w-full px-5 py-2 transition-colors duration-200 dark:hover:bg-gray-800 gap-x-2 hover:bg-gray-100 focus:outline-none"
-      >
-        <i class="text-xl bi bi-send-fill"></i>
-
-        <div class="text-left rtl:text-right">
-          <h1
-            class="text-sm font-medium text-gray-700 capitalize dark:text-white"
-          >
-            Request Redirect
-          </h1>
-
-          <p class="text-xs text-gray-500 dark:text-gray-400">11.2 Followers</p>
-        </div>
-      </button>
-    </div>
-  </div>
-
+  <!-- Collection -->
   <div class="p-4 flex flex-col w-full h-screen">
 
     <div class="flex">
