@@ -26,7 +26,7 @@ EQUALS      : '=';
 NOT_EQUALS  : '!=';
 CONTAINS    : 'contains';
 BOOLEAN     : 'true' | 'false';
-IDENTIFIER  : [a-zA-Z_][a-zA-Z_0-9]*;   // Matches variable names
+IDENTIFIER  : [bB][oO][dD][yY] | [uU][rR][lL] | [hH][eE][aA][dD][eE][rR];   // Matches variable names
 STRING      : '"' (~["\r\n])* '"';      // Matches string literals
 LPAREN      : '(';
 RPAREN      : ')';

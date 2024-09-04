@@ -8,20 +8,6 @@ import (
 	"testing"
 )
 
-func NewRequest(method, url string, body string, headers map[string][]string) http.Request {
-	reader := strings.NewReader(body)
-	request, err := http.NewRequest(method, url, reader)
-	if err != nil {
-		panic(err)
-	}
-	for key, value := range headers {
-		for _, v := range value {
-			request.Header.Set(key, v)
-		}
-	}
-	return *request
-}
-
 func TestEvaluateExpression(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -48,14 +34,14 @@ func TestEvaluateExpression(t *testing.T) {
 		{"header = \"name:foo\"", NewRequest("", "", "foo", map[string][]string{"name": {"value"}}), false, nil},
 		{"header = \"name:foo\"", NewRequest("", "", "foo", map[string][]string{"name": {"value", "foo"}}), true, nil},
 		{"header = \"name:foo\"", NewRequest("", "", "foo", map[string][]string{"name": {"value", "value2"}}), false, nil},
-		{"ksfmoi sduf sdf 'sef'", NewRequest("", "", "foo", map[string][]string{"name": {"value", "value2"}}), false, []error{errors.New("line 1:7 no viable alternative at input 'ksfmoisduf'")}},
+		{"ksfmoi sduf sdf 'sef'", NewRequest("", "", "foo", map[string][]string{"name": {"value", "value2"}}), false, []error{errors.New("line 1:21 mismatched input '<EOF>' expecting {'not', IDENTIFIER, '('}")}},
 	}
 
 	for _, test := range tests {
 		t.Run(test.input, func(t *testing.T) {
 			result, parserErrors := parse(test.input, test.request)
 
-			if len(parserErrors) == len(test.errors) {
+			if len(parserErrors) > 0 && len(parserErrors) == len(test.errors) {
 				if test.errors == nil {
 					t.Error("Expected no errors")
 				} else if len(test.errors) != len(parserErrors) {
@@ -75,4 +61,18 @@ func TestEvaluateExpression(t *testing.T) {
 
 		})
 	}
+}
+
+func NewRequest(method, url string, body string, headers map[string][]string) http.Request {
+	reader := strings.NewReader(body)
+	request, err := http.NewRequest(method, url, reader)
+	if err != nil {
+		panic(err)
+	}
+	for key, value := range headers {
+		for _, v := range value {
+			request.Header.Set(key, v)
+		}
+	}
+	return *request
 }
