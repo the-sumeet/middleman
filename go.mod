@@ -6,9 +6,8 @@ toolchain go1.22.2
 
 require (
 	github.com/AdguardTeam/gomitmproxy v0.2.1
-	github.com/antlr4-go/antlr v0.0.0-20230518091524-98b52378c522
 	github.com/antlr4-go/antlr/v4 v4.13.1
-	github.com/wailsapp/wails/v2 v2.8.1
+	github.com/wailsapp/wails/v2 v2.9.1
 )
 
 require (
