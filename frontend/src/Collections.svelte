@@ -7,6 +7,6 @@
     <!-- <h2 class="px-5 text-lg font-medium text-gray-800 dark:text-white">Accounts</h2> -->
 
     <div class="space-y-4">
-      <CollectionsTile />
+      <CollectionsTile collectionName={"collectionName"} />
     </div>
   </div>

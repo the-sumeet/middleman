@@ -7,14 +7,18 @@ import (
 
 // App struct
 type App struct {
-	ctx   context.Context
-	proxy *Proxy
+	ctx      context.Context
+	proxy    *Proxy
+	database Database
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{
 		proxy: NewProxy("example.crt", "example.key"),
+		database: &FileDatabase{
+			filePath: "collections.json",
+		},
 	}
 }
 
