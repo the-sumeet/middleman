@@ -5,16 +5,28 @@ import (
 	"fmt"
 )
 
-// App struct
 type App struct {
-	ctx   context.Context
-	proxy *Proxy
+	ctx      context.Context
+	proxy    *Proxy
+	database Database
 }
 
-// NewApp creates a new App application struct
+type ReturnValue struct {
+	Collections []Collection `json:"collections"`
+	Collection  Collection   `json:"collection"`
+	Error       string       `json:"error"`
+}
+
 func NewApp() *App {
+
+	database := FileDatabase{
+		filePath: "database.json",
+	}
+	database.load()
+
 	return &App{
-		proxy: NewProxy("example.crt", "example.key"),
+		proxy:    NewProxy("example.crt", "example.key"),
+		database: &database,
 	}
 }
 
@@ -27,4 +39,27 @@ func (a *App) startup(ctx context.Context) {
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+
+func (a *App) GetCollections() []Collection {
+	return a.database.GetCollections()
+}
+
+func (a *App) GetCollection(collectionId int) ReturnValue {
+	collection, err := a.database.GetCollection(collectionId)
+
+	if err != nil {
+		return ReturnValue{
+			Error: err.Error(),
+		}
+	}
+
+	return ReturnValue{
+		Collection: collection,
+	}
+}
+
+func (a *App) SaveRecord(collectionId int, recordId int, updatedRecord Record) {
+	_ = a.database.Update(collectionId, recordId, updatedRecord)
+
 }

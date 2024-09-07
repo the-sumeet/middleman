@@ -1,0 +1,17 @@
+{
+    "collections": [
+        {
+            "name": "collection 1",
+            "records": [
+                {
+                    "type": "redirect",
+                    "if": "url contains \"example\"",
+                    "then": "example.com"
+                }
+            ]
+        },
+        {
+            "name": "collection 1"
+        }
+    ]
+}

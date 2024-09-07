@@ -1,7 +1,19 @@
 <script>
   import "bootstrap-icons/font/bootstrap-icons.css";
-  import RequestRedirectScreen from "./screens/request_redirect/RequestRedirectScreen.svelte";
-  import Collections from "./Collections.svelte";
+  import CollectionList from "./screens/collections_list/CollectionsList.svelte";
+  import CollectionPage from "./screens/collection/CollectionPage.svelte";
+  import { currentCollection } from "./stores";
+  import { onDestroy } from "svelte";
+
+  let currentColl;
+
+    const unSubCurrentCollection = currentCollection.subscribe((value) => {
+        currentColl = value;
+    });
+
+    onDestroy(() => {
+        unSubCurrentCollection();
+    });
 </script>
 
 <aside class="flex bg-gray-900">
@@ -131,17 +143,14 @@
   </div>
 
   <!-- Sidebar Collections -->
-  <Collections />
+  <CollectionList />
 
   <!-- Collection -->
   <div class="p-4 flex flex-col w-full h-screen">
 
-    <div class="flex">
-        <button>Some tool buttons</button>
-    </div>
+    {#if currentColl !== undefined && currentColl >= 0}
+    <CollectionPage />
+    {/if}
 
-      <div class="h-full overflow-y-scroll">
-        <RequestRedirectScreen />
-      </div>
   </div>
 </aside>
