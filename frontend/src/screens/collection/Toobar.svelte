@@ -19,6 +19,7 @@
                 currentCollection.set({collectionId: currentCollectionId});
             });
         }
+        addDropdown = false;
         scrollToBottom(list);
 
     }
