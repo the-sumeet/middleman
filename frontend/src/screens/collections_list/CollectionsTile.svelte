@@ -5,7 +5,7 @@
     import { currentCollection } from "../../stores";
   
     function onSelect(collectionId) {
-        currentCollection.set(collectionId);
+        currentCollection.set({collectionId: collectionId})
     }
 </script>
 

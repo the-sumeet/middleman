@@ -55,11 +55,20 @@ func (a *App) GetCollection(collectionId int) ReturnValue {
 	}
 
 	return ReturnValue{
-		Collection: collection,
+		Collection: *collection,
 	}
 }
 
-func (a *App) SaveRecord(collectionId int, recordId int, updatedRecord Record) {
-	_ = a.database.Update(collectionId, recordId, updatedRecord)
+func (a *App) NewRecord(collectionId int, recordType string) {
+	a.database.Insert(collectionId, Record{Type: recordType})
 
+}
+
+func (a *App) SaveRecord(collectionId int, recordId int, updatedRecord Record) {
+	a.database.Update(collectionId, recordId, updatedRecord)
+
+}
+
+func (a *App) DeleteRecord(collectionId int, recordId int) {
+	a.database.DeleteRecord(collectionId, recordId)
 }
