@@ -25,3 +25,7 @@ export function NewRecord(arg1, arg2) {
 export function SaveRecord(arg1, arg2, arg3) {
   return window['go']['main']['App']['SaveRecord'](arg1, arg2, arg3);
 }
+
+export function ValidateExpr(arg1) {
+  return window['go']['main']['App']['ValidateExpr'](arg1);
+}

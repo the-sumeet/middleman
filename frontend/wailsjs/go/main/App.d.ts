@@ -13,3 +13,5 @@ export function Greet(arg1:string):Promise<string>;
 export function NewRecord(arg1:number,arg2:string):Promise<void>;
 
 export function SaveRecord(arg1:number,arg2:number,arg3:main.Record):Promise<void>;
+
+export function ValidateExpr(arg1:string):Promise<Array<string>>;
