@@ -72,3 +72,13 @@ func (a *App) SaveRecord(collectionId int, recordId int, updatedRecord Record) {
 func (a *App) DeleteRecord(collectionId int, recordId int) {
 	a.database.DeleteRecord(collectionId, recordId)
 }
+
+func (a *App) ValidateExpr(expr string) []string {
+	res := validateString(expr)
+	errs := []string{}
+	for _, r := range res {
+		errs = append(errs, r.Error())
+	}
+
+	return errs
+}

@@ -288,6 +288,24 @@ func compareContains(request http.Request, identifier int, oprand string) bool {
 	}
 }
 
+func validateString(expr string) []error {
+	input := antlr.NewInputStream(expr)
+	lexer := parser.NewExpressionLexer(input)
+	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
+
+	parser := parser.NewExpressionParser(stream)
+	parser.RemoveErrorListeners() // Remove default listeners
+	errorListener := CustomErrorListener{}
+	parser.AddErrorListener(&errorListener)
+
+	_ = parser.Expr()
+
+	if errorListener.Errors != nil {
+		return errorListener.Errors
+	}
+	return nil
+}
+
 func parse(expr string, request http.Request) (bool, []error) {
 	input := antlr.NewInputStream(expr)
 	lexer := parser.NewExpressionLexer(input)

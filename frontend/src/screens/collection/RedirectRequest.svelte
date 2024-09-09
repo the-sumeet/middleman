@@ -5,13 +5,18 @@
 
     import { onMount } from "svelte";
     import { main } from "../../../wailsjs/go/models";
-    import { DeleteRecord, SaveRecord } from "../../../wailsjs/go/main/App";
+    import { DeleteRecord, SaveRecord, ValidateExpr } from "../../../wailsjs/go/main/App";
     import { currentCollection } from "../../stores";
 
     let ifValue;
     let thenValue;
     let editing = false;
     let saving = false;
+    let inputErrors = [];
+
+    $: ValidateExpr(ifValue).then((result) => {
+        inputErrors=result;
+    });
 
     function toggleEditing() {
         if (editing === true) {
@@ -57,6 +62,15 @@
             placeholder="if url contains &#34;example.com&#34;"
             class="block w-full px-4 py-2 border rounded-md bg-gray-800 text-gray-300 border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:border-blue-300 focus:outline-none focus:ring"
         ></textarea>
+
+        {#if inputErrors.length > 0}
+        <div class="mt-4">
+            {#each inputErrors as error}
+            <p class="text-red-500">{error}</p>
+            {/each}
+        </div>
+        {/if}
+        
     </div>
 
     <h2 class="text-lg font-semibold capitalize text-white">
