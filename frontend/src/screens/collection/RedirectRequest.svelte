@@ -5,7 +5,8 @@
 
     import { onMount } from "svelte";
     import { main } from "../../../wailsjs/go/models";
-    import { SaveRecord } from "../../../wailsjs/go/main/App";
+    import { DeleteRecord, SaveRecord } from "../../../wailsjs/go/main/App";
+    import { currentCollection } from "../../stores";
 
     let ifValue;
     let thenValue;
@@ -30,6 +31,13 @@
         SaveRecord(collectionId, recordId, newRecord).then(() => {
             saving = false;
         });
+    }
+
+    function remove() {
+        console.log(`deleting ${recordId}`);
+        DeleteRecord(collectionId, recordId);
+        // This is to refresh collections.
+        currentCollection.set({collectionId: collectionId});
     }
 
     onMount(() => {
@@ -76,11 +84,13 @@
                 <i class="bi bi-pencil"></i>
             {/if}
         </button>
+        {#if !editing}
         <button
-            on:click={toggleEditing}
+            on:click={remove}
             class="px-4 py-2.5 leading-5 text-white transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
         >
             <i class="bi bi-trash"></i>
         </button>
+        {/if}
     </div>
 </div>

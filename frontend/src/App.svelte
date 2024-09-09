@@ -8,7 +8,7 @@
   let currentColl;
 
     const unSubCurrentCollection = currentCollection.subscribe((value) => {
-        currentColl = value;
+        currentColl = value.collectionId;
     });
 
     onDestroy(() => {

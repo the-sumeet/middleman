@@ -27,8 +27,10 @@ type Database interface {
 	// InsertCollection(record Record) error
 	// GetCollection() (Collection, error)
 	GetCollections() []Collection
-	GetCollection(int) (Collection, error)
-	Update(collectionId int, recordId int, record Record) error
+	GetCollection(int) (*Collection, error)
+	Insert(collectionId int, record Record) error
+	Update(collectionId, recordId int, record Record) error
+	DeleteRecord(collectionId, recordId int) error
 }
 
 type FileDatabase struct {
@@ -71,13 +73,33 @@ func (f *FileDatabase) GetCollections() []Collection {
 	return f.collections
 }
 
-func (f *FileDatabase) GetCollection(collectionId int) (Collection, error) {
+func (f *FileDatabase) GetCollection(collectionId int) (*Collection, error) {
 	// Index based id
 	if collectionId >= len(f.collections) {
-		return Collection{}, fmt.Errorf("collection with id %s not found", collectionId)
+		return nil, fmt.Errorf("collection with id %s not found", collectionId)
 	}
 
-	return f.collections[collectionId], nil
+	return &f.collections[collectionId], nil
+}
+
+func (f *FileDatabase) Insert(collectionId int, record Record) error {
+
+	collection, err := f.GetCollection(collectionId)
+	if err != nil {
+		return err
+	}
+
+	if collection.Records == nil {
+		collection.Records = []Record{record}
+	} else {
+		fmt.Println("HERE")
+		collection.Records = append(collection.Records, record)
+		fmt.Println(collection.Records)
+		fmt.Println(len(f.collections))
+	}
+	fmt.Println(collection.Records)
+	f.store()
+	return nil
 }
 
 func (f *FileDatabase) Update(collectionId int, recordId int, record Record) error {
@@ -92,6 +114,22 @@ func (f *FileDatabase) Update(collectionId int, recordId int, record Record) err
 	}
 
 	collection.Records[recordId] = record
+	f.store()
+	return nil
+}
+
+func (f *FileDatabase) DeleteRecord(collectionId int, recordId int) error {
+
+	collection, err := f.GetCollection(collectionId)
+	if err != nil {
+		return err
+	}
+
+	if recordId >= len(collection.Records) {
+		return fmt.Errorf("record %s not found", recordId)
+	}
+
+	collection.Records = append(collection.Records[:recordId], collection.Records[recordId+1:]...)
 	f.store()
 	return nil
 }
