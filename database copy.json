@@ -1,0 +1,39 @@
+{
+    "collections": [
+        {
+            "name": "collection 1",
+            "records": [
+                {
+                    "type": "redirect",
+                    "if": "",
+                    "then": ""
+                },
+                {
+                    "type": "redirect",
+                    "if": "",
+                    "then": ""
+                }
+            ]
+        },
+        {
+            "name": "collection 2",
+            "records": [
+                {
+                    "type": "redirect",
+                    "if": "",
+                    "then": ""
+                }
+            ]
+        }
+    ],
+    "redirects": [
+        {
+            "entity": "url",
+            "op": "eq",
+            "value": "http://example.com",
+            "toType": "url",
+            "toValue": "http://example.com"
+
+        }
+    ]
+}
