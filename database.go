@@ -7,35 +7,26 @@ import (
 	"os"
 )
 
-type RedirectRecord struct {
-	If   string
-	Then string
-}
-
-type Record struct {
-	Type string `json:"type"`
-	If   string `json:"if"`
-	Then string `json:"then"`
-}
-
-type Collection struct {
-	Name    string   `json:"name"`
-	Records []Record `json:"records"`
+type Redirect struct {
+	Entity  string `json:"entity"`
+	Op      string `json:"op"`
+	Value   string `json:"value"`
+	ToType  string `json:"toType"`
+	ToValue string `json:"toValue"`
 }
 
 type Database interface {
 	// InsertCollection(record Record) error
 	// GetCollection() (Collection, error)
-	GetCollections() []Collection
-	GetCollection(int) (*Collection, error)
-	Insert(collectionId int, record Record) error
-	Update(collectionId, recordId int, record Record) error
-	DeleteRecord(collectionId, recordId int) error
+	GetRedirects() []Redirect
+	SaveRedirect(redirectId int, redirect Redirect) error
+	RemoveRedirect(redirectId int) error
+	AddRedirect(redirect Redirect) error
 }
 
 type FileDatabase struct {
-	filePath    string
-	collections []Collection
+	filePath  string
+	redirects []Redirect
 }
 
 func (f *FileDatabase) load() {
@@ -45,19 +36,19 @@ func (f *FileDatabase) load() {
 	}
 
 	var database struct {
-		Collections []Collection `json:"collections"`
+		Redirects []Redirect `json:"redirects"`
 	}
 	err = json.Unmarshal(data, &database)
 	if err != nil {
 		log.Fatalf("Error unmarshalling JSON: %v", err)
 	}
-	f.collections = database.Collections
+	f.redirects = database.Redirects
 
 }
 
 func (f *FileDatabase) store() {
 	data, err := json.Marshal(map[string]any{
-		"collections": f.collections,
+		"redirects": f.redirects,
 	})
 	if err != nil {
 		panic(err)
@@ -69,67 +60,35 @@ func (f *FileDatabase) store() {
 	}
 }
 
-func (f *FileDatabase) GetCollections() []Collection {
-	return f.collections
+func (f *FileDatabase) GetRedirects() []Redirect {
+	return f.redirects
 }
 
-func (f *FileDatabase) GetCollection(collectionId int) (*Collection, error) {
-	// Index based id
-	if collectionId >= len(f.collections) {
-		return nil, fmt.Errorf("collection with id %s not found", collectionId)
+func (f *FileDatabase) SaveRedirect(redirectId int, redirect Redirect) error {
+
+	if redirectId >= len(f.redirects) {
+		return fmt.Errorf("redirect with id %s not found", redirectId)
 	}
 
-	return &f.collections[collectionId], nil
-}
-
-func (f *FileDatabase) Insert(collectionId int, record Record) error {
-
-	collection, err := f.GetCollection(collectionId)
-	if err != nil {
-		return err
-	}
-
-	if collection.Records == nil {
-		collection.Records = []Record{record}
-	} else {
-		fmt.Println("HERE")
-		collection.Records = append(collection.Records, record)
-		fmt.Println(collection.Records)
-		fmt.Println(len(f.collections))
-	}
-	fmt.Println(collection.Records)
+	f.redirects[redirectId] = redirect
 	f.store()
 	return nil
 }
 
-func (f *FileDatabase) Update(collectionId int, recordId int, record Record) error {
+func (f *FileDatabase) RemoveRedirect(redirectId int) error {
 
-	collection, err := f.GetCollection(collectionId)
-	if err != nil {
-		return err
+	if redirectId >= len(f.redirects) {
+		return fmt.Errorf("redirect with id %s not found", redirectId)
 	}
 
-	if recordId >= len(collection.Records) {
-		return fmt.Errorf("record %s not found", recordId)
-	}
+	f.redirects = append(f.redirects[:redirectId], f.redirects[redirectId+1:]...)
 
-	collection.Records[recordId] = record
 	f.store()
 	return nil
 }
 
-func (f *FileDatabase) DeleteRecord(collectionId int, recordId int) error {
-
-	collection, err := f.GetCollection(collectionId)
-	if err != nil {
-		return err
-	}
-
-	if recordId >= len(collection.Records) {
-		return fmt.Errorf("record %s not found", recordId)
-	}
-
-	collection.Records = append(collection.Records[:recordId], collection.Records[recordId+1:]...)
+func (f *FileDatabase) AddRedirect(redirect Redirect) error {
+	f.redirects = append(f.redirects, redirect)
 	f.store()
 	return nil
 }

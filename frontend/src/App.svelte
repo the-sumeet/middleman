@@ -1,24 +1,34 @@
 <script>
   import "bootstrap-icons/font/bootstrap-icons.css";
-  import CollectionList from "./screens/collections_list/CollectionsList.svelte";
-  import CollectionPage from "./screens/collection/CollectionPage.svelte";
-  import { currentCollection } from "./stores";
+  import Rules from "./screens/rules/Rules.svelte";
+  import { currentRule } from "./stores";
   import { onDestroy } from "svelte";
+  import RedirectList from "./screens/redirects/redirect_list.svelte";
+  import { REDIRECT_RULE } from "./constants";
+  import { AddRedirect, GetRedirects } from "../wailsjs/go/main/App";
+  import { main } from "../wailsjs/go/models";
+  import { redirects } from "./stores";
+  let selectedRule;
 
-  let currentColl;
+  const unSubCurrentRule = currentRule.subscribe((value) => {
+    selectedRule = value;
+  });
 
-    const unSubCurrentCollection = currentCollection.subscribe((value) => {
-        currentColl = value.collectionId;
-    });
+  function add() {
+    if (selectedRule == REDIRECT_RULE) {
+      AddRedirect(new main.Redirect());
+      GetRedirects().then((res) => {
+        redirects.set(res.redirects);
+      });
+    }
+  }
 
-    onDestroy(() => {
-        unSubCurrentCollection();
-    });
+  onDestroy(() => {
+    unSubCurrentRule();
+  });
 </script>
 
 <aside class="flex bg-gray-900">
-
-
   <!-- Sidebar 1 -->
   <div
     class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-900 border-gray-700"
@@ -142,15 +152,29 @@
     </a>
   </div>
 
-  <!-- Sidebar Collections -->
-  <CollectionList />
+  <!-- RuleType Sidebar -->
+  <Rules />
 
   <!-- Collection -->
   <div class="p-4 flex flex-col w-full h-screen">
+    <!-- Toolbar -->
+    <div class="flex justify-end rounded-md">
+      <button
+        on:click={add}
+        class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+      >
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
 
-    {#if currentColl !== undefined && currentColl >= 0}
-    <CollectionPage />
-    {/if}
+    <div class="mt-4 overflow-y-scroll">
+      {#if selectedRule == REDIRECT_RULE}
+        <RedirectList />
+      {/if}
+    </div>
 
+    <!-- {#if currentColl !== undefined && currentColl >= 0}
+      <CollectionPage />
+    {/if} -->
   </div>
 </aside>

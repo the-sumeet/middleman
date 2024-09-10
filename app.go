@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 )
 
 type App struct {
@@ -12,9 +11,8 @@ type App struct {
 }
 
 type ReturnValue struct {
-	Collections []Collection `json:"collections"`
-	Collection  Collection   `json:"collection"`
-	Error       string       `json:"error"`
+	Redirects []Redirect `json:"redirects"`
+	Error     string     `json:"error"`
 }
 
 func NewApp() *App {
@@ -36,49 +34,20 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
-
-func (a *App) GetCollections() []Collection {
-	return a.database.GetCollections()
-}
-
-func (a *App) GetCollection(collectionId int) ReturnValue {
-	collection, err := a.database.GetCollection(collectionId)
-
-	if err != nil {
-		return ReturnValue{
-			Error: err.Error(),
-		}
-	}
-
+func (a *App) GetRedirects() ReturnValue {
 	return ReturnValue{
-		Collection: *collection,
+		Redirects: a.database.GetRedirects(),
 	}
 }
 
-func (a *App) NewRecord(collectionId int, recordType string) {
-	a.database.Insert(collectionId, Record{Type: recordType})
-
+func (a *App) SaveRedirect(redirectId int, redirect Redirect) {
+	a.database.SaveRedirect(redirectId, redirect)
 }
 
-func (a *App) SaveRecord(collectionId int, recordId int, updatedRecord Record) {
-	a.database.Update(collectionId, recordId, updatedRecord)
-
+func (a *App) AddRedirect(redirect Redirect) {
+	a.database.AddRedirect(redirect)
 }
 
-func (a *App) DeleteRecord(collectionId int, recordId int) {
-	a.database.DeleteRecord(collectionId, recordId)
-}
-
-func (a *App) ValidateExpr(expr string) []string {
-	res := validateString(expr)
-	errs := []string{}
-	for _, r := range res {
-		errs = append(errs, r.Error())
-	}
-
-	return errs
+func (a *App) RemoveRedirect(redirectId int) {
+	a.database.RemoveRedirect(redirectId)
 }
