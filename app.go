@@ -21,9 +21,12 @@ func NewApp() *App {
 		filePath: "database.json",
 	}
 	database.load()
+	genCert()
+
+	certPath, keyPath := getCertKeyPath()
 
 	return &App{
-		proxy:    NewProxy("example.crt", "example.key"),
+		proxy:    NewProxy(certPath, keyPath),
 		database: &database,
 	}
 }
