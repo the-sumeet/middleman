@@ -11,3 +11,5 @@ GetRedirects().then((res) => {
     console.log(res);
     redirects.set(res.redirects);
 });
+
+export const serverRunning = writable(false);

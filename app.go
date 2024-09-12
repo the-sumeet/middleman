@@ -2,12 +2,19 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"log"
+	"net"
+	"net/http"
+
+	"github.com/elazarl/goproxy"
 )
 
 type App struct {
-	ctx      context.Context
-	proxy    *Proxy
-	database Database
+	ctx             context.Context
+	proxy           *goproxy.ProxyHttpServer
+	proxyStartStoop chan bool
+	database        Database
 }
 
 type ReturnValue struct {
@@ -23,18 +30,60 @@ func NewApp() *App {
 	database.load()
 	genCert()
 
-	certPath, keyPath := getCertKeyPath()
+	// certPath, keyPath := getCertKeyPath()
+	// certPath = "demo.crt"
+	// keyPath = "demo.key"
 
-	return &App{
-		proxy:    NewProxy(certPath, keyPath),
-		database: &database,
+	app := &App{
+		proxy:           goproxy.NewProxyHttpServer(),
+		database:        &database,
+		proxyStartStoop: make(chan bool),
 	}
+
+	fmt.Println("Starting proxy")
+	// app.proxy.mitmproxy.Start()
+
+	return app
 }
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+}
+
+func (a *App) StartProxy() {
+	setCA()
+	l, err := net.Listen("tcp", ":8888")
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
+	go func() {
+		log.Println("Proxy Starting")
+		a.proxy.Verbose = true
+
+		go func() {
+			err := http.Serve(l, a.proxy)
+			if err != nil {
+				fmt.Println("Proxy Stopped: ", err)
+			}
+			log.Println("Proxy Started")
+		}()
+
+		fmt.Println("Waiting for stop")
+		<-a.proxyStartStoop
+		fmt.Println("Stopping")
+		l.Close()
+		log.Println("Proxy Stopped")
+	}()
+	log.Println("Exit")
+
+}
+
+func (a *App) StopProxy() {
+	log.Println("Proxy Stopping")
+	a.proxyStartStoop <- true
+	log.Println("Proxy Stopped")
 }
 
 func (a *App) GetRedirects() ReturnValue {

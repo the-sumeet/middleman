@@ -9,12 +9,10 @@ import (
 	"net"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/AdguardTeam/gomitmproxy"
 	"github.com/AdguardTeam/gomitmproxy/mitm"
-	"github.com/AdguardTeam/gomitmproxy/proxyutil"
 )
 
 // func addCertificateToKeychain() error {
@@ -42,7 +40,7 @@ const (
 type Proxy struct {
 	certPath  string
 	certKey   string
-	proxy     *gomitmproxy.Proxy
+	mitmproxy *gomitmproxy.Proxy
 	proxyHost string
 	proxyPort string
 }
@@ -108,12 +106,12 @@ func NewProxy(certPath, keyPath string) *Proxy {
 
 			fmt.Println("Request: ", session.Request().URL.String())
 
-			if req.Method == "CONNECT" || strings.Contains(req.URL.Host, "google") {
+			if req.Method == "CONNECT" {
 				return res
 			}
 
-			res = proxyutil.NewResponse(307, nil, req)
-			res.Header.Add("Location", "https://www.google.com")
+			// res = proxyutil.NewResponse(307, nil, req)
+			// res.Header.Add("Location", "https://www.google.com")
 
 			// b, err := proxyutil.ReadDecompressedBody(res)
 			// // Close the original body
@@ -143,7 +141,7 @@ func NewProxy(certPath, keyPath string) *Proxy {
 		},
 	})
 
-	gomitmproxy.Start()
-	proxy.proxy = gomitmproxy
+	// gomitmproxy.Start()
+	proxy.mitmproxy = gomitmproxy
 	return &proxy
 }

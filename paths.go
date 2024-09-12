@@ -7,8 +7,8 @@ import (
 
 const (
 	AppName  = "middleman"
-	CertName = "middleman.crt"
-	KeyName  = "middleman.key"
+	CertName = "demo.crt"
+	KeyName  = "demo.key"
 )
 
 func getAppConfigDir() string {

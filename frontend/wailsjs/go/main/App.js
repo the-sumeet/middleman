@@ -17,3 +17,11 @@ export function RemoveRedirect(arg1) {
 export function SaveRedirect(arg1, arg2) {
   return window['go']['main']['App']['SaveRedirect'](arg1, arg2);
 }
+
+export function StartProxy() {
+  return window['go']['main']['App']['StartProxy']();
+}
+
+export function StopProxy() {
+  return window['go']['main']['App']['StopProxy']();
+}

@@ -1,14 +1,17 @@
 <script>
   import "bootstrap-icons/font/bootstrap-icons.css";
   import Rules from "./screens/rules/Rules.svelte";
-  import { currentRule } from "./stores";
+  import { currentRule, serverRunning } from "./stores";
   import { onDestroy } from "svelte";
+  import { StartProxy, StopProxy } from "../wailsjs/go/main/App";
   import RedirectList from "./screens/redirects/redirect_list.svelte";
   import { REDIRECT_RULE } from "./constants";
   import { AddRedirect, GetRedirects } from "../wailsjs/go/main/App";
   import { main } from "../wailsjs/go/models";
   import { redirects } from "./stores";
+
   let selectedRule;
+  let isServerRunning = false;
 
   const unSubCurrentRule = currentRule.subscribe((value) => {
     selectedRule = value;
@@ -20,6 +23,22 @@
       GetRedirects().then((res) => {
         redirects.set(res.redirects);
       });
+    }
+  }
+
+  function toggleProxy() {
+    if (isServerRunning) {
+      console.log("Stopping proxy");
+      StopProxy().then(() => {
+        isServerRunning = false;
+        // serverRunning.set(false);
+        console.log("Proxy stopped");
+      });
+    } else {
+      console.log("Starting proxy");
+      StartProxy().then(() => {});
+      isServerRunning = true;
+        console.log("Proxy started");
     }
   }
 
@@ -42,10 +61,15 @@
     </a>
 
     <a
-      href="#"
+      on:click={toggleProxy}
+      href="#!"
       class="p-1.5 text-gray-500 focus:outline-nones transition-colors duration-200 rounded-lg dark:text-gray-400 dark:hover:bg-gray-800 hover:bg-gray-100"
     >
-      <i class="text-3xl bi bi-play"></i>
+      {#if isServerRunning}
+        <i class="text-3xl text-red-700 bg-red-700 bi bi-pause"></i>
+      {:else}
+        <i class="text-3xl text-green-700 bg-green-700 bi bi-play"></i>
+      {/if}
     </a>
 
     <a
