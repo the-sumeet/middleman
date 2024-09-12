@@ -30,18 +30,11 @@ func NewApp() *App {
 	database.load()
 	genCert()
 
-	// certPath, keyPath := getCertKeyPath()
-	// certPath = "demo.crt"
-	// keyPath = "demo.key"
-
 	app := &App{
 		proxy:           goproxy.NewProxyHttpServer(),
 		database:        &database,
 		proxyStartStoop: make(chan bool),
 	}
-
-	fmt.Println("Starting proxy")
-	// app.proxy.mitmproxy.Start()
 
 	return app
 }
