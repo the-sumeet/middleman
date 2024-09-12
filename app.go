@@ -54,11 +54,11 @@ func (a *App) StartProxy() {
 		fmt.Println("Error: ", err)
 	}
 	go func() {
+
 		log.Println("Proxy Starting")
 		a.proxy.Verbose = true
 		a.proxy.OnRequest().DoFunc(
 			func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-				fmt.Println("HERE")
 				fmt.Println(r.URL)
 				r.Header.Set("X-GoProxy", "yxorPoG-X")
 				return r, nil
@@ -76,6 +76,7 @@ func (a *App) StartProxy() {
 		<-a.proxyStartStoop
 		fmt.Println("Stopping")
 		l.Close()
+
 		log.Println("Proxy Stopped")
 	}()
 	log.Println("Exit")
