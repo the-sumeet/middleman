@@ -30,8 +30,10 @@ func NewApp() *App {
 	database.load()
 	genCert()
 
+	proxy := goproxy.NewProxyHttpServer()
+
 	app := &App{
-		proxy:           goproxy.NewProxyHttpServer(),
+		proxy:           proxy,
 		database:        &database,
 		proxyStartStoop: make(chan bool),
 	}
@@ -54,6 +56,13 @@ func (a *App) StartProxy() {
 	go func() {
 		log.Println("Proxy Starting")
 		a.proxy.Verbose = true
+		a.proxy.OnRequest().DoFunc(
+			func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+				fmt.Println("HERE")
+				fmt.Println(r.URL)
+				r.Header.Set("X-GoProxy", "yxorPoG-X")
+				return r, nil
+			})
 
 		go func() {
 			err := http.Serve(l, a.proxy)
