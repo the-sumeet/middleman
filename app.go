@@ -7,7 +7,10 @@ import (
 	"net"
 	"net/http"
 
+	// "database/sql"
+
 	"github.com/elazarl/goproxy"
+	// _ "modernc.org/sqlite"
 )
 
 type App struct {
@@ -15,11 +18,13 @@ type App struct {
 	proxy           *goproxy.ProxyHttpServer
 	proxyStartStoop chan bool
 	database        Database
+	requests        []http.Request
 }
 
 type ReturnValue struct {
-	Redirects []Redirect `json:"redirects"`
-	Error     string     `json:"error"`
+	Redirects []Redirect     `json:"redirects"`
+	Requests  []http.Request `json:"requests"`
+	Error     string         `json:"error"`
 }
 
 func NewApp() *App {
@@ -57,12 +62,14 @@ func (a *App) StartProxy() {
 
 		log.Println("Proxy Starting")
 		a.proxy.Verbose = true
-		a.proxy.OnRequest().DoFunc(
-			func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-				fmt.Println(r.URL)
-				r.Header.Set("X-GoProxy", "yxorPoG-X")
-				return r, nil
-			})
+		// a.proxy.OnRequest().DoFunc(
+		// 	func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+		// 		fmt.Println(r.URL)
+		// 		r.Header.Set("X-GoProxy", "yxorPoG-X")
+		// 		return r, nil
+		// 	})
+
+		a.proxy.OnRequest().DoFunc(a.getOnRequest())
 
 		go func() {
 			err := http.Serve(l, a.proxy)
@@ -87,6 +94,15 @@ func (a *App) StopProxy() {
 	log.Println("Proxy Stopping")
 	a.proxyStartStoop <- true
 	log.Println("Proxy Stopped")
+}
+
+func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+		requestCopy := *r
+		a.requests = append(a.requests, requestCopy)
+		r.Header.Set("X-GoProxy", "yxorPoG-X")
+		return r, nil
+	}
 }
 
 func (a *App) GetRedirects() ReturnValue {
