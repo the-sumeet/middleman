@@ -22,9 +22,9 @@ type App struct {
 }
 
 type ReturnValue struct {
-	Redirects []Redirect     `json:"redirects"`
-	Requests  []http.Request `json:"requests"`
-	Error     string         `json:"error"`
+	Redirects []Redirect `json:"redirects"`
+	// Requests  []http.Request `json:"requests"`
+	Error string `json:"error"`
 }
 
 func NewApp() *App {
