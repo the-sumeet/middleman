@@ -13,6 +13,7 @@ type Redirect struct {
 	Value   string `json:"value"`
 	ToType  string `json:"toType"`
 	ToValue string `json:"toValue"`
+	Enabled bool   `json:"enabled"`
 }
 
 type Database interface {
