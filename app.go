@@ -169,6 +169,13 @@ func (a *App) StopProxy() {
 
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+
+		redirects := a.database.GetRedirects()
+		fmt.Println(len(redirects))
+		// for _, redirect := range redirects {
+		// 	fmt.Println("MATCHES:", redirect.matches(r))
+		// }
+
 		requestCopy := *r
 		a.requests = append(a.requests, requestCopy)
 		r.Header.Set("X-GoProxy", "yxorPoG-X")
