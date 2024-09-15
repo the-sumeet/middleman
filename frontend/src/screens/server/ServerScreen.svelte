@@ -1,12 +1,18 @@
 <script>
     import "bootstrap-icons/font/bootstrap-icons.css";
     import { StartProxy, StopProxy } from "../../../wailsjs/go/main/App";
+    import { serverRunning } from "../../../src/stores";
+    import { onDestroy } from "svelte";
 
-    let serverRunning = false;
+    let isServerRunning;
     const startButtonCss = "bg-blue-600 hover:bg-blue-500 focus:ring-blue-300";
     const stopButtonCss = "bg-red-600 hover:bg-red-500 focus:ring-red-300";
     let error = "";
     let port = "8080";
+
+    const ubSubServerRunning = serverRunning.subscribe((value) => {
+        isServerRunning = value;
+    });
 
     function validatePort() {
         let portNumber = parseInt(port);
@@ -24,11 +30,11 @@
 
     function toggleProxy() {
         error = "";
-        
-        if (serverRunning) {
+
+        if (isServerRunning === true) {
             console.log("Stopping proxy");
             StopProxy().then(() => {
-                serverRunning = false;
+                serverRunning.set(false);
                 // serverRunning.set(false);
                 console.log("Proxy stopped");
             });
@@ -41,15 +47,21 @@
             StartProxy(portNumber).then((result) => {
                 if (result.error != "") {
                     error = result.error;
-                    serverRunning = false;
+                    serverRunning.set(false);
+
                     return;
                 } else {
-                    serverRunning = true;
+                    serverRunning.set(true);
+
                     console.log("Proxy started");
                 }
             });
         }
     }
+
+    onDestroy(() => {
+        ubSubServerRunning();
+    });
 </script>
 
 <div class="flex flex-col w-full">
@@ -65,11 +77,11 @@
         />
         <button
             on:click={toggleProxy}
-            class="{serverRunning
+            class="{isServerRunning
                 ? stopButtonCss
                 : startButtonCss} flex items-center rounded-lg px-4 py-2.5 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform focus:outline-none focus:ring focus:ring-opacity-80"
         >
-            {#if serverRunning}
+            {#if isServerRunning}
                 Stop Server
             {:else}
                 Start Server

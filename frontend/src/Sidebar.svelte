@@ -1,16 +1,16 @@
 <script>
     import "bootstrap-icons/font/bootstrap-icons.css";
-    import { currentRule } from "./stores";
+    import { currentRule, serverRunning } from "./stores";
     import { onDestroy } from "svelte";
     import { StartProxy, StopProxy } from "../wailsjs/go/main/App";
     import { currentPage } from "./stores";
     import { HOME, REQUESTS, SERVER } from "./constants";
 
-    let isServerRunning = false;
+    // let isServerRunning = false;
     let currPage;
     const activePageCss = "text-blue-500 bg-gray-800";
     const inactivePageCss = "text-gray-200 hover:bg-gray-800";
-
+    
     const unCurrentPage = currentPage.subscribe((value) => {
         currPage = value;
     });
@@ -50,11 +50,19 @@
         href="#!"
         class="{inactivePageCss} p-1.5 focus:outline-nones transition-colors duration-200 rounded-lg"
     >
-        {#if isServerRunning}
+        <button type="button" class="relative">
+            <i class="text-2xl bi bi-hdd-network"></i>
+            <div
+                class="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white {$serverRunning ? "bg-green-500" : "bg-red-500"} border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"
+            ></div>
+        </button>
+
+        <!-- <i class="text-2xl bi bi-hdd-network"></i> -->
+        <!-- {#if isServerRunning}
             <i class="text-2xl bi bi-pause"></i>
         {:else}
             <i class="text-2xl bi bi-play"></i>
-        {/if}
+        {/if} -->
     </a>
 
     <a
