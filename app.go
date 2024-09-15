@@ -2,10 +2,13 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
+	"os"
 
 	// "database/sql"
 
@@ -133,14 +136,9 @@ siBcOWcnlKJ9IChFJHP8CsgurRd8yYNQiqhCXkGGKyXDwwj+/PYlitM=
 
 		log.Println("Proxy Starting")
 		a.proxy.Verbose = true
-		// a.proxy.OnRequest().DoFunc(
-		// 	func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-		// 		fmt.Println(r.URL)
-		// 		r.Header.Set("X-GoProxy", "yxorPoG-X")
-		// 		return r, nil
-		// 	})
-
+		a.proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 		a.proxy.OnRequest().DoFunc(a.getOnRequest())
+		a.proxy.OnResponse().DoFunc(a.getOnResponse())
 
 		go func() {
 			err := http.Serve(l, a.proxy)
