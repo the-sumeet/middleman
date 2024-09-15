@@ -1,8 +1,10 @@
 package main
 
 import (
+	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func getRequestEntity(entityName string, r *http.Response) string {
@@ -31,4 +33,10 @@ func evalOp(op string, input string, value string) bool {
 	default:
 		return false
 	}
+}
+
+func PortAvailable(host string, port string) error {
+	timeout := time.Second
+	_, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), timeout)
+	return err
 }
