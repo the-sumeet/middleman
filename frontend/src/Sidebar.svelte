@@ -43,7 +43,7 @@
 <div
     class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-900 b border-r border-gray-800"
 >
-    <a on:click={() => setPage(HOME)} href="#!">
+    <a href="#!">
         <img
             class="w-auto h-6"
             src="https://merakiui.com/images/logo.svg"
@@ -52,8 +52,9 @@
     </a>
 
     <a
+        on:click={() => setPage(HOME)}
         href="#!"
-        class="{currPage == REQUESTS
+        class="{currPage == HOME
             ? activePageCss
             : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
     >
