@@ -20,3 +20,10 @@ To build a redistributable, production mode package, use `wails build`.
 ```
 java -jar antlr-4.13.2-complete.jar -Dlanguage=Go -visitor Expression.g4 -o parser
 ```
+
+## Gen Certificate
+
+```
+openssl genrsa -out ca.key 2048
+openssl req -new -x509 -key ca.key -out ca.crt
+```
