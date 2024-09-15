@@ -8,3 +8,4 @@ export const REDIRECT_RULE = "redirect";
 // Tabs
 export const HOME = "home";
 export const REQUESTS = "requests";
+export const SERVER = "server";
