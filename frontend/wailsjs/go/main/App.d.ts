@@ -10,6 +10,6 @@ export function RemoveRedirect(arg1:number):Promise<void>;
 
 export function SaveRedirect(arg1:number,arg2:main.Redirect):Promise<void>;
 
-export function StartProxy():Promise<void>;
+export function StartProxy(arg1:number):Promise<main.ReturnValue>;
 
 export function StopProxy():Promise<void>;
