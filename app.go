@@ -55,11 +55,9 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) StartProxy() {
-	//
+func (a *App) StartProxy(port int) ReturnValue {
 	certPath, certKey := getCertKeyPath()
-	fmt.Println("CertPath: ", certPath)
-	fmt.Println("CertKey: ", certKey)
+
 	certytes, err := os.ReadFile(certPath)
 	if err != nil {
 		panic(err)
@@ -128,13 +126,21 @@ siBcOWcnlKJ9IChFJHP8CsgurRd8yYNQiqhCXkGGKyXDwwj+/PYlitM=
 	goproxy.RejectConnect = &goproxy.ConnectAction{Action: goproxy.ConnectReject, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
 	//
 
-	l, err := net.Listen("tcp", ":8888")
+	if err := PortAvailable("localhost", fmt.Sprintf("%d", port)); err == nil {
+		log.Println("Port is not available")
+		return ReturnValue{Error: fmt.Sprintf("Port %d is not available", port)}
+	}
+
+	portString := fmt.Sprintf(":%d", port)
+	log.Println("Starting Proxy", portString)
+	l, err := net.Listen("tcp", portString)
 	if err != nil {
 		fmt.Println("Error: ", err)
 	}
+	log.Println("TCP listener started on ", portString)
+
 	go func() {
 
-		log.Println("Proxy Starting")
 		a.proxy.Verbose = true
 		a.proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 		a.proxy.OnRequest().DoFunc(a.getOnRequest())
@@ -143,26 +149,23 @@ siBcOWcnlKJ9IChFJHP8CsgurRd8yYNQiqhCXkGGKyXDwwj+/PYlitM=
 		go func() {
 			err := http.Serve(l, a.proxy)
 			if err != nil {
-				fmt.Println("Proxy Stopped: ", err)
+				fmt.Println("Error starting server: ", err)
 			}
-			log.Println("Proxy Started")
+			log.Println("Proxy serving started")
 		}()
 
-		fmt.Println("Waiting for stop")
+		log.Println("Proxy server goroutine started, waiting to stop")
 		<-a.proxyStartStoop
-		fmt.Println("Stopping")
 		l.Close()
-
-		log.Println("Proxy Stopped")
+		log.Println("Proxy TCP listener closed")
 	}()
-	log.Println("Exit")
 
+	return ReturnValue{}
 }
 
 func (a *App) StopProxy() {
-	log.Println("Proxy Stopping")
+	log.Println("Stopping Proxy")
 	a.proxyStartStoop <- true
-	log.Println("Proxy Stopped")
 }
 
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
