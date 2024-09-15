@@ -14,4 +14,4 @@ GetRedirects().then((res) => {
 
 export const serverRunning = writable(false);
 // Leftmost sidebar buttons
-export const currentPage = writable(REQUESTS);
+export const currentPage = writable(HOME);
