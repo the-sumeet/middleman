@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -13,6 +14,12 @@ type Redirect struct {
 	Value   string `json:"value"`
 	ToType  string `json:"toType"`
 	ToValue string `json:"toValue"`
+	Enabled bool   `json:"enabled"`
+}
+
+func (r *Redirect) matches(req *http.Response) bool {
+	entityValue := getRequestEntity(r.Entity, req)
+	return evalOp(r.Op, entityValue, r.Value)
 }
 
 type Database interface {

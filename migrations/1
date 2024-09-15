@@ -1,0 +1,14 @@
+CREATE TABLE version (
+    version INTEGER NOT NULL 
+);
+
+CREATE TABLE redirect (
+    id INTEGER NOT NULL PRIMARY KEY,
+    entity TEXT NOT NULL,
+    op TEXT NOT NULL,
+    value TEXT NOT NULL,
+    toType TEXT,
+    toValue TEXT
+);
+
+INSERT INTO version (version) VALUES (1);

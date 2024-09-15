@@ -6,6 +6,7 @@ export namespace main {
 	    value: string;
 	    toType: string;
 	    toValue: string;
+	    enabled: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Redirect(source);
@@ -18,6 +19,7 @@ export namespace main {
 	        this.value = source["value"];
 	        this.toType = source["toType"];
 	        this.toValue = source["toValue"];
+	        this.enabled = source["enabled"];
 	    }
 	}
 	export class ReturnValue {

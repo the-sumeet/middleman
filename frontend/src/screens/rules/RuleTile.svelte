@@ -1,5 +1,6 @@
 <script>
     export let title;
+    export let icon="text-xl font-bold text-white bi bi-shuffle";
 
     import { currentCollection } from "../../stores";
   
@@ -14,9 +15,9 @@
 >
 
     <div class="flex gap-2 items-center text-left rtl:text-right">
-        <i class="text-xl font-bold text-white bi bi-shuffle"></i>
+        <i class="text-xl font-bold text-white {icon}"></i>
         <h1
-            class=" font-medium text-gray-700 capitalize dark:text-white"
+            class="text-sm font-medium text-gray-700 capitalize dark:text-white"
         >
          {title}
         </h1>

@@ -7,7 +7,7 @@
     import { RemoveRedirect } from "../../../wailsjs/go/main/App";
     import { redirects } from "../../../src/stores";
     import { GetRedirects } from "../../../wailsjs/go/main/App";
-    
+
     let changed = false;
     let entity = redirect.entity;
     let op = redirect.op;
@@ -35,10 +35,12 @@
     }
 
     function remove() {
-        RemoveRedirect(redirectId);
-        GetRedirects().then((res) => {
-        redirects.set(res.redirects);
-      });
+        RemoveRedirect(redirectId).then(() => {
+            GetRedirects().then((res) => {
+                console.log(res.redirects);
+                redirects.set(res.redirects);
+            });
+        });
     }
 </script>
 
@@ -46,7 +48,7 @@
     <h1 class="text-md text-white">If</h1>
 
     <div
-        class="flex items-center justify-center gap-2 p-4 bg-gray-900 rounded-md mt-4"
+        class="flex items-center justify-center gap-2 p-4 rounded-md mt-4"
     >
         <!-- Entity -->
         <select
@@ -85,7 +87,7 @@
     <h1 class="mt-4 text-md text-white">Then Redirect To</h1>
 
     <div
-        class="flex items-center justify-center gap-2 p-4 bg-gray-900 rounded-md mt-4"
+        class="flex items-center justify-center gap-2 p-4  rounded-md mt-4"
     >
         <input
             bind:value={toValue}
@@ -110,7 +112,7 @@
                 on:click={remove}
                 class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-red-600 rounded-lg hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
             >
-            <i class="bi bi-trash"></i>
+                <i class="bi bi-trash"></i>
             </button>
         {/if}
     </div>

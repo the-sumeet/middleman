@@ -9,6 +9,12 @@
 
 
     <div class="space-y-4">
-      <RuleTile title={"Redirect"}/>
+      <RuleTile icon={"bi bi-shuffle"} title={"Redirect"}/>
+      <RuleTile icon={"bi bi-body-text"} title={"Modify Request Body"}/>
+      <RuleTile icon={"bi bi-body-text"} title={"Modify Response Body"}/>
+      <RuleTile icon={"bi bi-h-square"} title={"Modify Request Headers"}/>
+      <RuleTile icon={"bi bi-h-square"} title={"Modify Response Headers"}/>
+      <RuleTile icon={"bi bi-x-square"} title={"Cancel Request"}/>
+      <RuleTile icon={"bi bi-clock"} title={"Add Delay"}/>
     </div>
   </div>
