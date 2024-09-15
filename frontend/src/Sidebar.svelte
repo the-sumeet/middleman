@@ -4,7 +4,7 @@
     import { onDestroy } from "svelte";
     import { StartProxy, StopProxy } from "../wailsjs/go/main/App";
     import { currentPage } from "./stores";
-    import { HOME, REQUESTS } from "./constants";
+    import { HOME, REQUESTS, SERVER } from "./constants";
 
     let isServerRunning = false;
     let currPage;
@@ -14,22 +14,6 @@
     const unCurrentPage = currentPage.subscribe((value) => {
         currPage = value;
     });
-
-    function toggleProxy() {
-        if (isServerRunning) {
-            console.log("Stopping proxy");
-            StopProxy().then(() => {
-                isServerRunning = false;
-                // serverRunning.set(false);
-                console.log("Proxy stopped");
-            });
-        } else {
-            console.log("Starting proxy");
-            StartProxy().then(() => {});
-            isServerRunning = true;
-            console.log("Proxy started");
-        }
-    }
 
     function setPage(page) {
         currentPage.set(page);
@@ -62,7 +46,7 @@
     </a>
 
     <a
-        on:click={toggleProxy}
+        on:click={() => setPage(SERVER)}
         href="#!"
         class="{inactivePageCss} p-1.5 focus:outline-nones transition-colors duration-200 rounded-lg"
     >
