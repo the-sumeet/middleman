@@ -3,10 +3,10 @@
   import { onDestroy } from "svelte";
   import { currentPage } from "./stores";
   import HomeScreen from "./screens/home/HomeScreen.svelte";
-  import {REQUESTS } from "./constants";
+  import {REQUESTS, SERVER } from "./constants";
   import Requests from "./screens/requests/Requests.svelte";
   import Sidebar from "./Sidebar.svelte";
-
+  import ServerScreen from "./screens/server/ServerScreen.svelte";
 
   let currPage;
 
@@ -26,6 +26,8 @@
 
   {#if currPage === REQUESTS}
   <Requests />
+  {:else if currPage === SERVER}
+  <ServerScreen />
   {:else}
   <HomeScreen />
   {/if}
