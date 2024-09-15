@@ -52,21 +52,32 @@
     </a>
 
     <a
+        href="#!"
+        class="{currPage == REQUESTS
+            ? activePageCss
+            : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
+    >
+        <i class="text-2xl bi bi-list-task"></i>
+    </a>
+
+    <a
         on:click={toggleProxy}
         href="#!"
         class="{inactivePageCss} p-1.5 focus:outline-nones transition-colors duration-200 rounded-lg"
     >
         {#if isServerRunning}
-            <i class=" text-red-700 bg-red-700 bi bi-pause"></i>
+            <i class="text-2xl bi bi-pause"></i>
         {:else}
             <i class="text-2xl bi bi-play"></i>
         {/if}
     </a>
 
-    <a  
+    <a
         on:click={() => setPage(REQUESTS)}
         href="#!"
-        class="{currPage == REQUESTS ? activePageCss : inactivePageCss } p-1.5 transition-colors duration-200 rounded-lg text-blue-400 "
+        class="{currPage == REQUESTS
+            ? activePageCss
+            : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
     >
         <i class="text-2xl bi bi-arrow-down-up"></i>
     </a>
