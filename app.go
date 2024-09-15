@@ -176,6 +176,21 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 	}
 }
 
+func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
+	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
+
+		redirects := a.database.GetRedirects()
+		for _, redirect := range redirects {
+			if redirect.matches(resp) {
+				resp.Header.Set("Location", redirect.ToValue)
+				resp.StatusCode = 307
+			}
+		}
+
+		return resp
+	}
+}
+
 func (a *App) GetRedirects() ReturnValue {
 	return ReturnValue{
 		Redirects: a.database.GetRedirects(),
