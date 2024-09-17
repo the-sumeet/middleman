@@ -25,7 +25,16 @@ type Redirect struct {
 }
 
 func (r *Redirect) matches(req *http.Response) bool {
-	entityValue := getRequestEntity(r.Entity, req)
+	entityValue := getRequestEntity(r.Entity, req.Request.URL.Path, req.Request.Method, req.Request.URL.Host)
+	return evalOp(r.Op, entityValue, r.Value)
+}
+
+type Cancel struct {
+	Request
+}
+
+func (r *Cancel) matches(req *http.Request) bool {
+	entityValue := getRequestEntity(r.Entity, req.URL.Path, req.Method, req.URL.Host)
 	return evalOp(r.Op, entityValue, r.Value)
 }
 
