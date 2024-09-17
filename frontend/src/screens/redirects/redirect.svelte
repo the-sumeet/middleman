@@ -21,6 +21,7 @@
 
     // Go functions
     function save() {
+        console.log(value);
         const redictRecord = new main.Redirect({
             entity: entity,
             op: op,
@@ -78,6 +79,8 @@
         <input
             bind:value
             on:input={setChanged}
+            autocapitalize="off"
+            autocorrect="off"
             type="text"
             placeholder="example"
             class="w-full placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-blue-300"
@@ -92,6 +95,8 @@
         <input
             bind:value={toValue}
             on:input={setChanged}
+            autocapitalize="off"
+            autocorrect="off"
             type="text"
             placeholder="https://example.com"
             class="w-full placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-blue-300"
