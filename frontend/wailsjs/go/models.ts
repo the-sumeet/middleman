@@ -1,5 +1,23 @@
 export namespace main {
 	
+	export class Cancel {
+	    entity: string;
+	    op: string;
+	    value: string;
+	    toType: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Cancel(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.entity = source["entity"];
+	        this.op = source["op"];
+	        this.value = source["value"];
+	        this.toType = source["toType"];
+	    }
+	}
 	export class Redirect {
 	    entity: string;
 	    op: string;
@@ -24,6 +42,7 @@ export namespace main {
 	}
 	export class ReturnValue {
 	    redirects: Redirect[];
+	    cancels: Cancel[];
 	    error: string;
 	
 	    static createFrom(source: any = {}) {
@@ -33,6 +52,7 @@ export namespace main {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.redirects = this.convertValues(source["redirects"], Redirect);
+	        this.cancels = this.convertValues(source["cancels"], Cancel);
 	        this.error = source["error"];
 	    }
 	
