@@ -8,6 +8,13 @@ import (
 	"os"
 )
 
+type Request struct {
+	Entity string `json:"entity"`
+	Op     string `json:"op"`
+	Value  string `json:"value"`
+	ToType string `json:"toType"`
+}
+
 type Redirect struct {
 	Entity  string `json:"entity"`
 	Op      string `json:"op"`
