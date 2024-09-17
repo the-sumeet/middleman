@@ -1,14 +1,15 @@
 <script>
     import "bootstrap-icons/font/bootstrap-icons.css";
     import Rules from "../../screens/rules/Rules.svelte";
-    import { currentRule } from "../../stores";
+    import { cancels, currentRule } from "../../stores";
     import { onDestroy } from "svelte";
     import RedirectList from "../../screens/redirects/redirect_list.svelte";
-    import { REDIRECT_RULE } from "../../constants";
-    import { AddRedirect, GetRedirects } from "../../../wailsjs/go/main/App";
+    import { RULE_CANCEL, RULE_REDIRECT } from "../../constants";
+    import { AddCancel, AddRedirect, GetCancels, GetRedirects } from "../../../wailsjs/go/main/App";
     import { main } from "../../../wailsjs/go/models";
     import { redirects } from "../../stores";
     import { currentPage } from "../../stores";
+    import CancelScreen from "../cancels/CancelScreen.svelte";
 
     let selectedRule;
     let currPage;
@@ -22,11 +23,16 @@
     });
 
     function add() {
-        if (selectedRule == REDIRECT_RULE) {
+        if (selectedRule == RULE_REDIRECT) {
             AddRedirect(new main.Redirect()).then(() => {
                 GetRedirects().then((res) => {
                     redirects.set(res.redirects);
-                    console.log(res);
+                });
+            });
+        } else if (selectedRule == RULE_CANCEL) {
+            AddCancel(new main.Cancel()).then(() => {
+                GetCancels().then((res) => {
+                    cancels.set(res.cancels);
                 });
             });
         }
@@ -53,8 +59,10 @@
 
     <!-- Selected RUle -->
     <div class="mt-4 overflow-y-scroll">
-        {#if selectedRule == REDIRECT_RULE}
+        {#if selectedRule == RULE_REDIRECT}
             <RedirectList />
+        {:else if selectedRule == RULE_CANCEL}
+            <CancelScreen />
         {/if}
     </div>
 
