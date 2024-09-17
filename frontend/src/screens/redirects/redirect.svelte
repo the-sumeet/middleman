@@ -21,7 +21,6 @@
 
     // Go functions
     function save() {
-        console.log(value);
         const redictRecord = new main.Redirect({
             entity: entity,
             op: op,
