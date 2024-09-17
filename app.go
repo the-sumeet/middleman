@@ -176,11 +176,22 @@ func (a *App) StopProxy() {
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 
-		redirects := a.database.GetRedirects()
-		fmt.Println(len(redirects))
-		// for _, redirect := range redirects {
-		// 	fmt.Println("MATCHES:", redirect.matches(r))
-		// }
+		ctx.UserData = &State{}
+
+		// Check for cancels
+		cancels := a.database.GetCancels()
+		for _, cancel := range cancels {
+			if cancel.matches(r) {
+				ctx.UserData.(*State).IsCancelled = true
+				res := &http.Response{
+					Request:    r,
+					StatusCode: 418,
+					Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
+					Header:     make(http.Header),
+				}
+				return nil, res
+			}
+		}
 
 		requestCopy := *r
 		a.requests = append(a.requests, requestCopy)
