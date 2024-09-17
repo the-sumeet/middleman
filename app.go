@@ -16,6 +16,11 @@ import (
 	// _ "modernc.org/sqlite"
 )
 
+type State struct {
+	IsCancelled  bool
+	IsRedirected bool
+}
+
 type App struct {
 	ctx             context.Context
 	proxy           *goproxy.ProxyHttpServer
