@@ -5,10 +5,12 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"net/http"
 	"os"
+	"strings"
 
 	// "database/sql"
 
@@ -31,6 +33,7 @@ type App struct {
 
 type ReturnValue struct {
 	Redirects []Redirect `json:"redirects"`
+	Cancels   []Cancel   `json:"cancels"`
 	// Requests  []http.Request `json:"requests"`
 	Error string `json:"error"`
 }
@@ -203,17 +206,22 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 
-		redirects := a.database.GetRedirects()
-		for _, redirect := range redirects {
-			if redirect.matches(resp) {
-				resp.Header.Set("Location", redirect.ToValue)
-				resp.StatusCode = 307
+		if !ctx.UserData.(*State).IsCancelled {
+			redirects := a.database.GetRedirects()
+			for _, redirect := range redirects {
+				if redirect.matches(resp) {
+					ctx.UserData.(*State).IsRedirected = true
+					resp.Header.Set("Location", redirect.ToValue)
+					resp.StatusCode = 307
+				}
 			}
 		}
 
 		return resp
 	}
 }
+
+// Redirects
 
 func (a *App) GetRedirects() ReturnValue {
 	return ReturnValue{
@@ -231,4 +239,23 @@ func (a *App) AddRedirect(redirect Redirect) {
 
 func (a *App) RemoveRedirect(redirectId int) {
 	a.database.RemoveRedirect(redirectId)
+}
+
+// Cancels
+func (a *App) GetCancels() ReturnValue {
+	return ReturnValue{
+		Cancels: a.database.GetCancels(),
+	}
+}
+
+func (a *App) SaveCancel(cancelId int, cancel Cancel) {
+	a.database.SaveCancel(cancelId, cancel)
+}
+
+func (a *App) AddCancel(cancel Cancel) {
+	a.database.AddCancel(cancel)
+}
+
+func (a *App) RemoveCancel(cancelId int) {
+	a.database.RemoveCancel(cancelId)
 }
