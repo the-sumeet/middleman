@@ -1,16 +1,17 @@
 <script>
     export let title;
+    export let rule;
     export let icon="text-xl font-bold text-white bi bi-shuffle";
-
-    import { currentCollection } from "../../stores";
+    
+    import { currentRule } from "../../stores";
   
-    function onSelect(collectionId) {
-        currentCollection.set({collectionId: collectionId})
+    function select() {
+        currentRule.set(rule);
     }
 </script>
 
 <button
-    
+    on:click={select}
     class="flex space-x-2 items-center w-full px-5 py-2 transition-colors duration-200 dark:hover:bg-gray-800 gap-x-2 hover:bg-gray-100 focus:outline-none"
 >
 
