@@ -2,19 +2,18 @@ package main
 
 import (
 	"net"
-	"net/http"
 	"strings"
 	"time"
 )
 
-func getRequestEntity(entityName string, r *http.Response) string {
+func getRequestEntity(entityName string, url, method, host string) string {
 	switch entityName {
 	case "url":
-		return r.Request.URL.Path
+		return url
 	case "method":
-		return r.Request.Method
+		return method
 	case "host":
-		return r.Request.Host
+		return host
 	default:
 		return ""
 	}
