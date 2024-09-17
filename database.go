@@ -16,10 +16,7 @@ type Request struct {
 }
 
 type Redirect struct {
-	Entity  string `json:"entity"`
-	Op      string `json:"op"`
-	Value   string `json:"value"`
-	ToType  string `json:"toType"`
+	Request
 	ToValue string `json:"toValue"`
 	Enabled bool   `json:"enabled"`
 }
@@ -41,15 +38,24 @@ func (r *Cancel) matches(req *http.Request) bool {
 type Database interface {
 	// InsertCollection(record Record) error
 	// GetCollection() (Collection, error)
+
+	// Redirects
 	GetRedirects() []Redirect
 	SaveRedirect(redirectId int, redirect Redirect) error
 	RemoveRedirect(redirectId int) error
 	AddRedirect(redirect Redirect) error
+
+	// Cancels
+	GetCancels() []Cancel
+	SaveCancel(cancelId int, cancel Cancel) error
+	RemoveCancel(cancelId int) error
+	AddCancel(cancel Cancel) error
 }
 
 type FileDatabase struct {
 	filePath  string
 	redirects []Redirect
+	cancels   []Cancel
 }
 
 func (f *FileDatabase) load() {
@@ -60,18 +66,21 @@ func (f *FileDatabase) load() {
 
 	var database struct {
 		Redirects []Redirect `json:"redirects"`
+		Cancels   []Cancel   `json:"cancels"`
 	}
 	err = json.Unmarshal(data, &database)
+
 	if err != nil {
 		log.Fatalf("Error unmarshalling JSON: %v", err)
 	}
 	f.redirects = database.Redirects
-
+	f.cancels = database.Cancels
 }
 
 func (f *FileDatabase) store() {
 	data, err := json.Marshal(map[string]any{
 		"redirects": f.redirects,
+		"cancels":   f.cancels,
 	})
 	if err != nil {
 		panic(err)
@@ -83,6 +92,7 @@ func (f *FileDatabase) store() {
 	}
 }
 
+// Redirects
 func (f *FileDatabase) GetRedirects() []Redirect {
 	return f.redirects
 }
@@ -112,6 +122,40 @@ func (f *FileDatabase) RemoveRedirect(redirectId int) error {
 
 func (f *FileDatabase) AddRedirect(redirect Redirect) error {
 	f.redirects = append(f.redirects, redirect)
+	f.store()
+	return nil
+}
+
+// Cancels
+func (f *FileDatabase) GetCancels() []Cancel {
+	return f.cancels
+}
+
+func (f *FileDatabase) SaveCancel(cancelId int, cancel Cancel) error {
+
+	if cancelId >= len(f.cancels) {
+		return fmt.Errorf("redirect with id %s not found", cancelId)
+	}
+
+	f.cancels[cancelId] = cancel
+	f.store()
+	return nil
+}
+
+func (f *FileDatabase) RemoveCancel(cancelId int) error {
+
+	if cancelId >= len(f.cancels) {
+		return fmt.Errorf("redirect with id %s not found", cancelId)
+	}
+
+	f.cancels = append(f.cancels[:cancelId], f.cancels[cancelId+1:]...)
+
+	f.store()
+	return nil
+}
+
+func (f *FileDatabase) AddCancel(cancel Cancel) error {
+	f.cancels = append(f.cancels, cancel)
 	f.store()
 	return nil
 }
