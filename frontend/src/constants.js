@@ -13,3 +13,4 @@ export const RULE_DELAY= "redirect";
 export const HOME = "home";
 export const REQUESTS = "requests";
 export const SERVER = "server";
+export const SETTINGS = "settings";

@@ -4,7 +4,7 @@
     import { onDestroy } from "svelte";
     import { StartProxy, StopProxy } from "../wailsjs/go/main/App";
     import { currentPage } from "./stores";
-    import { HOME, REQUESTS, SERVER } from "./constants";
+    import { HOME, REQUESTS, SERVER , SETTINGS} from "./constants";
 
     // let isServerRunning = false;
     let currPage;
@@ -75,5 +75,16 @@
             : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
     >
         <i class="text-2xl bi bi-arrow-down-up"></i>
+    </a>
+
+    <!-- Settings -->
+    <a
+        on:click={() => setPage(SETTINGS)}
+        href="#!"
+        class="{currPage == SETTINGS
+            ? activePageCss
+            : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
+    >
+        <i class="text-2xl bi bi-gear"></i>
     </a>
 </div>
