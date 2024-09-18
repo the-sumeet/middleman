@@ -10,8 +10,16 @@ export function AddRedirect(arg1) {
   return window['go']['main']['App']['AddRedirect'](arg1);
 }
 
+export function GenerateCert() {
+  return window['go']['main']['App']['GenerateCert']();
+}
+
 export function GetCancels() {
   return window['go']['main']['App']['GetCancels']();
+}
+
+export function GetConfig() {
+  return window['go']['main']['App']['GetConfig']();
 }
 
 export function GetRedirects() {

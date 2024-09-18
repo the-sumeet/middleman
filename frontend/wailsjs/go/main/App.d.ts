@@ -6,7 +6,11 @@ export function AddCancel(arg1:main.Cancel):Promise<void>;
 
 export function AddRedirect(arg1:main.Redirect):Promise<void>;
 
+export function GenerateCert():Promise<void>;
+
 export function GetCancels():Promise<main.ReturnValue>;
+
+export function GetConfig():Promise<main.Config>;
 
 export function GetRedirects():Promise<main.ReturnValue>;
 

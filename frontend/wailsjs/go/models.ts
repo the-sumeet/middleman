@@ -18,6 +18,22 @@ export namespace main {
 	        this.toType = source["toType"];
 	    }
 	}
+	export class Config {
+	    serverPort: string;
+	    certPath: string;
+	    keyPath: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Config(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.serverPort = source["serverPort"];
+	        this.certPath = source["certPath"];
+	        this.keyPath = source["keyPath"];
+	    }
+	}
 	export class Redirect {
 	    entity: string;
 	    op: string;

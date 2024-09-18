@@ -6,6 +6,7 @@
     import { SaveCancel } from "../../../wailsjs/go/main/App";
     import { RemoveCancel } from "../../../wailsjs/go/main/App";
     import { GetCancels } from "../../../wailsjs/go/main/App";
+    import { cancels } from "../../../src/stores";
 
     let changed = false;
     let entity = cancel.entity;
@@ -18,7 +19,6 @@
 
     // Go functions
     function save() {
-        console.log(value);
         const cancelRecord = new main.Cancel({
             entity: entity,
             op: op,
@@ -33,7 +33,7 @@
     function remove() {
         RemoveCancel(cancelId).then(() => {
             GetCancels().then((res) => {
-                cancel.set(res.cancels);
+                cancels.set(res.cancels);
             });
         });
     }
