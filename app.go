@@ -64,6 +64,51 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
+func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+
+		ctx.UserData = &State{}
+
+		// Check for cancels
+		cancels := a.database.GetCancels()
+		for _, cancel := range cancels {
+			if cancel.matches(r) {
+				ctx.UserData.(*State).IsCancelled = true
+				res := &http.Response{
+					Request:    r,
+					StatusCode: 418,
+					Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
+					Header:     make(http.Header),
+				}
+				return nil, res
+			}
+		}
+
+		requestCopy := *r
+		a.requests = append(a.requests, requestCopy)
+		r.Header.Set("X-GoProxy", "yxorPoG-X")
+		return r, nil
+	}
+}
+
+func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
+	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
+
+		if !ctx.UserData.(*State).IsCancelled {
+			redirects := a.database.GetRedirects()
+			for _, redirect := range redirects {
+				if redirect.matches(resp) {
+					ctx.UserData.(*State).IsRedirected = true
+					resp.Header.Set("Location", redirect.ToValue)
+					resp.StatusCode = 307
+				}
+			}
+		}
+
+		return resp
+	}
+}
+
 func (a *App) StartProxy(port int) ReturnValue {
 	certPath, certKey := getCertKeyPath()
 
@@ -135,49 +180,8 @@ func (a *App) StopProxy() {
 	a.proxyStartStoop <- true
 }
 
-func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-
-		ctx.UserData = &State{}
-
-		// Check for cancels
-		cancels := a.database.GetCancels()
-		for _, cancel := range cancels {
-			if cancel.matches(r) {
-				ctx.UserData.(*State).IsCancelled = true
-				res := &http.Response{
-					Request:    r,
-					StatusCode: 418,
-					Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
-					Header:     make(http.Header),
-				}
-				return nil, res
-			}
-		}
-
-		requestCopy := *r
-		a.requests = append(a.requests, requestCopy)
-		r.Header.Set("X-GoProxy", "yxorPoG-X")
-		return r, nil
-	}
-}
-
-func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
-	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
-
-		if !ctx.UserData.(*State).IsCancelled {
-			redirects := a.database.GetRedirects()
-			for _, redirect := range redirects {
-				if redirect.matches(resp) {
-					ctx.UserData.(*State).IsRedirected = true
-					resp.Header.Set("Location", redirect.ToValue)
-					resp.StatusCode = 307
-				}
-			}
-		}
-
-		return resp
-	}
+func (a *App) GetConfig() Config {
+	return a.config
 }
 
 // Redirects
@@ -198,6 +202,10 @@ func (a *App) AddRedirect(redirect Redirect) {
 
 func (a *App) RemoveRedirect(redirectId int) {
 	a.database.RemoveRedirect(redirectId)
+}
+
+func (a *App) GenerateCert() {
+	genCert()
 }
 
 // Cancels
