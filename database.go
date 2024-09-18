@@ -149,7 +149,6 @@ func (f *FileDatabase) RemoveCancel(cancelId int) error {
 	}
 
 	f.cancels = append(f.cancels[:cancelId], f.cancels[cancelId+1:]...)
-
 	f.store()
 	return nil
 }
