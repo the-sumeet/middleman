@@ -29,6 +29,7 @@ type App struct {
 	proxyStartStoop chan bool
 	database        Database
 	requests        []http.Request
+	config          Config
 }
 
 type ReturnValue struct {
@@ -47,11 +48,12 @@ func NewApp() *App {
 	genCert()
 
 	proxy := goproxy.NewProxyHttpServer()
-
+	config := getConfig()
 	app := &App{
 		proxy:           proxy,
 		database:        &database,
 		proxyStartStoop: make(chan bool),
+		config:          config,
 	}
 
 	return app

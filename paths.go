@@ -27,3 +27,10 @@ func getCertKeyPath() (string, string) {
 	os.MkdirAll(filepath.Dir(keyPath), os.ModePerm)
 	return certPath, keyPath
 }
+
+func getConfigPath() string {
+	appConfigDir := getAppConfigDir()
+	configPath := filepath.Join(appConfigDir, "config.json")
+	os.MkdirAll(filepath.Dir(configPath), os.ModePerm)
+	return configPath
+}
