@@ -11,13 +11,9 @@ const (
 )
 
 type Config struct {
-	// Database struct {
-	// 	Host     string `json:"host"`
-	// 	Password string `json:"password"`
-	// 	User     string `json:"user"`
-	// 	Port     int    `json:"port"`
-	// } `json:"database"`
 	ServerPort string `json:"serverPort"`
+	CertPath   string `json:"certPath"`
+	KeyPath    string `json:"keyPath"`
 }
 
 func getConfig() Config {
@@ -38,5 +34,9 @@ func getConfig() Config {
 		jsonParser := json.NewDecoder(configFile)
 		jsonParser.Decode(&config)
 	}
+
+	certPath, keyPath := getCertKeyPath()
+	config.CertPath = certPath
+	config.KeyPath = keyPath
 	return config
 }
