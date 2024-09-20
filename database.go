@@ -35,6 +35,11 @@ func (r *Cancel) matches(req *http.Request) bool {
 	return evalOp(r.Op, entityValue, r.Value)
 }
 
+type Delay struct {
+	Request
+	DelaySec int `json:"delaySec"`
+}
+
 type Database interface {
 	// InsertCollection(record Record) error
 	// GetCollection() (Collection, error)
@@ -56,6 +61,7 @@ type FileDatabase struct {
 	filePath  string
 	redirects []Redirect
 	cancels   []Cancel
+	delays    []Delay
 }
 
 func (f *FileDatabase) load() {
@@ -155,6 +161,39 @@ func (f *FileDatabase) RemoveCancel(cancelId int) error {
 
 func (f *FileDatabase) AddCancel(cancel Cancel) error {
 	f.cancels = append(f.cancels, cancel)
+	f.store()
+	return nil
+}
+
+// Delays
+func (f *FileDatabase) GetDelays() []Delay {
+	return f.delays
+}
+
+func (f *FileDatabase) SaveDelay(delayId int, delay Delay) error {
+
+	if delayId >= len(f.delays) {
+		return fmt.Errorf("delay with id %d not found", delayId)
+	}
+
+	f.delays[delayId] = delay
+	f.store()
+	return nil
+}
+
+func (f *FileDatabase) RemoveDelay(delayId int) error {
+
+	if delayId >= len(f.delays) {
+		return fmt.Errorf("delay with id %d not found", delayId)
+	}
+
+	f.delays = append(f.delays[:delayId], f.delays[delayId+1:]...)
+	f.store()
+	return nil
+}
+
+func (f *FileDatabase) AddDelay(delay Delay) error {
+	f.delays = append(f.delays, delay)
 	f.store()
 	return nil
 }
