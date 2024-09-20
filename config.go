@@ -40,3 +40,15 @@ func getConfig() Config {
 	config.KeyPath = keyPath
 	return config
 }
+
+func saveConfig(c Config) {
+	configPath := getConfigPath()
+	configFile, err := os.Create(configPath)
+	if err != nil {
+		panic(err)
+	}
+	defer configFile.Close()
+
+	jsonParser := json.NewEncoder(configFile)
+	jsonParser.Encode(c)
+}
