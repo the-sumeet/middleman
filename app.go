@@ -184,6 +184,13 @@ func (a *App) GetConfig() Config {
 	return a.config
 }
 
+// Config
+
+func (a *App) AddConfigPort(port string) {
+	a.config.ServerPort = port
+	saveConfig(a.config)
+}
+
 // Redirects
 
 func (a *App) GetRedirects() ReturnValue {
