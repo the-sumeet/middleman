@@ -35,6 +35,7 @@ type App struct {
 type ReturnValue struct {
 	Redirects []Redirect `json:"redirects"`
 	Cancels   []Cancel   `json:"cancels"`
+	Delays    []Delay    `json:"delays"`
 	// Requests  []http.Request `json:"requests"`
 	Error string `json:"error"`
 }
@@ -232,4 +233,20 @@ func (a *App) AddCancel(cancel Cancel) {
 
 func (a *App) RemoveCancel(cancelId int) {
 	a.database.RemoveCancel(cancelId)
+}
+
+// Delays
+func (a *App) GetDelays() ReturnValue {
+	return ReturnValue{
+		Delays: a.database.GetDelays(),
+	}
+}
+func (a *App) SaveDelay(delayId int, delay Delay) {
+	a.database.SaveDelay(delayId, delay)
+}
+func (a *App) AddDelay(delay Delay) {
+	a.database.AddDelay(delay)
+}
+func (a *App) RemoveDelay(delayId int) {
+	a.database.RemoveDelay(delayId)
 }
