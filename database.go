@@ -55,6 +55,12 @@ type Database interface {
 	SaveCancel(cancelId int, cancel Cancel) error
 	RemoveCancel(cancelId int) error
 	AddCancel(cancel Cancel) error
+
+	// Delays
+	GetDelays() []Delay
+	SaveDelay(delayId int, delay Delay) error
+	RemoveDelay(delayId int) error
+	AddDelay(delay Delay) error
 }
 
 type FileDatabase struct {
