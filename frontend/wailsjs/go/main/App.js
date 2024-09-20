@@ -6,6 +6,14 @@ export function AddCancel(arg1) {
   return window['go']['main']['App']['AddCancel'](arg1);
 }
 
+export function AddConfigPort(arg1) {
+  return window['go']['main']['App']['AddConfigPort'](arg1);
+}
+
+export function AddDelay(arg1) {
+  return window['go']['main']['App']['AddDelay'](arg1);
+}
+
 export function AddRedirect(arg1) {
   return window['go']['main']['App']['AddRedirect'](arg1);
 }
@@ -22,6 +30,10 @@ export function GetConfig() {
   return window['go']['main']['App']['GetConfig']();
 }
 
+export function GetDelays() {
+  return window['go']['main']['App']['GetDelays']();
+}
+
 export function GetRedirects() {
   return window['go']['main']['App']['GetRedirects']();
 }
@@ -30,12 +42,20 @@ export function RemoveCancel(arg1) {
   return window['go']['main']['App']['RemoveCancel'](arg1);
 }
 
+export function RemoveDelay(arg1) {
+  return window['go']['main']['App']['RemoveDelay'](arg1);
+}
+
 export function RemoveRedirect(arg1) {
   return window['go']['main']['App']['RemoveRedirect'](arg1);
 }
 
 export function SaveCancel(arg1, arg2) {
   return window['go']['main']['App']['SaveCancel'](arg1, arg2);
+}
+
+export function SaveDelay(arg1, arg2) {
+  return window['go']['main']['App']['SaveDelay'](arg1, arg2);
 }
 
 export function SaveRedirect(arg1, arg2) {

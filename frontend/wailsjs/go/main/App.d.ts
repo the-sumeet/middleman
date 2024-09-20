@@ -4,6 +4,10 @@ import {main} from '../models';
 
 export function AddCancel(arg1:main.Cancel):Promise<void>;
 
+export function AddConfigPort(arg1:string):Promise<void>;
+
+export function AddDelay(arg1:main.Delay):Promise<void>;
+
 export function AddRedirect(arg1:main.Redirect):Promise<void>;
 
 export function GenerateCert():Promise<void>;
@@ -12,13 +16,19 @@ export function GetCancels():Promise<main.ReturnValue>;
 
 export function GetConfig():Promise<main.Config>;
 
+export function GetDelays():Promise<main.ReturnValue>;
+
 export function GetRedirects():Promise<main.ReturnValue>;
 
 export function RemoveCancel(arg1:number):Promise<void>;
 
+export function RemoveDelay(arg1:number):Promise<void>;
+
 export function RemoveRedirect(arg1:number):Promise<void>;
 
 export function SaveCancel(arg1:number,arg2:main.Cancel):Promise<void>;
+
+export function SaveDelay(arg1:number,arg2:main.Delay):Promise<void>;
 
 export function SaveRedirect(arg1:number,arg2:main.Redirect):Promise<void>;
 

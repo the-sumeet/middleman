@@ -34,6 +34,26 @@ export namespace main {
 	        this.keyPath = source["keyPath"];
 	    }
 	}
+	export class Delay {
+	    entity: string;
+	    op: string;
+	    value: string;
+	    toType: string;
+	    delaySec: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Delay(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.entity = source["entity"];
+	        this.op = source["op"];
+	        this.value = source["value"];
+	        this.toType = source["toType"];
+	        this.delaySec = source["delaySec"];
+	    }
+	}
 	export class Redirect {
 	    entity: string;
 	    op: string;
@@ -59,6 +79,7 @@ export namespace main {
 	export class ReturnValue {
 	    redirects: Redirect[];
 	    cancels: Cancel[];
+	    delays: Delay[];
 	    error: string;
 	
 	    static createFrom(source: any = {}) {
@@ -69,6 +90,7 @@ export namespace main {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.redirects = this.convertValues(source["redirects"], Redirect);
 	        this.cancels = this.convertValues(source["cancels"], Cancel);
+	        this.delays = this.convertValues(source["delays"], Delay);
 	        this.error = source["error"];
 	    }
 	
