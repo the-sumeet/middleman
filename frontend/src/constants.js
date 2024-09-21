@@ -7,7 +7,7 @@ export const RULE_REDIRECT = "redirect";
 export const RULE_MOD_BODY = "redirect";
 export const RULE_MOD_HEADER = "redirect";
 export const RULE_CANCEL = "cancel";
-export const RULE_DELAY= "redirect";
+export const RULE_DELAY= "delay";
 
 // Tabs
 export const HOME = "home";
