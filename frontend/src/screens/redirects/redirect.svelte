@@ -3,8 +3,8 @@
     export let redirectId;
 
     import { main } from "../../../wailsjs/go/models";
-    import { SaveRedirect } from "../../../wailsjs/go/main/App";
-    import { RemoveRedirect } from "../../../wailsjs/go/main/App";
+    import { Save } from "../../../wailsjs/go/main/App";
+    import { Remove } from "../../../wailsjs/go/main/App";
     import { redirects } from "../../../src/stores";
     import { GetMany } from "../../../wailsjs/go/main/App";
 
@@ -29,13 +29,13 @@
             toValue: toValue,
         });
 
-        SaveRedirect(redirectId, redictRecord).then(() => {
+        Save('redirect', redirectId, redictRecord).then(() => {
             changed = false;
         });
     }
 
     function remove() {
-        RemoveRedirect(redirectId).then(() => {
+        Remove('redirect', redirectId).then(() => {
             GetMany('redirect').then((res) => {
                 console.log(res.redirects);
                 redirects.set(res.redirects);

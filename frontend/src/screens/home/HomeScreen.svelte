@@ -5,7 +5,7 @@
     import { onDestroy } from "svelte";
     import RedirectList from "../../screens/redirects/redirect_list.svelte";
     import { RULE_CANCEL, RULE_REDIRECT, RULE_DELAY } from "../../constants";
-    import { AddCancel, AddRedirect, AddDelay, GetMany } from "../../../wailsjs/go/main/App";
+    import { Add, GetMany } from "../../../wailsjs/go/main/App";
     import { main } from "../../../wailsjs/go/models";
     import { currentPage } from "../../stores";
     import CancelScreen from "../cancels/CancelScreen.svelte";
@@ -23,19 +23,19 @@
 
     function add() {
         if (selectedRule == RULE_REDIRECT) {
-            AddRedirect(new main.Redirect()).then(() => {
+            Add('redirect', new main.Redirect()).then(() => {
                 GetMany('redirect').then((res) => {
                     redirects.set(res.redirects);
                 });
             });
         } else if (selectedRule == RULE_CANCEL) {
-            AddCancel(new main.Cancel()).then(() => {
+            Add('cancel', new main.Cancel()).then(() => {
                 GetMany('cancel').then((res) => {
                     cancels.set(res.cancels);
                 });
             });
         } else if (selectedRule == RULE_DELAY) {
-            AddDelay(new main.Delay()).then(() => {
+            Add('delay', new main.Delay()).then(() => {
                 GetMany('delay').then((res) => {
                     delays.set(res.delays);
                 });

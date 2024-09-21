@@ -3,8 +3,9 @@
     export let delayId;
 
     import { main } from "../../../wailsjs/go/models";
-    import { SaveDelay, RemoveDelay, GetMany } from "../../../wailsjs/go/main/App";
+    import { Save, Remove, GetMany } from "../../../wailsjs/go/main/App";
     import { delays } from "../../stores";
+    import Redirect from "../redirects/redirect.svelte";
 
     let changed = false;
     let entity = delay.entity;
@@ -25,13 +26,13 @@
             delaySec: delaySec,
         });
 
-        SaveDelay(delayId, delayRecord).then(() => {
+        Save('delay', delayId, delayRecord).then(() => {
             changed = false;
         });
     }
 
     function remove() {
-        RemoveDelay(delayId).then(() => {
+        Remove('delay', delayId).then(() => {
             GetMany('delay').then((res) => {
                 delays.set(res.delays);
             });

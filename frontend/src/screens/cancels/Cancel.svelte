@@ -3,8 +3,8 @@
     export let cancelId;
 
     import { main } from "../../../wailsjs/go/models";
-    import { SaveCancel } from "../../../wailsjs/go/main/App";
-    import { RemoveCancel } from "../../../wailsjs/go/main/App";
+    import { Save } from "../../../wailsjs/go/main/App";
+    import { Remove } from "../../../wailsjs/go/main/App";
     import { GetMany } from "../../../wailsjs/go/main/App";
     import { cancels } from "../../../src/stores";
 
@@ -25,13 +25,13 @@
             value: value,
         });
 
-        SaveCancel(cancelId, cancelRecord).then(() => {
+        Save('cancel', cancelId, cancelRecord).then(() => {
             changed = false;
         });
     }
 
     function remove() {
-        RemoveCancel(cancelId).then(() => {
+        Remove('cancel', cancelId).then(() => {
             GetMany('cancel').then((res) => {
                 cancels.set(res.cancels);
             });
