@@ -1,13 +1,12 @@
 <script>
     import "bootstrap-icons/font/bootstrap-icons.css";
     import Rules from "../../screens/rules/Rules.svelte";
-    import { cancels, currentRule } from "../../stores";
+    import {cancels, redirects, currentRule, delays } from "../../stores";
     import { onDestroy } from "svelte";
     import RedirectList from "../../screens/redirects/redirect_list.svelte";
-    import { RULE_CANCEL, RULE_REDIRECT } from "../../constants";
-    import { AddCancel, AddRedirect, GetCancels, GetRedirects } from "../../../wailsjs/go/main/App";
+    import { RULE_CANCEL, RULE_REDIRECT, RULE_DELAY } from "../../constants";
+    import { AddCancel, AddRedirect, AddDelay, GetMany } from "../../../wailsjs/go/main/App";
     import { main } from "../../../wailsjs/go/models";
-    import { redirects } from "../../stores";
     import { currentPage } from "../../stores";
     import CancelScreen from "../cancels/CancelScreen.svelte";
 
@@ -25,14 +24,20 @@
     function add() {
         if (selectedRule == RULE_REDIRECT) {
             AddRedirect(new main.Redirect()).then(() => {
-                GetRedirects().then((res) => {
+                GetMany('redirect').then((res) => {
                     redirects.set(res.redirects);
                 });
             });
         } else if (selectedRule == RULE_CANCEL) {
             AddCancel(new main.Cancel()).then(() => {
-                GetCancels().then((res) => {
+                GetMany('cancel').then((res) => {
                     cancels.set(res.cancels);
+                });
+            });
+        } else if (selectedRule == RULE_DELAY) {
+            AddDelay(new main.Delay()).then(() => {
+                GetMany('delay').then((res) => {
+                    delays.set(res.delays);
                 });
             });
         }

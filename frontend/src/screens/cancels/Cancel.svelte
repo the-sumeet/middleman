@@ -5,7 +5,7 @@
     import { main } from "../../../wailsjs/go/models";
     import { SaveCancel } from "../../../wailsjs/go/main/App";
     import { RemoveCancel } from "../../../wailsjs/go/main/App";
-    import { GetCancels } from "../../../wailsjs/go/main/App";
+    import { GetMany } from "../../../wailsjs/go/main/App";
     import { cancels } from "../../../src/stores";
 
     let changed = false;
@@ -32,7 +32,7 @@
 
     function remove() {
         RemoveCancel(cancelId).then(() => {
-            GetCancels().then((res) => {
+            GetMany('cancel').then((res) => {
                 cancels.set(res.cancels);
             });
         });

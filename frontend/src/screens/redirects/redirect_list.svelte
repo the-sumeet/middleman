@@ -1,5 +1,4 @@
 <script>
-    import { GetRedirects } from "../../../wailsjs/go/main/App";
     import { onDestroy } from "svelte";
     import Redirect from "./redirect.svelte";
     import { redirects } from "../../../src/stores";

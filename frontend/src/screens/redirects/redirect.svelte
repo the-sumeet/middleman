@@ -6,7 +6,7 @@
     import { SaveRedirect } from "../../../wailsjs/go/main/App";
     import { RemoveRedirect } from "../../../wailsjs/go/main/App";
     import { redirects } from "../../../src/stores";
-    import { GetRedirects } from "../../../wailsjs/go/main/App";
+    import { GetMany } from "../../../wailsjs/go/main/App";
 
     let changed = false;
     let entity = redirect.entity;
@@ -36,7 +36,7 @@
 
     function remove() {
         RemoveRedirect(redirectId).then(() => {
-            GetRedirects().then((res) => {
+            GetMany('redirect').then((res) => {
                 console.log(res.redirects);
                 redirects.set(res.redirects);
             });
