@@ -1,17 +1,16 @@
 <script>
-    export let cancel;
-    export let cancelId;
+    export let delay;
+    export let delayId;
 
     import { main } from "../../../wailsjs/go/models";
-    import { SaveCancel } from "../../../wailsjs/go/main/App";
-    import { RemoveCancel } from "../../../wailsjs/go/main/App";
-    import { GetCancels } from "../../../wailsjs/go/main/App";
-    import { cancels } from "../../stores";
+    import { SaveDelay, RemoveDelay, GetMany } from "../../../wailsjs/go/main/App";
+    import { delays } from "../../stores";
 
     let changed = false;
-    let entity = cancel.entity;
-    let op = cancel.op;
-    let value = cancel.value;
+    let entity = delay.entity;
+    let op = delay.op;
+    let value = delay.value;
+    let delaySec = delay.delaySec;
 
     function setChanged() {
         changed = true;
@@ -19,21 +18,22 @@
 
     // Go functions
     function save() {
-        const cancelRecord = new main.Cancel({
+        const delayRecord = new main.Delay({
             entity: entity,
             op: op,
             value: value,
+            delaySec: delaySec,
         });
 
-        SaveCancel(cancelId, cancelRecord).then(() => {
+        SaveDelay(delayId, delayRecord).then(() => {
             changed = false;
         });
     }
 
     function remove() {
-        RemoveCancel(cancelId).then(() => {
-            GetCancels().then((res) => {
-                cancels.set(res.cancels);
+        RemoveDelay(delayId).then(() => {
+            GetMany('delay').then((res) => {
+                delays.set(res.delays);
             });
         });
     }
@@ -81,7 +81,7 @@
         />
     </div>
 
-    <h1 class="mt-2 text-md text-white">Then Cancel the Request</h1>
+    <h1 class="mt-2 text-md text-white">Then Delay the Request by Seconds:</h1>
 
 
     <!-- Bottom buttons -->

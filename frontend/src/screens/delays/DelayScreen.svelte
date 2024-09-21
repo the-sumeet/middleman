@@ -1,25 +1,25 @@
 <script>
     import { onDestroy } from "svelte";
-    import { cancels } from "../../stores";
-    import Cancel from "./Delay.svelte";
+    import { delays } from "../../stores";
+    import Delay from "./Delay.svelte";
 
-    let cancelList = [];
+    let delayList = [];
 
     // Subs
-    const unSubRedirects = cancels.subscribe((value) => {
+    const unSubDelays = delays.subscribe((value) => {
         console.log(value);
-        cancelList = value;
+        delayList = value;
     });
 
     onDestroy(() => {
-        unSubRedirects();
+        unSubDelays();
     });
 </script>
 
-{#if cancelList.length > 0}
-    {#each cancelList as cancel, i (crypto.randomUUID())}
+{#if delayList.length > 0}
+    {#each delayList as delay, i (crypto.randomUUID())}
     <div class="mb-4">
-        <Cancel cancelId={i} cancel={cancel} />
+        <Delay delayId={i} delay={delay} />
     </div>
     {/each}
 {/if}
