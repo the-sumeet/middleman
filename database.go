@@ -53,24 +53,9 @@ type Database interface {
 
 	// Generic methods
 	GetMany(recordType string) ([]any, error)
-
-	// Redirects
-	GetRedirects() []Redirect
-	SaveRedirect(redirectId int, redirect Redirect) error
-	RemoveRedirect(redirectId int) error
-	AddRedirect(redirect Redirect) error
-
-	// Cancels
-	GetCancels() []Cancel
-	SaveCancel(cancelId int, cancel Cancel) error
-	RemoveCancel(cancelId int) error
-	AddCancel(cancel Cancel) error
-
-	// Delays
-	GetDelays() []Delay
-	SaveDelay(delayId int, delay Delay) error
-	RemoveDelay(delayId int) error
-	AddDelay(delay Delay) error
+	Save(recordType string, id int, value any) error
+	Remove(recordType string, id int) error
+	Add(recordType string, value any) error
 }
 
 type FileDatabase struct {
@@ -141,102 +126,79 @@ func (f *FileDatabase) GetMany(recordType string) ([]any, error) {
 
 }
 
-// Redirects
-func (f *FileDatabase) GetRedirects() []Redirect {
-	return f.redirects
-}
+func (f *FileDatabase) Save(recordType string, id int, value any) error {
+	if recordType == REDIRECT {
+		if id >= len(f.redirects) {
+			return fmt.Errorf("redirect with id %d not found", id)
+		}
 
-func (f *FileDatabase) SaveRedirect(redirectId int, redirect Redirect) error {
-
-	if redirectId >= len(f.redirects) {
-		return fmt.Errorf("redirect with id %s not found", redirectId)
+		f.redirects[id] = value.(Redirect)
+		f.store()
 	}
 
-	f.redirects[redirectId] = redirect
-	f.store()
-	return nil
-}
-
-func (f *FileDatabase) RemoveRedirect(redirectId int) error {
-
-	if redirectId >= len(f.redirects) {
-		return fmt.Errorf("redirect with id %s not found", redirectId)
+	if recordType == CANCEL {
+		if id >= len(f.cancels) {
+			return fmt.Errorf("cancel with id %d not found", id)
+		}
+		f.cancels[id] = value.(Cancel)
+		f.store()
 	}
 
-	f.redirects = append(f.redirects[:redirectId], f.redirects[redirectId+1:]...)
-
-	f.store()
-	return nil
-}
-
-func (f *FileDatabase) AddRedirect(redirect Redirect) error {
-	f.redirects = append(f.redirects, redirect)
-	f.store()
-	return nil
-}
-
-// Cancels
-func (f *FileDatabase) GetCancels() []Cancel {
-	return f.cancels
-}
-
-func (f *FileDatabase) SaveCancel(cancelId int, cancel Cancel) error {
-
-	if cancelId >= len(f.cancels) {
-		return fmt.Errorf("redirect with id %s not found", cancelId)
+	if recordType == DELAY {
+		if id >= len(f.delays) {
+			return fmt.Errorf("delay with id %d not found", id)
+		}
+		f.delays[id] = value.(Delay)
+		f.store()
 	}
 
-	f.cancels[cancelId] = cancel
-	f.store()
 	return nil
 }
 
-func (f *FileDatabase) RemoveCancel(cancelId int) error {
+func (f *FileDatabase) Remove(recordType string, id int) error {
+	if recordType == REDIRECT {
+		if id >= len(f.redirects) {
+			return fmt.Errorf("redirect with id %d not found", id)
+		}
 
-	if cancelId >= len(f.cancels) {
-		return fmt.Errorf("redirect with id %s not found", cancelId)
+		f.redirects = append(f.redirects[:id], f.redirects[id+1:]...)
+		f.store()
 	}
 
-	f.cancels = append(f.cancels[:cancelId], f.cancels[cancelId+1:]...)
-	f.store()
-	return nil
-}
-
-func (f *FileDatabase) AddCancel(cancel Cancel) error {
-	f.cancels = append(f.cancels, cancel)
-	f.store()
-	return nil
-}
-
-// Delays
-func (f *FileDatabase) GetDelays() []Delay {
-	return f.delays
-}
-
-func (f *FileDatabase) SaveDelay(delayId int, delay Delay) error {
-
-	if delayId >= len(f.delays) {
-		return fmt.Errorf("delay with id %d not found", delayId)
+	if recordType == CANCEL {
+		if id >= len(f.cancels) {
+			return fmt.Errorf("cancel with id %d not found", id)
+		}
+		f.cancels = append(f.cancels[:id], f.cancels[id+1:]...)
+		f.store()
 	}
 
-	f.delays[delayId] = delay
-	f.store()
-	return nil
-}
-
-func (f *FileDatabase) RemoveDelay(delayId int) error {
-
-	if delayId >= len(f.delays) {
-		return fmt.Errorf("delay with id %d not found", delayId)
+	if recordType == DELAY {
+		if id >= len(f.delays) {
+			return fmt.Errorf("delay with id %d not found", id)
+		}
+		f.delays = append(f.delays[:id], f.delays[id+1:]...)
+		f.store()
 	}
 
-	f.delays = append(f.delays[:delayId], f.delays[delayId+1:]...)
-	f.store()
 	return nil
 }
 
-func (f *FileDatabase) AddDelay(delay Delay) error {
-	f.delays = append(f.delays, delay)
-	f.store()
+func (f *FileDatabase) Add(recordType string, value any) error {
+	if recordType == REDIRECT {
+		f.redirects = append(f.redirects, value.(Redirect))
+		f.store()
+	}
+
+	if recordType == CANCEL {
+		f.cancels = append(f.cancels, value.(Cancel))
+		f.store()
+	}
+
+	if recordType == DELAY {
+		f.delays = append(f.delays, value.(Delay))
+		f.store()
+	}
+
 	return nil
 }
