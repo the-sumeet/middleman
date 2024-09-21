@@ -71,17 +71,22 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		ctx.UserData = &State{}
 
 		// Check for cancels
-		cancels := a.database.GetCancels()
-		for _, cancel := range cancels {
-			if cancel.matches(r) {
-				ctx.UserData.(*State).IsCancelled = true
-				res := &http.Response{
-					Request:    r,
-					StatusCode: 418,
-					Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
-					Header:     make(http.Header),
+		cancels, err := a.database.GetMany("cancel")
+		if err != nil {
+			fmt.Println("Error getting cancels: ", err)
+		} else {
+			for _, v := range cancels {
+				cancel := v.(Cancel)
+				if cancel.matches(r) {
+					ctx.UserData.(*State).IsCancelled = true
+					res := &http.Response{
+						Request:    r,
+						StatusCode: 418,
+						Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
+						Header:     make(http.Header),
+					}
+					return nil, res
 				}
-				return nil, res
 			}
 		}
 
@@ -96,14 +101,20 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 
 		if !ctx.UserData.(*State).IsCancelled {
-			redirects := a.database.GetRedirects()
-			for _, redirect := range redirects {
-				if redirect.matches(resp) {
-					ctx.UserData.(*State).IsRedirected = true
-					resp.Header.Set("Location", redirect.ToValue)
-					resp.StatusCode = 307
+			redirects, err := a.database.GetMany("redirect")
+			if err != nil {
+				fmt.Println("Error getting redirects: ", err)
+			} else {
+				for _, v := range redirects {
+					redirect := v.(Redirect)
+					if redirect.matches(resp) {
+						ctx.UserData.(*State).IsRedirected = true
+						resp.Header.Set("Location", redirect.ToValue)
+						resp.StatusCode = 307
+					}
 				}
 			}
+
 		}
 
 		return resp
@@ -185,14 +196,11 @@ func (a *App) GetConfig() Config {
 	return a.config
 }
 
-// Config
-
 func (a *App) AddConfigPort(port string) {
 	a.config.ServerPort = port
 	saveConfig(a.config)
 }
 
-// Generic crud methods
 func (a *App) GetMany(recordType string) ReturnValue {
 
 	res, err := a.database.GetMany(recordType)
@@ -230,45 +238,30 @@ func (a *App) GetMany(recordType string) ReturnValue {
 	return ReturnValue{}
 }
 
-// Redirects
-
-func (a *App) SaveRedirect(redirectId int, redirect Redirect) {
-	a.database.SaveRedirect(redirectId, redirect)
+func (a *App) Save(recordType string, recordId int, record interface{}) ReturnValue {
+	err := a.database.Save(recordType, recordId, record)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{}
 }
 
-func (a *App) AddRedirect(redirect Redirect) {
-	a.database.AddRedirect(redirect)
+func (a *App) Remove(recordType string, recordId int) ReturnValue {
+	err := a.database.Remove(recordType, recordId)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{}
 }
 
-func (a *App) RemoveRedirect(redirectId int) {
-	a.database.RemoveRedirect(redirectId)
+func (a *App) Add(recordType string, record interface{}) ReturnValue {
+	err := a.database.Add(recordType, record)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{}
 }
 
 func (a *App) GenerateCert() {
 	genCert()
-}
-
-// Cancels
-
-func (a *App) SaveCancel(cancelId int, cancel Cancel) {
-	a.database.SaveCancel(cancelId, cancel)
-}
-
-func (a *App) AddCancel(cancel Cancel) {
-	a.database.AddCancel(cancel)
-}
-
-func (a *App) RemoveCancel(cancelId int) {
-	a.database.RemoveCancel(cancelId)
-}
-
-// Delays
-func (a *App) SaveDelay(delayId int, delay Delay) {
-	a.database.SaveDelay(delayId, delay)
-}
-func (a *App) AddDelay(delay Delay) {
-	a.database.AddDelay(delay)
-}
-func (a *App) RemoveDelay(delayId int) {
-	a.database.RemoveDelay(delayId)
 }
