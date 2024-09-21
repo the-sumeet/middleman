@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import { RULE_REDIRECT } from "./constants";
-import { GetMany, GetCancels, GetDelays, GetRedirects } from "../wailsjs/go/main/App";
+import { GetMany } from "../wailsjs/go/main/App";
 import { HOME } from "./constants";
 
 
