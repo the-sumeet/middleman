@@ -192,13 +192,45 @@ func (a *App) AddConfigPort(port string) {
 	saveConfig(a.config)
 }
 
-// Redirects
+// Generic crud methods
+func (a *App) GetMany(recordType string) ReturnValue {
 
-func (a *App) GetRedirects() ReturnValue {
-	return ReturnValue{
-		Redirects: a.database.GetRedirects(),
+	res, err := a.database.GetMany(recordType)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
 	}
+
+	if recordType == REDIRECT {
+		redirects := make([]Redirect, len(res))
+		for i, v := range res {
+			redirects[i] = v.(Redirect)
+		}
+		return ReturnValue{
+			Redirects: redirects,
+		}
+	}
+	if recordType == CANCEL {
+		cancels := make([]Cancel, len(res))
+		for i, v := range res {
+			cancels[i] = v.(Cancel)
+		}
+		return ReturnValue{
+			Cancels: cancels,
+		}
+	}
+	if recordType == DELAY {
+		delays := make([]Delay, len(res))
+		for i, v := range res {
+			delays[i] = v.(Delay)
+		}
+		return ReturnValue{
+			Delays: delays,
+		}
+	}
+	return ReturnValue{}
 }
+
+// Redirects
 
 func (a *App) SaveRedirect(redirectId int, redirect Redirect) {
 	a.database.SaveRedirect(redirectId, redirect)
@@ -217,11 +249,6 @@ func (a *App) GenerateCert() {
 }
 
 // Cancels
-func (a *App) GetCancels() ReturnValue {
-	return ReturnValue{
-		Cancels: a.database.GetCancels(),
-	}
-}
 
 func (a *App) SaveCancel(cancelId int, cancel Cancel) {
 	a.database.SaveCancel(cancelId, cancel)
@@ -236,11 +263,6 @@ func (a *App) RemoveCancel(cancelId int) {
 }
 
 // Delays
-func (a *App) GetDelays() ReturnValue {
-	return ReturnValue{
-		Delays: a.database.GetDelays(),
-	}
-}
 func (a *App) SaveDelay(delayId int, delay Delay) {
 	a.database.SaveDelay(delayId, delay)
 }
