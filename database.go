@@ -2,10 +2,17 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+)
+
+const (
+	REDIRECT = "redirect"
+	CANCEL   = "cancel"
+	DELAY    = "delay"
 )
 
 type Request struct {
@@ -43,6 +50,9 @@ type Delay struct {
 type Database interface {
 	// InsertCollection(record Record) error
 	// GetCollection() (Collection, error)
+
+	// Generic methods
+	GetMany(recordType string) ([]any, error)
 
 	// Redirects
 	GetRedirects() []Redirect
@@ -102,6 +112,33 @@ func (f *FileDatabase) store() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// Generic methods
+func (f *FileDatabase) GetMany(recordType string) ([]any, error) {
+	if recordType == REDIRECT {
+		interfaceSlice := make([]interface{}, len(f.redirects))
+		for i, v := range f.redirects {
+			interfaceSlice[i] = v
+		}
+		return interfaceSlice, nil
+	}
+	if recordType == CANCEL {
+		interfaceSlice := make([]interface{}, len(f.cancels))
+		for i, v := range f.cancels {
+			interfaceSlice[i] = v
+		}
+		return interfaceSlice, nil
+	}
+	if recordType == DELAY {
+		interfaceSlice := make([]interface{}, len(f.delays))
+		for i, v := range f.delays {
+			interfaceSlice[i] = v
+		}
+		return interfaceSlice, nil
+	}
+	return []any{}, errors.New("invalid record type")
+
 }
 
 // Redirects
