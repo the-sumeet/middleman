@@ -47,6 +47,11 @@ type Delay struct {
 	DelaySec int `json:"delaySec"`
 }
 
+func (r *Delay) matches(req *http.Request) bool {
+	entityValue := getRequestEntity(r.Entity, req.URL.Path, req.Method, req.URL.Host)
+	return evalOp(r.Op, entityValue, r.Value)
+}
+
 type Database interface {
 	// InsertCollection(record Record) error
 	// GetCollection() (Collection, error)
@@ -123,7 +128,6 @@ func (f *FileDatabase) GetMany(recordType string) ([]any, error) {
 		return interfaceSlice, nil
 	}
 	return []any{}, errors.New("invalid record type")
-
 }
 
 func (f *FileDatabase) Save(recordType string, id int, value any) error {
@@ -186,7 +190,7 @@ func (f *FileDatabase) Remove(recordType string, id int) error {
 
 func (f *FileDatabase) Add(recordType string, value any) error {
 	if recordType == REDIRECT {
-		f.redirects = append(f.redirects, value.(Redirect))
+		f.redirects = append(f.redirects, Redirect{})
 		f.store()
 	}
 
