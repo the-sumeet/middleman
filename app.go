@@ -40,6 +40,12 @@ type ReturnValue struct {
 	Error string `json:"error"`
 }
 
+type InValue struct {
+	Redirect Redirect `json:"redirect"`
+	Cancel   Cancel   `json:"cancel"`
+	Delay    Delay    `json:"delay"`
+}
+
 func NewApp() *App {
 
 	database := FileDatabase{
