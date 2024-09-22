@@ -260,10 +260,26 @@ func (a *App) Remove(recordType string, recordId int) ReturnValue {
 	return ReturnValue{}
 }
 
-func (a *App) Add(recordType string, record interface{}) ReturnValue {
-	err := a.database.Add(recordType, record)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
+func (a *App) Add(recordType string, records InValue) ReturnValue {
+
+	if recordType == REDIRECT {
+		err := a.database.Add(recordType, records.Redirect)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+	if recordType == CANCEL {
+		err := a.database.Add(recordType, records.Cancel)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+
+	}
+	if recordType == DELAY {
+		err := a.database.Add(recordType, records.Delay)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
 	}
 	return ReturnValue{}
 }
