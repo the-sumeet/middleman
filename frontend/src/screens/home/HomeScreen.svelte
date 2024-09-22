@@ -9,7 +9,8 @@
     import { main } from "../../../wailsjs/go/models";
     import { currentPage } from "../../stores";
     import CancelScreen from "../cancels/CancelScreen.svelte";
-
+    import DelayScreen from "../delays/DelayScreen.svelte";
+    
     let selectedRule;
     let currPage;
 
@@ -68,6 +69,8 @@
             <RedirectList />
         {:else if selectedRule == RULE_CANCEL}
             <CancelScreen />
+        {:else if selectedRule == RULE_DELAY}
+            <DelayScreen />
         {/if}
     </div>
 
