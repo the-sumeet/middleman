@@ -244,11 +244,28 @@ func (a *App) GetMany(recordType string) ReturnValue {
 	return ReturnValue{}
 }
 
-func (a *App) Save(recordType string, recordId int, record interface{}) ReturnValue {
-	err := a.database.Save(recordType, recordId, record)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
+func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
+	if recordType == REDIRECT {
+		err := a.database.Save(recordType, recordId, input.Redirect)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
 	}
+
+	if recordType == CANCEL {
+		err := a.database.Save(recordType, recordId, input.Cancel)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+
+	if recordType == DELAY {
+		err := a.database.Save(recordType, recordId, input.Delay)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+
 	return ReturnValue{}
 }
 
@@ -273,7 +290,6 @@ func (a *App) Add(recordType string, records InValue) ReturnValue {
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
 		}
-
 	}
 	if recordType == DELAY {
 		err := a.database.Add(recordType, records.Delay)
