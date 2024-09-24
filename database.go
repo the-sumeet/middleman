@@ -75,6 +75,7 @@ func (f *FileDatabase) load() {
 	var database struct {
 		Redirects []Redirect `json:"redirects"`
 		Cancels   []Cancel   `json:"cancels"`
+		Delays    []Delay    `json:"delays"`
 	}
 	err = json.Unmarshal(data, &database)
 
@@ -89,6 +90,7 @@ func (f *FileDatabase) store() {
 	data, err := json.Marshal(map[string]any{
 		"redirects": f.redirects,
 		"cancels":   f.cancels,
+		"delays":    f.delays,
 	})
 	if err != nil {
 		panic(err)
@@ -186,7 +188,7 @@ func (f *FileDatabase) Remove(recordType string, id int) error {
 
 func (f *FileDatabase) Add(recordType string, value any) error {
 	if recordType == REDIRECT {
-		f.redirects = append(f.redirects, Redirect{})
+		f.redirects = append(f.redirects, value.(Redirect))
 		f.store()
 	}
 
