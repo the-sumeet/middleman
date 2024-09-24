@@ -53,10 +53,6 @@ func (r *Delay) matches(req *http.Request) bool {
 }
 
 type Database interface {
-	// InsertCollection(record Record) error
-	// GetCollection() (Collection, error)
-
-	// Generic methods
 	GetMany(recordType string) ([]any, error)
 	Save(recordType string, id int, value any) error
 	Remove(recordType string, id int) error
