@@ -14,7 +14,7 @@ export function GetMany(arg1:string):Promise<main.ReturnValue>;
 
 export function Remove(arg1:string,arg2:number):Promise<main.ReturnValue>;
 
-export function Save(arg1:string,arg2:number,arg3:any):Promise<main.ReturnValue>;
+export function Save(arg1:string,arg2:number,arg3:main.InValue):Promise<main.ReturnValue>;
 
 export function StartProxy(arg1:number):Promise<main.ReturnValue>;
 
