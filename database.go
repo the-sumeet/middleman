@@ -23,7 +23,7 @@ type Request struct {
 
 type Redirect struct {
 	Request
-ToType  string `json:"toType"`
+	ToType  string `json:"toType"`
 	ToValue string `json:"toValue"`
 	Enabled bool   `json:"enabled"`
 }
@@ -131,27 +131,21 @@ func (f *FileDatabase) Save(recordType string, id int, value any) error {
 		if id >= len(f.redirects) {
 			return fmt.Errorf("redirect with id %d not found", id)
 		}
-
 		f.redirects[id] = value.(Redirect)
-		f.store()
 	}
-
 	if recordType == CANCEL {
 		if id >= len(f.cancels) {
 			return fmt.Errorf("cancel with id %d not found", id)
 		}
 		f.cancels[id] = value.(Cancel)
-		f.store()
 	}
-
 	if recordType == DELAY {
 		if id >= len(f.delays) {
 			return fmt.Errorf("delay with id %d not found", id)
 		}
 		f.delays[id] = value.(Delay)
-		f.store()
 	}
-
+	f.store()
 	return nil
 }
 
