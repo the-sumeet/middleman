@@ -19,11 +19,11 @@ type Request struct {
 	Entity string `json:"entity"`
 	Op     string `json:"op"`
 	Value  string `json:"value"`
-	ToType string `json:"toType"`
 }
 
 type Redirect struct {
 	Request
+ToType  string `json:"toType"`
 	ToValue string `json:"toValue"`
 	Enabled bool   `json:"enabled"`
 }
