@@ -82,6 +82,7 @@ func (f *FileDatabase) load() {
 	}
 	f.redirects = database.Redirects
 	f.cancels = database.Cancels
+	f.delays = database.Delays
 }
 
 func (f *FileDatabase) store() {
