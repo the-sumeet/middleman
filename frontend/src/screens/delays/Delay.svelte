@@ -5,21 +5,38 @@
     import { main } from "../../../wailsjs/go/models";
     import { Save, Remove, GetMany } from "../../../wailsjs/go/main/App";
     import { delays } from "../../stores";
-    import Redirect from "../redirects/redirect.svelte";
+    import { onDestroy } from "svelte";
+    import { parse } from "svelte/compiler";
 
     let changed = false;
     let entity = delay.entity;
     let op = delay.op;
     let value = delay.value;
     let delaySec = delay.delaySec;
+    let error = "";
 
     function setChanged() {
         changed = true;
     }
 
+    function validate() {
+        error = "";
+
+        // Check if delaySec is number
+        if (isNaN(delaySec)) {
+            error = "Delay seconds must be a number";
+            return false;
+        }
+        
+    }
     // Go functions
     function save() {
-        const delayRecord = new main.Delay({
+        
+        if (validate() === false) {
+            return;
+        }
+
+        const delay = new main.Delay({
             entity: entity,
             op: op,
             value: value,
@@ -72,7 +89,7 @@
         </select>
 
         <input
-            bind:value
+            bind:value={value}
             on:input={setChanged}
             autocapitalize="off"
             autocorrect="off"
@@ -84,6 +101,20 @@
 
     <h1 class="mt-2 text-md text-white">Then Delay the Request by Seconds:</h1>
 
+    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-2">
+        <input
+            bind:value={delaySec}
+            on:input={setChanged}
+            autocapitalize="off"
+            autocorrect="off"
+            type="text"
+            class="w-full placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-blue-300"
+        />
+    </div>
+
+    {#if error != ""}
+        <p class="px-4 text-red-500">{error}</p>
+    {/if}
 
     <!-- Bottom buttons -->
     <div class="flex mt-2 justify-end">
