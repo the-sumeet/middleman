@@ -45,8 +45,8 @@ type Delay struct {
 	DelaySec int `json:"delaySec"`
 }
 
-func (r *Delay) matches(req *http.Request) bool {
-	entityValue := getRequestEntity(r.Entity, req.URL.Path, req.Method, req.URL.Host)
+func (r *Delay) matches(res *http.Response) bool {
+	entityValue := getRequestEntity(r.Entity, res.Request.URL.Path, res.Request.Method, res.Request.URL.Host)
 	return evalOp(r.Op, entityValue, r.Value)
 }
 
