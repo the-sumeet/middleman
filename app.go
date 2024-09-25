@@ -258,20 +258,20 @@ func (a *App) GetMany(recordType string) ReturnValue {
 }
 
 func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
-	fmt.Println(input)
-
 	if recordType == REDIRECT {
 		err := a.database.Save(recordType, recordId, input.Redirect)
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
 		}
 	}
+
 	if recordType == CANCEL {
 		err := a.database.Save(recordType, recordId, input.Cancel)
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
 		}
 	}
+
 	if recordType == DELAY {
 		err := a.database.Save(recordType, recordId, input.Delay)
 		if err != nil {
