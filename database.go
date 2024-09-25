@@ -33,9 +33,7 @@ func (r *Redirect) matches(req *http.Response) bool {
 	return evalOp(r.Op, entityValue, r.Value)
 }
 
-type Cancel struct {
-	Request
-}
+type Cancel Request
 
 func (r *Cancel) matches(req *http.Request) bool {
 	entityValue := getRequestEntity(r.Entity, req.URL.Path, req.Method, req.URL.Host)
