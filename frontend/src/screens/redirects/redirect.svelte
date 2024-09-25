@@ -30,7 +30,9 @@
 
         const input = new main.InValue({ redirect: redictRecord });
 
-        Save('redirect', redirectId, input).then(() => {
+        Save('redirect', redirectId, input).then(async () => {
+            const result = await GetMany("redirect");
+            redirects.set(result.redirects);
             changed = false;
         });
     }
