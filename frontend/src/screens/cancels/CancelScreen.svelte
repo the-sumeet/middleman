@@ -1,7 +1,8 @@
 <script>
-    import { onDestroy } from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import { cancels } from "../../../src/stores";
     import Cancel from "./Cancel.svelte";
+    import { GetMany } from "../../../wailsjs/go/main/App";
 
     let cancelList = [];
 

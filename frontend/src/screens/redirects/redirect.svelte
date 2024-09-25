@@ -19,7 +19,6 @@
         changed = true;
     }
 
-    // Go functions
     function save() {
         const redictRecord = new main.Redirect({
             entity: entity,
@@ -29,17 +28,18 @@
             toValue: toValue,
         });
 
-        Save('redirect', redirectId, redictRecord).then(() => {
+        const input = new main.InValue({ redirect: redictRecord });
+
+        Save('redirect', redirectId, input).then(() => {
             changed = false;
         });
     }
 
     function remove() {
-        Remove('redirect', redirectId).then(() => {
-            GetMany('redirect').then((res) => {
-                console.log(res.redirects);
-                redirects.set(res.redirects);
-            });
+        Remove('redirect', redirectId).then(async () => {
+            const result = await GetMany("redirect");
+            redirects.set(result.redirects);
+            changed = false;
         });
     }
 </script>

@@ -19,13 +19,18 @@
 
     // Go functions
     function save() {
-        const cancelRecord = new main.Cancel({
+
+        const cancel = new main.Cancel({
             entity: entity,
             op: op,
             value: value,
         });
 
-        Save('cancel', cancelId, cancelRecord).then(() => {
+        const input = new main.InValue({ cancel: cancel});
+
+        Save('cancel', cancelId, input).then(async( ) => {
+            const result = await GetMany("cancel");
+            cancels.set(result.cancels);
             changed = false;
         });
     }

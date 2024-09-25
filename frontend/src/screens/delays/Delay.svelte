@@ -40,17 +40,21 @@
             entity: entity,
             op: op,
             value: value,
-            delaySec: delaySec,
+            delaySec: parseInt(delaySec),
         });
 
-        Save('delay', delayId, delayRecord).then(() => {
+        const input = new main.InValue({ delay: delay });
+
+        Save("delay", delayId, input).then(async () => {
+            const result = await GetMany("delay");
+            delays.set(result.delays);
             changed = false;
         });
     }
 
     function remove() {
-        Remove('delay', delayId).then(() => {
-            GetMany('delay').then((res) => {
+        Remove("delay", delayId).then(() => {
+            GetMany("delay").then((res) => {
                 delays.set(res.delays);
             });
         });
@@ -60,9 +64,7 @@
 <div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
     <h1 class="text-md text-white">If</h1>
 
-    <div
-        class="flex items-center justify-center gap-2 p-4 rounded-md mt-2"
-    >
+    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-2">
         <!-- Entity -->
         <select
             bind:value={entity}
