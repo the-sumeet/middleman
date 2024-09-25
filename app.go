@@ -120,7 +120,19 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					}
 				}
 			}
+		}
 
+		// Add delay
+		delays, err := a.database.GetMany("delay")
+		if err != nil {
+			fmt.Println("Error getting delays: ", err)
+		} else {
+			for _, v := range delays {
+				delay := v.(Delay)
+				if delay.matches(resp) {
+					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
+				}
+			}
 		}
 
 		return resp
