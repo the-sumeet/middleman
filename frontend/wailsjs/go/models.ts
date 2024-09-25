@@ -1,5 +1,21 @@
 export namespace main {
 	
+	export class Cancel {
+	    entity: string;
+	    op: string;
+	    value: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Cancel(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.entity = source["entity"];
+	        this.op = source["op"];
+	        this.value = source["value"];
+	    }
+	}
 	export class Config {
 	    serverPort: string;
 	    certPath: string;
@@ -20,7 +36,6 @@ export namespace main {
 	    entity: string;
 	    op: string;
 	    value: string;
-	    toType: string;
 	    delaySec: number;
 	
 	    static createFrom(source: any = {}) {
@@ -32,26 +47,7 @@ export namespace main {
 	        this.entity = source["entity"];
 	        this.op = source["op"];
 	        this.value = source["value"];
-	        this.toType = source["toType"];
 	        this.delaySec = source["delaySec"];
-	    }
-	}
-	export class Cancel {
-	    entity: string;
-	    op: string;
-	    value: string;
-	    toType: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Cancel(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.entity = source["entity"];
-	        this.op = source["op"];
-	        this.value = source["value"];
-	        this.toType = source["toType"];
 	    }
 	}
 	export class Redirect {
@@ -78,8 +74,7 @@ export namespace main {
 	}
 	export class InValue {
 	    redirect: Redirect;
-	    // Go type: Cancel
-	    cancel: any;
+	    cancel: Cancel;
 	    delay: Delay;
 	
 	    static createFrom(source: any = {}) {
@@ -89,7 +84,7 @@ export namespace main {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.redirect = this.convertValues(source["redirect"], Redirect);
-	        this.cancel = this.convertValues(source["cancel"], null);
+	        this.cancel = this.convertValues(source["cancel"], Cancel);
 	        this.delay = this.convertValues(source["delay"], Delay);
 	    }
 	
