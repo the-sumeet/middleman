@@ -17,9 +17,10 @@ const (
 )
 
 type Request struct {
-	Entity string `json:"entity"`
-	Op     string `json:"op"`
-	Value  string `json:"value"`
+	Enabled bool   `json:"enabled"`
+	Entity  string `json:"entity"`
+	Op      string `json:"op"`
+	Value   string `json:"value"`
 }
 
 type Redirect struct {
