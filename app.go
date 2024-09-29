@@ -45,7 +45,7 @@ type InValue struct {
 	Redirect     Redirect     `json:"redirect"`
 	Cancel       Cancel       `json:"cancel"`
 	Delay        Delay        `json:"delay"`
-ModifyHeader ModifyHeader `json:"modifyHeader"`
+	ModifyHeader ModifyHeader `json:"modifyHeader"`
 }
 
 func NewApp() *App {
@@ -255,6 +255,16 @@ func (a *App) GetMany(recordType string) ReturnValue {
 			Delays: delays,
 		}
 	}
+
+	if recordType == MODIFY_HEADERS {
+		modifyHeader := make([]ModifyHeader, len(res))
+		for i, v := range res {
+			modifyHeader[i] = v.(ModifyHeader)
+		}
+		return ReturnValue{
+			ModifyHeaders: modifyHeader,
+		}
+	}
 	return ReturnValue{}
 }
 
@@ -265,16 +275,21 @@ func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
 			return ReturnValue{Error: err.Error()}
 		}
 	}
-
 	if recordType == CANCEL {
 		err := a.database.Save(recordType, recordId, input.Cancel)
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
 		}
 	}
-
 	if recordType == DELAY {
 		err := a.database.Save(recordType, recordId, input.Delay)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+	if recordType == MODIFY_HEADERS {
+		fmt.Println(input.ModifyHeader.Mods)
+		err := a.database.Save(recordType, recordId, input.ModifyHeader)
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
 		}
@@ -307,6 +322,12 @@ func (a *App) Add(recordType string, records InValue) ReturnValue {
 	}
 	if recordType == DELAY {
 		err := a.database.Add(recordType, records.Delay)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+	if recordType == MODIFY_HEADERS {
+		err := a.database.Add(recordType, records.ModifyHeader)
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
 		}
