@@ -7,6 +7,7 @@
     import { Remove } from "../../../wailsjs/go/main/App";
     import { GetMany } from "../../../wailsjs/go/main/App";
     import { cancels } from "../../../src/stores";
+    import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
 
     let changed = false;
     let entity = cancel.entity;
@@ -20,19 +21,25 @@
     // Go functions
     function save() {
 
-        const cancel = new main.Cancel({
+        const newCancel = new main.Cancel({
+            enabled: cancel.enabled,
             entity: entity,
             op: op,
             value: value,
         });
 
-        const input = new main.InValue({ cancel: cancel});
+        const input = new main.InValue({ cancel: newCancel});
 
         Save('cancel', cancelId, input).then(async( ) => {
             const result = await GetMany("cancel");
             cancels.set(result.cancels);
             changed = false;
         });
+    }
+
+    function enableDisable() {
+        cancel.enabled = !cancel.enabled;
+        save();
     }
 
     function remove() {
@@ -88,23 +95,12 @@
 
     <h1 class="mt-2 text-md text-white">Then Cancel the Request</h1>
 
-
     <!-- Bottom buttons -->
-    <div class="flex mt-2 justify-end">
-        {#if changed}
-            <button
-                on:click={save}
-                class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
-            >
-                <i class="bi bi-floppy"></i>
-            </button>
-        {:else}
-            <button
-                on:click={remove}
-                class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-red-600 rounded-lg hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
-            >
-                <i class="bi bi-trash"></i>
-            </button>
-        {/if}
-    </div>
+     <BottomButtons
+        changed={changed}
+        save={save}
+        remove={remove}
+        enableDisable={enableDisable}
+        enabled={cancel.enabled}
+    />
 </div>

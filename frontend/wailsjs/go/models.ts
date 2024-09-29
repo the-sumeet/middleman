@@ -1,6 +1,7 @@
 export namespace main {
 	
 	export class Cancel {
+	    enabled: boolean;
 	    entity: string;
 	    op: string;
 	    value: string;
@@ -11,6 +12,7 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
 	        this.entity = source["entity"];
 	        this.op = source["op"];
 	        this.value = source["value"];
@@ -33,6 +35,7 @@ export namespace main {
 	    }
 	}
 	export class Delay {
+	    enabled: boolean;
 	    entity: string;
 	    op: string;
 	    value: string;
@@ -44,6 +47,7 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
 	        this.entity = source["entity"];
 	        this.op = source["op"];
 	        this.value = source["value"];
@@ -69,6 +73,7 @@ export namespace main {
 	    }
 	}
 	export class ModifyHeader {
+	    enabled: boolean;
 	    entity: string;
 	    op: string;
 	    value: string;
@@ -80,6 +85,7 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
 	        this.entity = source["entity"];
 	        this.op = source["op"];
 	        this.value = source["value"];
@@ -105,6 +111,7 @@ export namespace main {
 		}
 	}
 	export class Redirect {
+	    enabled: boolean;
 	    entity: string;
 	    op: string;
 	    value: string;
@@ -118,6 +125,7 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
 	        this.entity = source["entity"];
 	        this.op = source["op"];
 	        this.value = source["value"];

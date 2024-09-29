@@ -7,7 +7,8 @@
     import { Remove } from "../../../wailsjs/go/main/App";
     import { modifyHeaders } from "../../stores";
     import { GetMany } from "../../../wailsjs/go/main/App";
-
+    import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
+    
     let requestTab = true;
     const tabSelectedStyle =
         "border-blue-400 text-blue-300 whitespace-nowrap focus:outline-none";
@@ -59,6 +60,7 @@
 
     function save() {
         const modifyHeaderRecord = new main.ModifyHeader({
+            enabled: modifyHeader.enabled,
             entity: entity,
             op: op,
             value: value,
@@ -83,6 +85,11 @@
             modifyHeaders.set(result.modifyHeaders);
             changed = false;
         });
+    }
+
+    function enableDisable() {
+        modifyHeader.enabled = !modifyHeader.enabled;
+        save();
     }
 
     function remove() {
@@ -219,21 +226,12 @@
     </div>
 
     <!-- Bottom buttons -->
-    <div class="flex mt-2 justify-end">
-        {#if changed}
-            <button
-                on:click={save}
-                class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
-            >
-                <i class="bi bi-floppy"></i>
-            </button>
-        {:else}
-            <button
-                on:click={remove}
-                class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-red-600 rounded-lg hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
-            >
-                <i class="bi bi-trash"></i>
-            </button>
-        {/if}
-    </div>
+    <BottomButtons
+        changed={changed}
+        save={save}
+        remove={remove}
+        enableDisable={enableDisable}
+        enabled={modifyHeader.enabled}
+    />
+   
 </div>
