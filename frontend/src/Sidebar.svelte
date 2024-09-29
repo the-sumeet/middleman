@@ -27,13 +27,6 @@
 <div
     class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-900 b border-r border-gray-800"
 >
-    <!-- <a href="#!">
-        <img
-            class="w-auto h-6"
-            src="https://merakiui.com/images/logo.svg"
-            alt=""
-        />
-    </a> -->
 
     <a
         on:click={() => setPage(HOME)}
