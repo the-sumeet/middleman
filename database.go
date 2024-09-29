@@ -13,7 +13,7 @@ const (
 	REDIRECT       = "redirect"
 	CANCEL         = "cancel"
 	DELAY          = "delay"
-MODIFY_HEADERS = "modifyHeader"
+	MODIFY_HEADERS = "modifyHeader"
 )
 
 type Request struct {
@@ -70,10 +70,11 @@ type Database interface {
 }
 
 type FileDatabase struct {
-	filePath  string
-	redirects []Redirect
-	cancels   []Cancel
-	delays    []Delay
+	filePath      string
+	redirects     []Redirect
+	cancels       []Cancel
+	delays        []Delay
+	modifyHeaders []ModifyHeader
 }
 
 func (f *FileDatabase) load() {
@@ -83,9 +84,10 @@ func (f *FileDatabase) load() {
 	}
 
 	var database struct {
-		Redirects []Redirect `json:"redirects"`
-		Cancels   []Cancel   `json:"cancels"`
-		Delays    []Delay    `json:"delays"`
+		Redirects     []Redirect     `json:"redirects"`
+		Cancels       []Cancel       `json:"cancels"`
+		Delays        []Delay        `json:"delays"`
+		ModifyHeaders []ModifyHeader `json:"modifyHeaders"`
 	}
 	err = json.Unmarshal(data, &database)
 
@@ -95,13 +97,15 @@ func (f *FileDatabase) load() {
 	f.redirects = database.Redirects
 	f.cancels = database.Cancels
 	f.delays = database.Delays
+	f.modifyHeaders = database.ModifyHeaders
 }
 
 func (f *FileDatabase) store() {
 	data, err := json.Marshal(map[string]any{
-		"redirects": f.redirects,
-		"cancels":   f.cancels,
-		"delays":    f.delays,
+		"redirects":     f.redirects,
+		"cancels":       f.cancels,
+		"delays":        f.delays,
+		"modifyHeaders": f.modifyHeaders,
 	})
 	if err != nil {
 		panic(err)
@@ -136,6 +140,13 @@ func (f *FileDatabase) GetMany(recordType string) ([]any, error) {
 		}
 		return interfaceSlice, nil
 	}
+	if recordType == MODIFY_HEADERS {
+		interfaceSlice := make([]interface{}, len(f.modifyHeaders))
+		for i, v := range f.modifyHeaders {
+			interfaceSlice[i] = v
+		}
+		return interfaceSlice, nil
+	}
 	return []any{}, errors.New("invalid record type")
 }
 
@@ -158,11 +169,18 @@ func (f *FileDatabase) Save(recordType string, id int, value any) error {
 		}
 		f.delays[id] = value.(Delay)
 	}
+	if recordType == MODIFY_HEADERS {
+		if id >= len(f.modifyHeaders) {
+			return fmt.Errorf("modify header with id %d not found", id)
+		}
+		f.modifyHeaders[id] = value.(ModifyHeader)
+	}
 	f.store()
 	return nil
 }
 
 func (f *FileDatabase) Remove(recordType string, id int) error {
+
 	if recordType == REDIRECT {
 		if id >= len(f.redirects) {
 			return fmt.Errorf("redirect with id %d not found", id)
@@ -188,6 +206,15 @@ func (f *FileDatabase) Remove(recordType string, id int) error {
 		f.store()
 	}
 
+	if recordType == MODIFY_HEADERS {
+		fmt.Println("Removing record")
+		if id >= len(f.modifyHeaders) {
+			return fmt.Errorf("modify header with id %d not found", id)
+		}
+		f.modifyHeaders = append(f.modifyHeaders[:id], f.modifyHeaders[id+1:]...)
+		f.store()
+	}
+
 	return nil
 }
 
@@ -204,6 +231,11 @@ func (f *FileDatabase) Add(recordType string, value any) error {
 
 	if recordType == DELAY {
 		f.delays = append(f.delays, value.(Delay))
+		f.store()
+	}
+
+	if recordType == MODIFY_HEADERS {
+		f.modifyHeaders = append(f.modifyHeaders, value.(ModifyHeader))
 		f.store()
 	}
 
