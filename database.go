@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	REDIRECT = "redirect"
-	CANCEL   = "cancel"
-	DELAY    = "delay"
+	REDIRECT       = "redirect"
+	CANCEL         = "cancel"
+	DELAY          = "delay"
+MODIFY_HEADERS = "modifyHeader"
 )
 
 type Request struct {
