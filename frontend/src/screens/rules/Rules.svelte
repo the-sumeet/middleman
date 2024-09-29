@@ -13,8 +13,7 @@
       <RuleTile icon={"bi bi-shuffle"} title={"Redirect"} rule={RULE_REDIRECT}/>
       <RuleTile icon={"bi bi-body-text"} title={"Modify Request Body"} rule={RULE_MOD_BODY}/>
       <RuleTile icon={"bi bi-body-text"} title={"Modify Response Body"} rule={RULE_MOD_BODY}/>
-      <RuleTile icon={"bi bi-h-square"} title={"Modify Request Headers"} rule={RULE_MOD_HEADER}/>
-      <RuleTile icon={"bi bi-h-square"} title={"Modify Response Headers"} rule={RULE_MOD_HEADER}/>
+      <RuleTile icon={"bi bi-h-square"} title={"Modify Headers"} rule={RULE_MOD_HEADER}/>
       <RuleTile icon={"bi bi-x-square"} title={"Cancel Request"} rule={RULE_CANCEL}/>
       <RuleTile icon={"bi bi-clock"} title={"Add Delay"} rule={RULE_DELAY}/>
     </div>
