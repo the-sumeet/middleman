@@ -137,6 +137,28 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 			}
 		}
 
+		// Change headers
+		modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
+		if err != nil {
+			fmt.Println("Error getting modify headers: ", err)
+		} else {
+			for _, v := range modifyHeaders {
+				modifyHeader := v.(ModifyHeader)
+				if (&modifyHeader).matches(resp.Request) {
+					for _, v := range modifyHeader.Mods {
+						if v.IsRequest {
+							continue
+						}
+
+						if v.Action == "add" {
+							fmt.Println("Adding header: ", v.Name, v.Value)
+							resp.Header.Add(v.Name, v.Value)
+						}
+					}
+				}
+			}
+		}
+
 		return resp
 	}
 }
