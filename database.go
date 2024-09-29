@@ -46,6 +46,17 @@ type Delay struct {
 	DelaySec int `json:"delaySec"`
 }
 
+type Header struct {
+	Action    string `json:"action"`
+	IsRequest bool   `json:"isRequest"`
+	Name      string `json:"name"`
+	Value     string `json:"value"`
+}
+type ModifyHeader struct {
+	Request
+	Mods []Header `json:"mods"`
+}
+
 func (r *Delay) matches(res *http.Response) bool {
 	entityValue := getRequestEntity(r.Entity, res.Request.URL.Path, res.Request.Method, res.Request.URL.Host)
 	return evalOp(r.Op, entityValue, r.Value)
