@@ -28,26 +28,26 @@
 
     function add() {
         if (selectedRule == RULE_REDIRECT) {
-            Add('redirect', new main.InValue({redirect: new main.Redirect()})).then(() => {
-                GetMany('redirect').then((res) => {
+            Add(RULE_REDIRECT, new main.InValue({redirect: new main.Redirect()})).then(() => {
+                GetMany(RULE_REDIRECT).then((res) => {
                     redirects.set(res.redirects);
                 });
             });
         } else if (selectedRule == RULE_CANCEL) {
-            Add('cancel', new main.InValue({cancel: new main.Cancel()})).then(() => {
-                GetMany('cancel').then((res) => {
+            Add(RULE_CANCEL, new main.InValue({cancel: new main.Cancel()})).then(() => {
+                GetMany(RULE_CANCEL).then((res) => {
                     cancels.set(res.cancels);
                 });
             });
         } else if (selectedRule == RULE_DELAY) {
-            Add('delay', new main.InValue({delay: new main.Delay()})).then(() => {
-                GetMany('delay').then((res) => {
+            Add(RULE_DELAY, new main.InValue({delay: new main.Delay()})).then(() => {
+                GetMany(RULE_DELAY).then((res) => {
                     delays.set(res.delays);
                 });
             });
         }else if (selectedRule == RULE_MOD_HEADER) {
-            Add('modifyHeaders', new main.InValue({modifyHeader: new main.ModifyHeader()})).then(() => {
-                GetMany('modifyHeaders').then((res) => {
+            Add(RULE_MOD_HEADER, new main.InValue({modifyHeader: new main.ModifyHeader()})).then(() => {
+                GetMany(RULE_MOD_HEADER).then((res) => {
                     modifyHeaders.set(res.modifyHeaders);
                 });
             });

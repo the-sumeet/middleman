@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { RULE_REDIRECT } from "./constants";
+import { RULE_CANCEL, RULE_DELAY, RULE_MOD_HEADER, RULE_REDIRECT } from "./constants";
 import { GetMany } from "../wailsjs/go/main/App";
 import { HOME } from "./constants";
 
@@ -12,15 +12,15 @@ export const modifyHeaders = writable([]);
 export const serverRunning = writable(false);
 export const currentPage = writable(HOME);
 
-GetMany("redirect").then((res) => {
+GetMany(RULE_REDIRECT).then((res) => {
     redirects.set(res.redirects);
 });
-GetMany("cancel").then((res) => {
+GetMany(RULE_CANCEL).then((res) => {
     cancels.set(res.cancels);
 });
-GetMany("delay").then((res) => {
+GetMany(RULE_DELAY).then((res) => {
     delays.set(res.delays);
 });
-GetMany("modifyHeader").then((res) => {
+GetMany(RULE_MOD_HEADER).then((res) => {
     modifyHeaders.set(res.modifyHeaders);
 });
