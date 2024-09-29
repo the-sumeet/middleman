@@ -8,6 +8,7 @@ export const currentRule = writable(RULE_REDIRECT);
 export const redirects = writable([]);
 export const cancels = writable([]);
 export const delays = writable([]);
+export const modifyHeaders = writable([]);
 export const serverRunning = writable(false);
 export const currentPage = writable(HOME);
 
