@@ -42,9 +42,10 @@ type ReturnValue struct {
 }
 
 type InValue struct {
-	Redirect Redirect `json:"redirect"`
-	Cancel   Cancel   `json:"cancel"`
-	Delay    Delay    `json:"delay"`
+	Redirect     Redirect     `json:"redirect"`
+	Cancel       Cancel       `json:"cancel"`
+	Delay        Delay        `json:"delay"`
+ModifyHeader ModifyHeader `json:"modifyHeader"`
 }
 
 func NewApp() *App {
