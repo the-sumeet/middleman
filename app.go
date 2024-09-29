@@ -34,11 +34,11 @@ type App struct {
 }
 
 type ReturnValue struct {
-	Redirects []Redirect `json:"redirects"`
-	Cancels   []Cancel   `json:"cancels"`
-	Delays    []Delay    `json:"delays"`
-	// Requests  []http.Request `json:"requests"`
-	Error string `json:"error"`
+	Redirects     []Redirect     `json:"redirects"`
+	Cancels       []Cancel       `json:"cancels"`
+	Delays        []Delay        `json:"delays"`
+	ModifyHeaders []ModifyHeader `json:"modifyHeaders"`
+	Error         string         `json:"error"`
 }
 
 type InValue struct {
