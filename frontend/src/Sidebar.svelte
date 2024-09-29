@@ -67,7 +67,7 @@
         {/if} -->
     </a>
 
-    <a
+    <!-- <a
         on:click={() => setPage(REQUESTS)}
         href="#!"
         class="{currPage == REQUESTS
@@ -75,7 +75,7 @@
             : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
     >
         <i class="text-2xl bi bi-arrow-down-up"></i>
-    </a>
+    </a> -->
 
     <!-- Settings -->
     <a

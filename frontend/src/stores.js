@@ -21,3 +21,6 @@ GetMany("cancel").then((res) => {
 GetMany("delay").then((res) => {
     delays.set(res.delays);
 });
+GetMany("modifyHeader").then((res) => {
+    modifyHeaders.set(res.modifyHeaders);
+});

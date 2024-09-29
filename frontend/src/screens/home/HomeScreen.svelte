@@ -1,15 +1,16 @@
 <script>
     import "bootstrap-icons/font/bootstrap-icons.css";
     import Rules from "../../screens/rules/Rules.svelte";
-    import {cancels, redirects, currentRule, delays } from "../../stores";
+    import {cancels, redirects, currentRule, delays, modifyHeaders } from "../../stores";
     import { onDestroy } from "svelte";
     import RedirectList from "../../screens/redirects/redirect_list.svelte";
-    import { RULE_CANCEL, RULE_INFO, RULE_REDIRECT, RULE_DELAY } from "../../constants";
+    import { RULE_CANCEL, RULE_MOD_HEADER, RULE_INFO, RULE_REDIRECT, RULE_DELAY } from "../../constants";
     import { Add, GetMany } from "../../../wailsjs/go/main/App";
     import { main } from "../../../wailsjs/go/models";
     import { currentPage } from "../../stores";
     import CancelScreen from "../cancels/CancelScreen.svelte";
     import DelayScreen from "../delays/DelayScreen.svelte";
+    import ModifyHeadersScreen from "../modify_headers/ModifyHeadersScreen.svelte";
     
     let selectedRule;
     let currPage;
@@ -27,21 +28,27 @@
 
     function add() {
         if (selectedRule == RULE_REDIRECT) {
-            Add('redirect', new main.Redirect()).then(() => {
+            Add('redirect', new main.InValue({redirect: new main.Redirect()})).then(() => {
                 GetMany('redirect').then((res) => {
                     redirects.set(res.redirects);
                 });
             });
         } else if (selectedRule == RULE_CANCEL) {
-            Add('cancel', new main.Cancel()).then(() => {
+            Add('cancel', new main.InValue({cancel: new main.Cancel()})).then(() => {
                 GetMany('cancel').then((res) => {
                     cancels.set(res.cancels);
                 });
             });
         } else if (selectedRule == RULE_DELAY) {
-            Add('delay', new main.Delay()).then(() => {
+            Add('delay', new main.InValue({delay: new main.Delay()})).then(() => {
                 GetMany('delay').then((res) => {
                     delays.set(res.delays);
+                });
+            });
+        }else if (selectedRule == RULE_MOD_HEADER) {
+            Add('modifyHeaders', new main.InValue({modifyHeader: new main.ModifyHeader()})).then(() => {
+                GetMany('modifyHeaders').then((res) => {
+                    modifyHeaders.set(res.modifyHeaders);
                 });
             });
         }
@@ -81,6 +88,8 @@
             <CancelScreen />
         {:else if selectedRule == RULE_DELAY}
             <DelayScreen />
+        {:else if selectedRule == RULE_MOD_HEADER}
+            <ModifyHeadersScreen />
         {/if}
     </div>
 
