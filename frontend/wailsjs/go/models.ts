@@ -72,6 +72,46 @@ export namespace main {
 	        this.value = source["value"];
 	    }
 	}
+	export class ModifyResponseBody {
+	    enabled: boolean;
+	    entity: string;
+	    op: string;
+	    value: string;
+	    body: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new ModifyResponseBody(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
+	        this.entity = source["entity"];
+	        this.op = source["op"];
+	        this.value = source["value"];
+	        this.body = source["body"];
+	    }
+	}
+	export class ModifyRequestBody {
+	    enabled: boolean;
+	    entity: string;
+	    op: string;
+	    value: string;
+	    body: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new ModifyRequestBody(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
+	        this.entity = source["entity"];
+	        this.op = source["op"];
+	        this.value = source["value"];
+	        this.body = source["body"];
+	    }
+	}
 	export class ModifyHeader {
 	    enabled: boolean;
 	    entity: string;
@@ -139,6 +179,8 @@ export namespace main {
 	    cancel: Cancel;
 	    delay: Delay;
 	    modifyHeader: ModifyHeader;
+	    modifyRequestBody: ModifyRequestBody[];
+	    modifyResponseBody: ModifyResponseBody[];
 	
 	    static createFrom(source: any = {}) {
 	        return new InValue(source);
@@ -150,6 +192,8 @@ export namespace main {
 	        this.cancel = this.convertValues(source["cancel"], Cancel);
 	        this.delay = this.convertValues(source["delay"], Delay);
 	        this.modifyHeader = this.convertValues(source["modifyHeader"], ModifyHeader);
+	        this.modifyRequestBody = this.convertValues(source["modifyRequestBody"], ModifyRequestBody);
+	        this.modifyResponseBody = this.convertValues(source["modifyResponseBody"], ModifyResponseBody);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -172,11 +216,15 @@ export namespace main {
 	}
 	
 	
+	
+	
 	export class ReturnValue {
 	    redirects: Redirect[];
 	    cancels: Cancel[];
 	    delays: Delay[];
 	    modifyHeaders: ModifyHeader[];
+	    modifyRequestBody: ModifyRequestBody[];
+	    modifyResponseBody: ModifyResponseBody[];
 	    error: string;
 	
 	    static createFrom(source: any = {}) {
@@ -189,6 +237,8 @@ export namespace main {
 	        this.cancels = this.convertValues(source["cancels"], Cancel);
 	        this.delays = this.convertValues(source["delays"], Delay);
 	        this.modifyHeaders = this.convertValues(source["modifyHeaders"], ModifyHeader);
+	        this.modifyRequestBody = this.convertValues(source["modifyRequestBody"], ModifyRequestBody);
+	        this.modifyResponseBody = this.convertValues(source["modifyResponseBody"], ModifyResponseBody);
 	        this.error = source["error"];
 	    }
 	
