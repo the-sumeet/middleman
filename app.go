@@ -34,18 +34,22 @@ type App struct {
 }
 
 type ReturnValue struct {
-	Redirects     []Redirect     `json:"redirects"`
-	Cancels       []Cancel       `json:"cancels"`
-	Delays        []Delay        `json:"delays"`
-	ModifyHeaders []ModifyHeader `json:"modifyHeaders"`
-	Error         string         `json:"error"`
+	Redirects          []Redirect           `json:"redirects"`
+	Cancels            []Cancel             `json:"cancels"`
+	Delays             []Delay              `json:"delays"`
+	ModifyHeaders      []ModifyHeader       `json:"modifyHeaders"`
+	ModifyRequestBody  []ModifyRequestBody  `json:"modifyRequestBody"`
+	ModifyResponseBody []ModifyResponseBody `json:"modifyResponseBody"`
+	Error              string               `json:"error"`
 }
 
 type InValue struct {
-	Redirect     Redirect     `json:"redirect"`
-	Cancel       Cancel       `json:"cancel"`
-	Delay        Delay        `json:"delay"`
-	ModifyHeader ModifyHeader `json:"modifyHeader"`
+	Redirect           Redirect             `json:"redirect"`
+	Cancel             Cancel               `json:"cancel"`
+	Delay              Delay                `json:"delay"`
+	ModifyHeader       ModifyHeader         `json:"modifyHeader"`
+	ModifyRequestBody  []ModifyRequestBody  `json:"modifyRequestBody"`
+	ModifyResponseBody []ModifyResponseBody `json:"modifyResponseBody"`
 }
 
 func NewApp() *App {
@@ -287,6 +291,26 @@ func (a *App) GetMany(recordType string) ReturnValue {
 			ModifyHeaders: modifyHeader,
 		}
 	}
+
+	if recordType == MODIFY_REQUEST_BODY {
+		modifyRequestBody := make([]ModifyRequestBody, len(res))
+		for i, v := range res {
+			modifyRequestBody[i] = v.(ModifyRequestBody)
+		}
+		return ReturnValue{
+			ModifyRequestBody: modifyRequestBody,
+		}
+	}
+
+	if recordType == MODIFY_RESPONSE_BODY {
+		modifyResponseBody := make([]ModifyResponseBody, len(res))
+		for i, v := range res {
+			modifyResponseBody[i] = v.(ModifyResponseBody)
+		}
+		return ReturnValue{
+			ModifyResponseBody: modifyResponseBody,
+		}
+	}
 	return ReturnValue{}
 }
 
@@ -312,6 +336,20 @@ func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
 	if recordType == MODIFY_HEADERS {
 		fmt.Println(input.ModifyHeader.Mods)
 		err := a.database.Save(recordType, recordId, input.ModifyHeader)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+
+	if recordType == MODIFY_REQUEST_BODY {
+		err := a.database.Save(recordType, recordId, input.ModifyRequestBody)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+
+	if recordType == MODIFY_RESPONSE_BODY {
+		err := a.database.Save(recordType, recordId, input.ModifyResponseBody)
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
 		}
@@ -354,6 +392,21 @@ func (a *App) Add(recordType string, records InValue) ReturnValue {
 			return ReturnValue{Error: err.Error()}
 		}
 	}
+
+	if recordType == MODIFY_REQUEST_BODY {
+		err := a.database.Add(recordType, records.ModifyRequestBody)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+
+	if recordType == MODIFY_RESPONSE_BODY {
+		err := a.database.Add(recordType, records.ModifyResponseBody)
+		if err != nil {
+			return ReturnValue{Error: err.Error()}
+		}
+	}
+
 	return ReturnValue{}
 }
 
