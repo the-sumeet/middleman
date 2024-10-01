@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	REDIRECT       = "redirect"
-	CANCEL         = "cancel"
-	DELAY          = "delay"
-	MODIFY_HEADERS = "modifyHeader"
+	REDIRECT             = "redirect"
+	CANCEL               = "cancel"
+	DELAY                = "delay"
+	MODIFY_HEADERS       = "modifyHeader"
+	MODIFY_REQUEST_BODY  = "modifyRequestBody"
+	MODIFY_RESPONSE_BODY = "modifyResponseBody"
 )
 
 type Request struct {
@@ -47,6 +49,21 @@ type Delay struct {
 	DelaySec int `json:"delaySec"`
 }
 
+func (r *Delay) matches(res *http.Response) bool {
+	entityValue := getRequestEntity(r.Entity, res.Request.URL.Path, res.Request.Method, res.Request.URL.Host)
+	return evalOp(r.Op, entityValue, r.Value)
+}
+
+type ModifyRequestBody struct {
+	Request
+	Body int `json:"body"`
+}
+
+type ModifyResponseBody struct {
+	Request
+	Body int `json:"body"`
+}
+
 type Header struct {
 	Action    string `json:"action"`
 	IsRequest bool   `json:"isRequest"`
@@ -58,8 +75,8 @@ type ModifyHeader struct {
 	Mods []Header `json:"mods"`
 }
 
-func (r *Delay) matches(res *http.Response) bool {
-	entityValue := getRequestEntity(r.Entity, res.Request.URL.Path, res.Request.Method, res.Request.URL.Host)
+func (r *ModifyHeader) matches(req *http.Request) bool {
+	entityValue := getRequestEntity(r.Entity, req.URL.Path, req.Method, req.URL.Host)
 	return evalOp(r.Op, entityValue, r.Value)
 }
 
@@ -71,11 +88,13 @@ type Database interface {
 }
 
 type FileDatabase struct {
-	filePath      string
-	redirects     []Redirect
-	cancels       []Cancel
-	delays        []Delay
-	modifyHeaders []ModifyHeader
+	filePath           string
+	redirects          []Redirect
+	cancels            []Cancel
+	delays             []Delay
+	modifyHeaders      []ModifyHeader
+	modifyRequestBody  []ModifyRequestBody
+	modifyResponseBody []ModifyResponseBody
 }
 
 func (f *FileDatabase) load() {
@@ -85,10 +104,12 @@ func (f *FileDatabase) load() {
 	}
 
 	var database struct {
-		Redirects     []Redirect     `json:"redirects"`
-		Cancels       []Cancel       `json:"cancels"`
-		Delays        []Delay        `json:"delays"`
-		ModifyHeaders []ModifyHeader `json:"modifyHeaders"`
+		Redirects          []Redirect           `json:"redirects"`
+		Cancels            []Cancel             `json:"cancels"`
+		Delays             []Delay              `json:"delays"`
+		ModifyHeaders      []ModifyHeader       `json:"modifyHeaders"`
+		ModifyRequestBody  []ModifyRequestBody  `json:"modifyRequestBody"`
+		ModifyResponseBody []ModifyResponseBody `json:"modifyResponseBody"`
 	}
 	err = json.Unmarshal(data, &database)
 
@@ -103,10 +124,12 @@ func (f *FileDatabase) load() {
 
 func (f *FileDatabase) store() {
 	data, err := json.Marshal(map[string]any{
-		"redirects":     f.redirects,
-		"cancels":       f.cancels,
-		"delays":        f.delays,
-		"modifyHeaders": f.modifyHeaders,
+		"redirects":          f.redirects,
+		"cancels":            f.cancels,
+		"delays":             f.delays,
+		"modifyHeaders":      f.modifyHeaders,
+		"modifyRequestBody":  f.modifyRequestBody,
+		"modifyResponseBody": f.modifyResponseBody,
 	})
 	if err != nil {
 		panic(err)
@@ -148,6 +171,20 @@ func (f *FileDatabase) GetMany(recordType string) ([]any, error) {
 		}
 		return interfaceSlice, nil
 	}
+	if recordType == MODIFY_REQUEST_BODY {
+		interfaceSlice := make([]interface{}, len(f.modifyRequestBody))
+		for i, v := range f.modifyRequestBody {
+			interfaceSlice[i] = v
+		}
+		return interfaceSlice, nil
+	}
+	if recordType == MODIFY_RESPONSE_BODY {
+		interfaceSlice := make([]interface{}, len(f.modifyResponseBody))
+		for i, v := range f.modifyResponseBody {
+			interfaceSlice[i] = v
+		}
+		return interfaceSlice, nil
+	}
 	return []any{}, errors.New("invalid record type")
 }
 
@@ -176,6 +213,19 @@ func (f *FileDatabase) Save(recordType string, id int, value any) error {
 		}
 		f.modifyHeaders[id] = value.(ModifyHeader)
 	}
+	if recordType == MODIFY_REQUEST_BODY {
+		if id >= len(f.modifyRequestBody) {
+			return fmt.Errorf("modify request body with id %d not found", id)
+		}
+		f.modifyRequestBody[id] = value.(ModifyRequestBody)
+	}
+	if recordType == MODIFY_RESPONSE_BODY {
+		if id >= len(f.modifyResponseBody) {
+			return fmt.Errorf("modify response body with id %d not found", id)
+		}
+		f.modifyResponseBody[id] = value.(ModifyResponseBody)
+	}
+
 	f.store()
 	return nil
 }
@@ -215,6 +265,20 @@ func (f *FileDatabase) Remove(recordType string, id int) error {
 		f.modifyHeaders = append(f.modifyHeaders[:id], f.modifyHeaders[id+1:]...)
 		f.store()
 	}
+	if recordType == MODIFY_REQUEST_BODY {
+		if id >= len(f.modifyRequestBody) {
+			return fmt.Errorf("modify request body with id %d not found", id)
+		}
+		f.modifyRequestBody = append(f.modifyRequestBody[:id], f.modifyRequestBody[id+1:]...)
+		f.store()
+	}
+	if recordType == MODIFY_RESPONSE_BODY {
+		if id >= len(f.modifyResponseBody) {
+			return fmt.Errorf("modify response body with id %d not found", id)
+		}
+		f.modifyResponseBody = append(f.modifyResponseBody[:id], f.modifyResponseBody[id+1:]...)
+		f.store()
+	}
 
 	return nil
 }
@@ -237,6 +301,16 @@ func (f *FileDatabase) Add(recordType string, value any) error {
 
 	if recordType == MODIFY_HEADERS {
 		f.modifyHeaders = append(f.modifyHeaders, value.(ModifyHeader))
+		f.store()
+	}
+
+	if recordType == MODIFY_REQUEST_BODY {
+		f.modifyRequestBody = append(f.modifyRequestBody, value.(ModifyRequestBody))
+		f.store()
+	}
+
+	if recordType == MODIFY_RESPONSE_BODY {
+		f.modifyResponseBody = append(f.modifyResponseBody, value.(ModifyResponseBody))
 		f.store()
 	}
 
