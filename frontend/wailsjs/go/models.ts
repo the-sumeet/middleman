@@ -77,7 +77,7 @@ export namespace main {
 	    entity: string;
 	    op: string;
 	    value: string;
-	    body: number;
+	    body: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new ModifyResponseBody(source);
@@ -97,7 +97,7 @@ export namespace main {
 	    entity: string;
 	    op: string;
 	    value: string;
-	    body: number;
+	    body: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new ModifyRequestBody(source);
@@ -179,8 +179,8 @@ export namespace main {
 	    cancel: Cancel;
 	    delay: Delay;
 	    modifyHeader: ModifyHeader;
-	    modifyRequestBody: ModifyRequestBody[];
-	    modifyResponseBody: ModifyResponseBody[];
+	    modifyRequestBody: ModifyRequestBody;
+	    modifyResponseBody: ModifyResponseBody;
 	
 	    static createFrom(source: any = {}) {
 	        return new InValue(source);
