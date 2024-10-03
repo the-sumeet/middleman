@@ -56,12 +56,22 @@ func (r *Delay) matches(res *http.Response) bool {
 
 type ModifyRequestBody struct {
 	Request
-	Body int `json:"body"`
+	Body string `json:"body"`
+}
+
+func (m *ModifyRequestBody) matches(req *http.Request) bool {
+	entityValue := getRequestEntity(m.Entity, req.URL.Path, req.Method, req.URL.Host)
+	return evalOp(m.Op, entityValue, m.Value)
 }
 
 type ModifyResponseBody struct {
 	Request
-	Body int `json:"body"`
+	Body string `json:"body"`
+}
+
+func (m *ModifyResponseBody) matches(res *http.Response) bool {
+	entityValue := getRequestEntity(m.Entity, res.Request.URL.Path, res.Request.Method, res.Request.URL.Host)
+	return evalOp(m.Op, entityValue, m.Value)
 }
 
 type Header struct {
@@ -220,6 +230,7 @@ func (f *FileDatabase) Save(recordType string, id int, value any) error {
 		f.modifyRequestBody[id] = value.(ModifyRequestBody)
 	}
 	if recordType == MODIFY_RESPONSE_BODY {
+		fmt.Println(value)
 		if id >= len(f.modifyResponseBody) {
 			return fmt.Errorf("modify response body with id %d not found", id)
 		}
