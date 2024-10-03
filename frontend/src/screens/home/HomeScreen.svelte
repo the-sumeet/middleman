@@ -1,22 +1,25 @@
 <script>
     import "bootstrap-icons/font/bootstrap-icons.css";
     import Rules from "../../screens/rules/Rules.svelte";
-    import {cancels, redirects, currentRule, delays, modifyHeaders } from "../../stores";
+    import {cancels, redirects, currentRule, delays, modifyHeaders, modifyRequestBody, modifyResponseBody } from "../../stores";
     import { onDestroy } from "svelte";
     import RedirectList from "../../screens/redirects/redirect_list.svelte";
-    import { RULE_CANCEL, RULE_MOD_HEADER, RULE_INFO, RULE_REDIRECT, RULE_DELAY } from "../../constants";
+    import { RULE_CANCEL, RULE_MOD_HEADER, RULE_INFO, RULE_REDIRECT, RULE_DELAY, MODIFY_REQUEST_BODY, MODIFY_RESPONSE_BODY } from "../../constants";
     import { Add, GetMany } from "../../../wailsjs/go/main/App";
     import { main } from "../../../wailsjs/go/models";
     import { currentPage } from "../../stores";
     import CancelScreen from "../cancels/CancelScreen.svelte";
     import DelayScreen from "../delays/DelayScreen.svelte";
     import ModifyHeadersScreen from "../modify_headers/ModifyHeadersScreen.svelte";
+    import ModifyRequestBodyScreen from "../modify_request_body/ModifyRequestBodyScreen.svelte";
+    import ModifyResponseBodyScreen from "../modify_response_body/ModifyResponseBodyScreen.svelte";
     
     let selectedRule;
     let currPage;
+    const initAttributes = {enabled: true, entity: "url", op: "contains"};
+
 
     $: ruleInfo = RULE_INFO[selectedRule];
-
 
     const unSubCurrentRule = currentRule.subscribe((value) => {
         selectedRule = value;
@@ -27,28 +30,42 @@
     });
 
     function add() {
+
+
         if (selectedRule == RULE_REDIRECT) {
-            Add(RULE_REDIRECT, new main.InValue({redirect: new main.Redirect()})).then(() => {
+            Add(RULE_REDIRECT, new main.InValue({redirect: new main.Redirect(initAttributes)})).then(() => {
                 GetMany(RULE_REDIRECT).then((res) => {
                     redirects.set(res.redirects);
                 });
             });
         } else if (selectedRule == RULE_CANCEL) {
-            Add(RULE_CANCEL, new main.InValue({cancel: new main.Cancel()})).then(() => {
+            Add(RULE_CANCEL, new main.InValue({cancel: new main.Cancel(initAttributes)})).then(() => {
                 GetMany(RULE_CANCEL).then((res) => {
                     cancels.set(res.cancels);
                 });
             });
         } else if (selectedRule == RULE_DELAY) {
-            Add(RULE_DELAY, new main.InValue({delay: new main.Delay()})).then(() => {
+            Add(RULE_DELAY, new main.InValue({delay: new main.Delay(initAttributes)})).then(() => {
                 GetMany(RULE_DELAY).then((res) => {
                     delays.set(res.delays);
                 });
             });
         }else if (selectedRule == RULE_MOD_HEADER) {
-            Add(RULE_MOD_HEADER, new main.InValue({modifyHeader: new main.ModifyHeader()})).then(() => {
+            Add(RULE_MOD_HEADER, new main.InValue({modifyHeader: new main.ModifyHeader(initAttributes)})).then(() => {
                 GetMany(RULE_MOD_HEADER).then((res) => {
                     modifyHeaders.set(res.modifyHeaders);
+                });
+            });
+        } else if (selectedRule == MODIFY_REQUEST_BODY) {
+            Add(MODIFY_REQUEST_BODY, new main.InValue({modifyRequestBody: new main.ModifyRequestBody(initAttributes)})).then(() => {
+                GetMany(MODIFY_REQUEST_BODY).then((res) => {
+                    modifyRequestBody.set(res.modifyRequestBody);
+                });
+            });
+        } else if (selectedRule == MODIFY_RESPONSE_BODY) {
+            Add(MODIFY_RESPONSE_BODY, new main.InValue({modifyResponseBody: new main.ModifyResponseBody(initAttributes)})).then(() => {
+                GetMany(MODIFY_RESPONSE_BODY).then((res) => {
+                    modifyResponseBody.set(res.modifyResponseBody);
                 });
             });
         }
@@ -90,6 +107,10 @@
             <DelayScreen />
         {:else if selectedRule == RULE_MOD_HEADER}
             <ModifyHeadersScreen />
+        {:else if selectedRule == MODIFY_REQUEST_BODY}
+            <ModifyRequestBodyScreen />
+        {:else if selectedRule == MODIFY_RESPONSE_BODY}
+            <ModifyResponseBodyScreen />
         {/if}
     </div>
 
