@@ -1,5 +1,5 @@
 <script>
-    import { RULE_CANCEL, RULE_DELAY, RULE_MOD_BODY, RULE_MOD_HEADER, RULE_REDIRECT } from "../../../src/constants";
+    import { RULE_CANCEL, RULE_DELAY, MODIFY_REQUEST_BODY, MODIFY_RESPONSE_BODY, RULE_MOD_HEADER, RULE_REDIRECT } from "../../../src/constants";
   import RuleTile from "./RuleTile.svelte";
 
 </script>
@@ -11,8 +11,8 @@
 
     <div class="space-y-4">
       <RuleTile icon={"bi bi-shuffle"} title={"Redirect"} rule={RULE_REDIRECT}/>
-      <RuleTile icon={"bi bi-body-text"} title={"Modify Request Body"} rule={RULE_MOD_BODY}/>
-      <RuleTile icon={"bi bi-body-text"} title={"Modify Response Body"} rule={RULE_MOD_BODY}/>
+      <RuleTile icon={"bi bi-body-text"} title={"Modify Request Body"} rule={MODIFY_REQUEST_BODY}/>
+      <RuleTile icon={"bi bi-body-text"} title={"Modify Response Body"} rule={MODIFY_RESPONSE_BODY}/>
       <RuleTile icon={"bi bi-h-square"} title={"Modify Headers"} rule={RULE_MOD_HEADER}/>
       <RuleTile icon={"bi bi-x-square"} title={"Cancel Request"} rule={RULE_CANCEL}/>
       <RuleTile icon={"bi bi-clock"} title={"Add Delay"} rule={RULE_DELAY}/>
