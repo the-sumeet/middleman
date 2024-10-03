@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
@@ -123,6 +124,19 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 						ctx.UserData.(*State).IsRedirected = true
 						resp.Header.Set("Location", redirect.ToValue)
 						resp.StatusCode = 307
+					}
+				}
+			}
+
+			// Modify response body
+			modResBodies, err := a.database.GetMany(MODIFY_RESPONSE_BODY)
+			if err != nil {
+				fmt.Println("Error getting modify resposne bodies: ", err)
+			} else {
+				for _, v := range modResBodies {
+					modResBody := v.(ModifyResponseBody)
+					if modResBody.matches(resp) {
+						resp.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
 					}
 				}
 			}
