@@ -26,7 +26,7 @@
         {#if !changed}
         <button
             on:click={enableDisable}
-            class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+            class="px-4  font-medium tracking-wide text-white capitalize transition-colors duration-300 transform focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
         >   
             {#if enabled}
             <i class="text-green-500 text-4xl bi bi-toggle-on"></i>
