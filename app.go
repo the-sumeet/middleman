@@ -90,6 +90,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		} else {
 			for _, v := range cancels {
 				cancel := v.(Cancel)
+				if !cancel.Enabled {
+					continue
+				}
 				if cancel.matches(r) {
 					ctx.UserData.(*State).IsCancelled = true
 					res := &http.Response{
@@ -120,6 +123,9 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 			} else {
 				for _, v := range redirects {
 					redirect := v.(Redirect)
+					if !redirect.Enabled {
+						continue
+					}
 					if redirect.matches(resp) {
 						ctx.UserData.(*State).IsRedirected = true
 						resp.Header.Set("Location", redirect.ToValue)
@@ -135,6 +141,9 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 			} else {
 				for _, v := range modResBodies {
 					modResBody := v.(ModifyResponseBody)
+					if !modResBody.Enabled {
+						continue
+					}
 					if modResBody.matches(resp) {
 						resp.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
 					}
@@ -149,6 +158,9 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		} else {
 			for _, v := range delays {
 				delay := v.(Delay)
+				if !delay.Enabled {
+					continue
+				}
 				if delay.matches(resp) {
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
 				}
@@ -162,12 +174,14 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		} else {
 			for _, v := range modifyHeaders {
 				modifyHeader := v.(ModifyHeader)
+				if !modifyHeader.Enabled {
+					continue
+				}
 				if (&modifyHeader).matches(resp.Request) {
 					for _, v := range modifyHeader.Mods {
 						if v.IsRequest {
 							continue
 						}
-
 						if v.Action == "add" {
 							fmt.Println("Adding header: ", v.Name, v.Value)
 							resp.Header.Add(v.Name, v.Value)
