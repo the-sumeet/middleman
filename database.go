@@ -130,6 +130,8 @@ func (f *FileDatabase) load() {
 	f.cancels = database.Cancels
 	f.delays = database.Delays
 	f.modifyHeaders = database.ModifyHeaders
+	f.modifyRequestBody = database.ModifyRequestBody
+	f.modifyResponseBody = database.ModifyResponseBody
 }
 
 func (f *FileDatabase) store() {
@@ -230,7 +232,6 @@ func (f *FileDatabase) Save(recordType string, id int, value any) error {
 		f.modifyRequestBody[id] = value.(ModifyRequestBody)
 	}
 	if recordType == MODIFY_RESPONSE_BODY {
-		fmt.Println(value)
 		if id >= len(f.modifyResponseBody) {
 			return fmt.Errorf("modify response body with id %d not found", id)
 		}
