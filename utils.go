@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"os"
 	"strings"
 	"time"
 )
@@ -38,4 +39,16 @@ func PortAvailable(host string, port string) error {
 	timeout := time.Second
 	_, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), timeout)
 	return err
+}
+
+func certKeyPresent() bool {
+	certPath, keyPath := getCertKeyPath()
+	// Check if files exists
+	if _, err := os.Stat(certPath); os.IsNotExist(err) {
+		return false
+	}
+	if _, err := os.Stat(keyPath); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }
