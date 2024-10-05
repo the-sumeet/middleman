@@ -23,8 +23,15 @@ func getAppConfigDir() string {
 func getCertKeyPath() (string, string) {
 	appConfigDir := getAppConfigDir()
 	certPath, keyPath := filepath.Join(appConfigDir, CertName), filepath.Join(appConfigDir, KeyName)
-	os.MkdirAll(filepath.Dir(certPath), os.ModePerm)
-	os.MkdirAll(filepath.Dir(keyPath), os.ModePerm)
+	err := os.MkdirAll(filepath.Dir(certPath), os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+
+	err = os.MkdirAll(filepath.Dir(keyPath), os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
 	return certPath, keyPath
 }
 
