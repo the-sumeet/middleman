@@ -209,8 +209,6 @@ func (a *App) StartProxy(port int) ReturnValue {
 		panic(err)
 	}
 
-	fmt.Println(string(certytes))
-	fmt.Println(string(keybytes))
 	goproxyCa, err := tls.X509KeyPair(certytes, keybytes)
 	if err != nil {
 		panic(err)
