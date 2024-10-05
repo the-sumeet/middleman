@@ -123,7 +123,7 @@
 <div class="w-full flex">
     <Rules />
 
-    <div class="p-4 flex flex-col w-full h-screen">
+    <div class=" p-4 flex flex-col w-full h-screen">
         <!-- Toolbar -->
         <div class="flex justify-end rounded-md">
             <button
