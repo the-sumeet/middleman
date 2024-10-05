@@ -14,10 +14,7 @@ import (
 	"strings"
 	"time"
 
-	// "database/sql"
-
 	"github.com/elazarl/goproxy"
-	// _ "modernc.org/sqlite"
 )
 
 type State struct {
