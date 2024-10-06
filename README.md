@@ -27,3 +27,15 @@ java -jar antlr-4.13.2-complete.jar -Dlanguage=Go -visitor Expression.g4 -o pars
 openssl genrsa -out ca.key 2048
 openssl req -new -x509 -key ca.key -out ca.crt
 ```
+
+## Rules
+
+We have following rules
+
+- Redirect
+    - If request is not cancelled, and request matches the rule, then redirect the request to the specified URL.
+- Modify Request Body
+- Modify Response Body
+- Modify Headers
+- Cancel Request
+- Add Delay
