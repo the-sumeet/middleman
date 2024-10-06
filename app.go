@@ -107,9 +107,25 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 			}
 		}
 
-		requestCopy := *r
-		a.requests = append(a.requests, requestCopy)
-		r.Header.Set("X-GoProxy", "yxorPoG-X")
+		if !ctx.UserData.(*State).IsCancelled {
+			// Check for modify request body
+			modRequestBodies, err := a.database.GetMany(MODIFY_REQUEST_BODY)
+			if err != nil {
+				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_REQUEST_BODY, err))
+				log.Fatalf("Error getting %s: %s", MODIFY_REQUEST_BODY, err)
+			} else {
+				for _, v := range modRequestBodies {
+					modResBody := v.(ModifyRequestBody)
+					if !modResBody.Enabled {
+						continue
+					}
+					if modResBody.matches(r) {
+						a.logger.Info("ModifyRequestBody  rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
+						r.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
+					}
+				}
+			}
+		}
 		return r, nil
 	}
 }
