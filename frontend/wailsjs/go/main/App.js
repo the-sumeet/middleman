@@ -18,6 +18,10 @@ export function GetConfig() {
   return window['go']['main']['App']['GetConfig']();
 }
 
+export function GetLogs() {
+  return window['go']['main']['App']['GetLogs']();
+}
+
 export function GetMany(arg1) {
   return window['go']['main']['App']['GetMany'](arg1);
 }

@@ -10,6 +10,8 @@ export function GenerateCert():Promise<void>;
 
 export function GetConfig():Promise<main.Config>;
 
+export function GetLogs():Promise<main.ReturnValue>;
+
 export function GetMany(arg1:string):Promise<main.ReturnValue>;
 
 export function Remove(arg1:string,arg2:number):Promise<main.ReturnValue>;

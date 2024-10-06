@@ -136,7 +136,7 @@ export namespace main {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -200,7 +200,7 @@ export namespace main {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -225,6 +225,7 @@ export namespace main {
 	    modifyHeaders: ModifyHeader[];
 	    modifyRequestBody: ModifyRequestBody[];
 	    modifyResponseBody: ModifyResponseBody[];
+	    logs: string[];
 	    error: string;
 	
 	    static createFrom(source: any = {}) {
@@ -239,6 +240,7 @@ export namespace main {
 	        this.modifyHeaders = this.convertValues(source["modifyHeaders"], ModifyHeader);
 	        this.modifyRequestBody = this.convertValues(source["modifyRequestBody"], ModifyRequestBody);
 	        this.modifyResponseBody = this.convertValues(source["modifyResponseBody"], ModifyResponseBody);
+	        this.logs = source["logs"];
 	        this.error = source["error"];
 	    }
 	
@@ -246,7 +248,7 @@ export namespace main {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
