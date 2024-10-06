@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -51,4 +52,18 @@ func certKeyPresent() bool {
 		return false
 	}
 	return true
+}
+
+func getRequestLogValues(r *http.Request, args ...any) []any {
+	res := []any{
+		"host", r.Host,
+		"path", r.URL.Path,
+		"method", r.Method,
+	}
+	res = append(res, args...)
+	return res
+}
+
+func getResponseLogValues(r *http.Response, args ...any) []any {
+	return getRequestLogValues(r.Request, args...)
 }
