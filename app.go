@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"net"
 	"net/http"
 	"os"
@@ -22,13 +23,17 @@ type State struct {
 	IsRedirected bool
 }
 
+type Log struct {
+	Msg string `json:"msg"`
+}
+
 type App struct {
 	ctx             context.Context
 	proxy           *goproxy.ProxyHttpServer
 	proxyStartStoop chan bool
 	database        Database
-	requests        []http.Request
 	config          Config
+	logger          *slog.Logger
 }
 
 type ReturnValue struct {
@@ -38,6 +43,7 @@ type ReturnValue struct {
 	ModifyHeaders      []ModifyHeader       `json:"modifyHeaders"`
 	ModifyRequestBody  []ModifyRequestBody  `json:"modifyRequestBody"`
 	ModifyResponseBody []ModifyResponseBody `json:"modifyResponseBody"`
+	Logs               []string             `json:"logs"`
 	Error              string               `json:"error"`
 }
 
@@ -57,6 +63,12 @@ func NewApp() *App {
 	}
 	database.load()
 
+	logFile := getLogFilePath()
+	logWriter, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		panic(err)
+	}
+
 	proxy := goproxy.NewProxyHttpServer()
 	config := getConfig()
 	app := &App{
@@ -64,6 +76,7 @@ func NewApp() *App {
 		database:        &database,
 		proxyStartStoop: make(chan bool),
 		config:          config,
+		logger:          slog.New(slog.NewJSONHandler(logWriter, nil)),
 	}
 
 	return app
@@ -87,7 +100,8 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		// Check for cancels
 		cancels, err := a.database.GetMany("cancel")
 		if err != nil {
-			fmt.Println("Error getting cancels: ", err)
+			a.logger.Error(fmt.Sprintf("Error getting cancels: %s", err))
+			log.Fatal("Error getting cancels: ", err)
 		} else {
 			for _, v := range cancels {
 				cancel := v.(Cancel)
@@ -95,6 +109,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					continue
 				}
 				if cancel.matches(r) {
+					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
 					res := &http.Response{
 						Request:    r,
@@ -134,9 +149,10 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 
 		if !ctx.UserData.(*State).IsCancelled {
-			redirects, err := a.database.GetMany("redirect")
+			redirects, err := a.database.GetMany(REDIRECT)
 			if err != nil {
-				fmt.Println("Error getting redirects: ", err)
+				a.logger.Error(fmt.Sprintf("Error getting %s: %s", REDIRECT, err))
+				log.Fatalf("Error getting %s: %s", REDIRECT, err)
 			} else {
 				for _, v := range redirects {
 					redirect := v.(Redirect)
@@ -144,6 +160,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 						continue
 					}
 					if redirect.matches(resp) {
+						a.logger.Info("Redirect  rule matched", getResponseLogValues(resp, "rule", REDIRECT)...)
 						ctx.UserData.(*State).IsRedirected = true
 						resp.Header.Set("Location", redirect.ToValue)
 						resp.StatusCode = 307
@@ -254,7 +271,7 @@ func (a *App) StartProxy(port int) ReturnValue {
 
 	go func() {
 
-		a.proxy.Verbose = true
+		// a.proxy.Verbose = true
 		a.proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 		a.proxy.OnRequest().DoFunc(a.getOnRequest())
 		a.proxy.OnResponse().DoFunc(a.getOnResponse())
@@ -455,4 +472,16 @@ func (a *App) Add(recordType string, records InValue) ReturnValue {
 
 func (a *App) GenerateCert() {
 	genCert()
+}
+
+func (a *App) GetLogs() ReturnValue {
+	logFile := getLogFilePath()
+	logs, err := readLastNLines(logFile, 10000)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+
+	return ReturnValue{
+		Logs: logs,
+	}
 }
