@@ -8,14 +8,14 @@ import (
 	"time"
 )
 
-func getRequestEntity(entityName string, url, method, host string) string {
+func getRequestEntity(entityName string, r *http.Request) string {
 	switch entityName {
-	case "url":
-		return url
+	case "path":
+		return r.URL.Path
 	case "method":
-		return method
+		return r.Method
 	case "host":
-		return host
+		return r.Host
 	default:
 		return ""
 	}
@@ -66,4 +66,9 @@ func getRequestLogValues(r *http.Request, args ...any) []any {
 
 func getResponseLogValues(r *http.Response, args ...any) []any {
 	return getRequestLogValues(r.Request, args...)
+}
+
+func matches(r Request, hr *http.Request) bool {
+	entityValue := getRequestEntity(r.Entity, hr)
+	return evalOp(r.Op, entityValue, r.Value)
 }

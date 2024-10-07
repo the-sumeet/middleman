@@ -108,7 +108,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 				if !cancel.Enabled {
 					continue
 				}
-				if cancel.matches(r) {
+				if matches(Request(cancel), r) {
 					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
 					res := &http.Response{
@@ -134,7 +134,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					if !modResBody.Enabled {
 						continue
 					}
-					if modResBody.matches(r) {
+					if matches(modResBody.Request, r) {
 						a.logger.Info("ModifyRequestBody  rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
 						r.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
 					}
@@ -159,7 +159,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					if !redirect.Enabled {
 						continue
 					}
-					if redirect.matches(resp) {
+					if matches(redirect.Request, resp.Request) {
 						a.logger.Info("Redirect  rule matched", getResponseLogValues(resp, "rule", REDIRECT)...)
 						ctx.UserData.(*State).IsRedirected = true
 						resp.Header.Set("Location", redirect.ToValue)
@@ -178,7 +178,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					if !modResBody.Enabled {
 						continue
 					}
-					if modResBody.matches(resp) {
+					if matches(modResBody.Request, resp.Request) {
 						resp.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
 					}
 				}
@@ -195,7 +195,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				if !delay.Enabled {
 					continue
 				}
-				if delay.matches(resp) {
+				if matches(delay.Request, resp.Request) {
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
 				}
 			}
@@ -211,7 +211,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				if !modifyHeader.Enabled {
 					continue
 				}
-				if (&modifyHeader).matches(resp.Request) {
+				if matches(modifyHeader.Request, resp.Request) {
 					for _, v := range modifyHeader.Mods {
 						if v.IsRequest {
 							continue

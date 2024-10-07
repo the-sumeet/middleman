@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -32,26 +31,11 @@ type Redirect struct {
 	Enabled bool   `json:"enabled"`
 }
 
-func (r *Redirect) matches(req *http.Response) bool {
-	entityValue := getRequestEntity(r.Entity, req.Request.URL.Path, req.Request.Method, req.Request.URL.Host)
-	return evalOp(r.Op, entityValue, r.Value)
-}
-
 type Cancel Request
-
-func (r *Cancel) matches(req *http.Request) bool {
-	entityValue := getRequestEntity(r.Entity, req.URL.Path, req.Method, req.URL.Host)
-	return evalOp(r.Op, entityValue, r.Value)
-}
 
 type Delay struct {
 	Request
 	DelaySec int `json:"delaySec"`
-}
-
-func (r *Delay) matches(res *http.Response) bool {
-	entityValue := getRequestEntity(r.Entity, res.Request.URL.Path, res.Request.Method, res.Request.URL.Host)
-	return evalOp(r.Op, entityValue, r.Value)
 }
 
 type ModifyRequestBody struct {
@@ -59,19 +43,9 @@ type ModifyRequestBody struct {
 	Body string `json:"body"`
 }
 
-func (m *ModifyRequestBody) matches(req *http.Request) bool {
-	entityValue := getRequestEntity(m.Entity, req.URL.Path, req.Method, req.URL.Host)
-	return evalOp(m.Op, entityValue, m.Value)
-}
-
 type ModifyResponseBody struct {
 	Request
 	Body string `json:"body"`
-}
-
-func (m *ModifyResponseBody) matches(res *http.Response) bool {
-	entityValue := getRequestEntity(m.Entity, res.Request.URL.Path, res.Request.Method, res.Request.URL.Host)
-	return evalOp(m.Op, entityValue, m.Value)
 }
 
 type Header struct {
@@ -83,11 +57,6 @@ type Header struct {
 type ModifyHeader struct {
 	Request
 	Mods []Header `json:"mods"`
-}
-
-func (r *ModifyHeader) matches(req *http.Request) bool {
-	entityValue := getRequestEntity(r.Entity, req.URL.Path, req.Method, req.URL.Host)
-	return evalOp(r.Op, entityValue, r.Value)
 }
 
 type Database interface {
