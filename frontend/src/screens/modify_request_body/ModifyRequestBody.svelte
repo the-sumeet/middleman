@@ -16,6 +16,7 @@
     import 'brace/mode/xml';
     import 'brace/mode/yaml';
     import 'brace/theme/dracula';
+    import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
 
     let editor;
     const editorId = `editor${modifyBodyId}`;

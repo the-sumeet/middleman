@@ -8,7 +8,8 @@
     import { modifyHeaders } from "../../stores";
     import { GetMany } from "../../../wailsjs/go/main/App";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
-    
+    import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+
     let requestTab = true;
     const tabSelectedStyle =
         "border-blue-400 text-blue-300 whitespace-nowrap focus:outline-none";

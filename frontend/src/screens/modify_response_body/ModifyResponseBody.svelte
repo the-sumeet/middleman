@@ -9,6 +9,8 @@
     import BottomButtons from "../../widgets/BottomButtons.svelte";
     import { MODIFY_RESPONSE_BODY } from "../../../src/constants";
     import * as ace from "brace";
+    import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+
     import { onMount } from "svelte";
     import 'brace/mode/html';
     import 'brace/mode/json';

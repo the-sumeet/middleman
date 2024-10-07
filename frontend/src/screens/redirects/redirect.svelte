@@ -8,6 +8,7 @@
     import { redirects } from "../../../src/stores";
     import { GetMany } from "../../../wailsjs/go/main/App";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
+    import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
 
     let changed = false;
     let entity = redirect.entity;

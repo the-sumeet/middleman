@@ -8,7 +8,7 @@
     import { GetMany } from "../../../wailsjs/go/main/App";
     import { cancels } from "../../../src/stores";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
-
+    import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
     let changed = false;
     let entity = cancel.entity;
     let op = cancel.op;
@@ -57,18 +57,8 @@
     <div
         class="flex items-center justify-center gap-2 p-4 rounded-md mt-2"
     >
-        <!-- Entity -->
-        <select
-            bind:value={entity}
-            on:change={setChanged}
-            class="p-2 rounded text-whites"
-            name=""
-            id=""
-        >
-            <option class="text-white" value="url">URL</option>
-            <option class="text-white" value="host">HOST</option>
-            <option value="header">Header</option>
-        </select>
+    <EntitySelect bind:entity={entity} {setChanged} />
+
 
         <!-- Op -->
         <select
