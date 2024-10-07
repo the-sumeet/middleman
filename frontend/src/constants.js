@@ -15,6 +15,7 @@ export const HOME = "home";
 export const REQUESTS = "requests";
 export const SERVER = "server";
 export const SETTINGS = "settings";
+export const LOGS = "logs";
 
 // Rule info
 export const RULE_INFO = {
