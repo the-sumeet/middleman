@@ -32,7 +32,7 @@
     
     let selectedRule;
     let currPage;
-    const initAttributes = { enabled: true, entity: "url", op: "contains" };
+    const initAttributes = { enabled: true, entity: "host", op: "contains" };
 
     $: ruleInfo = RULE_INFO[selectedRule];
 
