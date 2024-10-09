@@ -60,18 +60,7 @@
     <div
         class="flex items-center justify-center gap-2 p-4 rounded-md mt-4"
     >
-        <!-- Entity -->
-        <select
-            bind:value={entity}
-            on:change={setChanged}
-            class="p-2 rounded text-whites"
-            name=""
-            id=""
-        >
-            <option class="text-white" value="url">URL</option>
-            <option class="text-white" value="host">HOST</option>
-            <option value="header">Header</option>
-        </select>
+    <EntitySelect bind:entity={entity} {setChanged} />  
 
         <!-- Op -->
         <select
