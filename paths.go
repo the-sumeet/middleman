@@ -52,6 +52,18 @@ func getLogFilePath() string {
 	return logFilePath
 }
 
+func getDatabasePath() string {
+	appConfigDir := getAppConfigDir()
+	databasePath := filepath.Join(appConfigDir, "database.json")
+	err := os.MkdirAll(filepath.Dir(databasePath), os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+
+	return databasePath
+
+}
+
 func readLastNLines(filePath string, n int) ([]string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
