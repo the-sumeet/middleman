@@ -10,5 +10,5 @@
   id=""
 >
   <option class="text-white" value="path">Path</option>
-  <option class="text-white" value="host">HOST</option>
+  <option class="text-white" value="host">Host</option>
 </select>
