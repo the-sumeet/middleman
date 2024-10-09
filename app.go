@@ -58,8 +58,17 @@ type InValue struct {
 
 func NewApp() *App {
 
+	databasePath := getDatabasePath()
+	if _, err := os.Stat(databasePath); os.IsNotExist(err) {
+		// Create the database file
+		_, err := os.Create(databasePath)
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	database := FileDatabase{
-		filePath: "database.json",
+		filePath: getDatabasePath(),
 	}
 	database.load()
 
