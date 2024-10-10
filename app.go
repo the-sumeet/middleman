@@ -57,6 +57,7 @@ type InValue struct {
 }
 
 func NewApp() *App {
+	config := getConfig()
 
 	databasePath := getDatabasePath()
 	if _, err := os.Stat(databasePath); os.IsNotExist(err) {
@@ -80,7 +81,6 @@ func NewApp() *App {
 	}
 
 	proxy := goproxy.NewProxyHttpServer()
-	config := getConfig()
 	app := &App{
 		proxy:           proxy,
 		database:        &database,
