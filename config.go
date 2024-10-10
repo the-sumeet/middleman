@@ -11,14 +11,21 @@ const (
 )
 
 type Config struct {
-	ServerPort string `json:"serverPort"`
-	CertPath   string `json:"certPath"`
-	KeyPath    string `json:"keyPath"`
+	ServerPort   string `json:"serverPort"`
+	CertPath     string `json:"certPath"`
+	KeyPath      string `json:"keyPath"`
+	DatabasePath string `json:"databasePath"`
 }
 
 func getConfig() Config {
 
-	config := Config{ServerPort: DefaultServerPort}
+	certPath, keyPath := getCertKeyPath()
+	config := Config{
+		ServerPort:   DefaultServerPort,
+		DatabasePath: getDatabasePath(),
+		CertPath:     certPath,
+		KeyPath:      keyPath,
+	}
 
 	configPath := getConfigPath()
 
@@ -34,10 +41,6 @@ func getConfig() Config {
 		jsonParser := json.NewDecoder(configFile)
 		jsonParser.Decode(&config)
 	}
-
-	certPath, keyPath := getCertKeyPath()
-	config.CertPath = certPath
-	config.KeyPath = keyPath
 	return config
 }
 
