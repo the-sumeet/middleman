@@ -11,7 +11,15 @@ const (
 	KeyName  = "ca.key"
 )
 
-func getAppConfigDir() string {
+func createDirsOrPanic(dirname string) {
+	err := os.MkdirAll(dirname, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+var getAppConfigDir = func() string {
 	dirName, err := os.UserConfigDir()
 	if err != nil {
 		panic(err)
