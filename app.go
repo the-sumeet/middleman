@@ -502,13 +502,7 @@ func (a *App) GenerateCert() {
 }
 
 func (a *App) GetLogs() ReturnValue {
-	logFile := getLogFilePath()
-	logs, err := readLastNLines(logFile, 10000)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-
 	return ReturnValue{
-		Logs: logs,
+		HttpRequests: a.httpRequests,
 	}
 }
