@@ -181,3 +181,15 @@ func TestGetMany(t *testing.T) {
 	}
 
 }
+
+func TestSave(t *testing.T) {
+
+	setup()
+	app := NewApp()
+
+	app.Add(
+		REDIRECT,
+		InValue{Redirect: Redirect{Request: Request{Enabled: true, Entity: "url", Op: "equal", Value: "example"}, ToValue: "example2"}},
+	)
+
+}
