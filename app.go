@@ -24,8 +24,12 @@ type State struct {
 	IsRedirected bool
 }
 
-type Log struct {
-	Msg string `json:"msg"`
+type HttpRequestLog struct {
+	Method       string `json:"method"`
+	Host         string `json:"host"`
+	Path         string `json:"path"`
+	RequestBody  string `json:"requestBody"`
+	ResponseBody string `json:"responseBody"`
 }
 
 type App struct {
