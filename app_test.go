@@ -182,7 +182,7 @@ func TestGetMany(t *testing.T) {
 
 }
 
-func TestSave(t *testing.T) {
+func TestAdd(t *testing.T) {
 
 	setup()
 	app := NewApp()
