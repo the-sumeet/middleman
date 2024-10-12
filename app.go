@@ -113,7 +113,16 @@ func (a *App) startup(ctx context.Context) {
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 
-		ctx.UserData = &State{}
+		a.httpRequestsLock.Lock()
+		a.httpRequests = append(a.httpRequests, HttpRequestLog{
+			Method: r.Method,
+			Host:   r.Host,
+			Path:   r.URL.Path,
+		})
+		requestLogId := len(a.httpRequests) - 1
+		a.httpRequestsLock.Unlock()
+
+		ctx.UserData = &State{requestId: requestLogId}
 
 		// Check for cancels
 		cancels, err := a.database.GetMany("cancel")
