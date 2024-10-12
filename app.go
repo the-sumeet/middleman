@@ -51,6 +51,7 @@ type ReturnValue struct {
 	ModifyRequestBody  []ModifyRequestBody  `json:"modifyRequestBody"`
 	ModifyResponseBody []ModifyResponseBody `json:"modifyResponseBody"`
 	Logs               []string             `json:"logs"`
+	HttpRequests       []HttpRequestLog     `json:"httpRequests"`
 	Error              string               `json:"error"`
 }
 
