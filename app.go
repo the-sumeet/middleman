@@ -33,12 +33,14 @@ type HttpRequestLog struct {
 }
 
 type App struct {
-	ctx             context.Context
-	proxy           *goproxy.ProxyHttpServer
-	proxyStartStoop chan bool
-	database        Database
-	config          Config
-	logger          *slog.Logger
+	ctx              context.Context
+	proxy            *goproxy.ProxyHttpServer
+	proxyStartStoop  chan bool
+	database         Database
+	config           Config
+	logger           *slog.Logger
+	httpRequests     []HttpRequestLog
+	httpRequestsLock sync.Mutex
 }
 
 type ReturnValue struct {
