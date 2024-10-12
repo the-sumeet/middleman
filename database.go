@@ -26,9 +26,7 @@ type Request struct {
 
 type Redirect struct {
 	Request
-	ToType  string `json:"toType"`
 	ToValue string `json:"toValue"`
-	Enabled bool   `json:"enabled"`
 }
 
 type Cancel Request
