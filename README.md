@@ -30,12 +30,10 @@ openssl req -new -x509 -key ca.key -out ca.crt
 
 ## Rules
 
-We have following rules
 
-- Redirect
-    - If request is not cancelled, and request matches the rule, then redirect the request to the specified URL.
-- Modify Request Body
-- Modify Response Body
-- Modify Headers
-- Cancel Request
-- Add Delay
+- Cancel, on request.
+- Redirect, if not cancelled.
+- Modify Request Body, if not cancelled.
+- Modify Response Body, if not cancelled.
+- Modify Headers, if not cancelled.
+- Add Delay, if not cancelled.
