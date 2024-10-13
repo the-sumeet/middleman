@@ -168,6 +168,35 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					}
 				}
 			}
+
+			// Change headers
+			modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
+			if err != nil {
+				fmt.Println("Error getting modify headers: ", err)
+			} else {
+				for _, v := range modifyHeaders {
+					modifyHeader := v.(ModifyHeader)
+					if !modifyHeader.Enabled {
+						continue
+					}
+					if matches(modifyHeader.Request, r) {
+						for _, v := range modifyHeader.Mods {
+							if !v.IsRequest {
+								continue
+							}
+							if v.Action == "add" {
+								fmt.Println("Modifying request header: ", v.Name, v.Value, v.Action)
+								r.Header.Add(v.Name, v.Value)
+							} else if v.Action == "remove" {
+								r.Header.Del(v.Name)
+							} else if v.Action == "override" {
+								fmt.Println("Overriding request header: ", v.Name, v.Value, v.Action)
+								r.Header.Set(v.Name, v.Value)
+							}
+						}
+					}
+				}
+			}
 		}
 		return r, nil
 	}
@@ -247,6 +276,11 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 						if v.Action == "add" {
 							fmt.Println("Adding header: ", v.Name, v.Value)
 							resp.Header.Add(v.Name, v.Value)
+						} else if v.Action == "remove" {
+							fmt.Println("Removing header: ", v.Name)
+							resp.Header.Del(v.Name)
+						} else if v.Action == "override" {
+							resp.Header.Set(v.Name, v.Value)
 						}
 					}
 				}
