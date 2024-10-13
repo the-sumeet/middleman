@@ -275,6 +275,11 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 						if v.Action == "add" {
 							fmt.Println("Adding header: ", v.Name, v.Value)
 							resp.Header.Add(v.Name, v.Value)
+						} else if v.Action == "remove" {
+							fmt.Println("Removing header: ", v.Name)
+							resp.Header.Del(v.Name)
+						} else if v.Action == "override" {
+							resp.Header.Set(v.Name, v.Value)
 						}
 					}
 				}
