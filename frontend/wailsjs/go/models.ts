@@ -22,6 +22,7 @@ export namespace main {
 	    serverPort: string;
 	    certPath: string;
 	    keyPath: string;
+	    databasePath: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -32,6 +33,7 @@ export namespace main {
 	        this.serverPort = source["serverPort"];
 	        this.certPath = source["certPath"];
 	        this.keyPath = source["keyPath"];
+	        this.databasePath = source["databasePath"];
 	    }
 	}
 	export class Delay {
@@ -70,6 +72,26 @@ export namespace main {
 	        this.isRequest = source["isRequest"];
 	        this.name = source["name"];
 	        this.value = source["value"];
+	    }
+	}
+	export class HttpRequestLog {
+	    method: string;
+	    host: string;
+	    path: string;
+	    requestBody: string;
+	    responseBody: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new HttpRequestLog(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.method = source["method"];
+	        this.host = source["host"];
+	        this.path = source["path"];
+	        this.requestBody = source["requestBody"];
+	        this.responseBody = source["responseBody"];
 	    }
 	}
 	export class ModifyResponseBody {
@@ -155,9 +177,7 @@ export namespace main {
 	    entity: string;
 	    op: string;
 	    value: string;
-	    toType: string;
 	    toValue: string;
-	    enabled: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Redirect(source);
@@ -169,9 +189,7 @@ export namespace main {
 	        this.entity = source["entity"];
 	        this.op = source["op"];
 	        this.value = source["value"];
-	        this.toType = source["toType"];
 	        this.toValue = source["toValue"];
-	        this.enabled = source["enabled"];
 	    }
 	}
 	export class InValue {
@@ -226,6 +244,7 @@ export namespace main {
 	    modifyRequestBody: ModifyRequestBody[];
 	    modifyResponseBody: ModifyResponseBody[];
 	    logs: string[];
+	    httpRequests: HttpRequestLog[];
 	    error: string;
 	
 	    static createFrom(source: any = {}) {
@@ -241,6 +260,7 @@ export namespace main {
 	        this.modifyRequestBody = this.convertValues(source["modifyRequestBody"], ModifyRequestBody);
 	        this.modifyResponseBody = this.convertValues(source["modifyResponseBody"], ModifyResponseBody);
 	        this.logs = source["logs"];
+	        this.httpRequests = this.convertValues(source["httpRequests"], HttpRequestLog);
 	        this.error = source["error"];
 	    }
 	
