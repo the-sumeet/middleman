@@ -114,6 +114,7 @@ func (a *App) startup(ctx context.Context) {
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 
+		// Add request to logs
 		a.httpRequestsLock.Lock()
 		a.httpRequests = append(a.httpRequests, HttpRequestLog{
 			Method: r.Method,
@@ -123,9 +124,10 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		requestLogId := len(a.httpRequests) - 1
 		a.httpRequestsLock.Unlock()
 
+		// State for this request
 		ctx.UserData = &State{requestId: requestLogId}
 
-		// Check for cancels
+		// Cancels
 		cancels, err := a.database.GetMany("cancel")
 		if err != nil {
 			a.logger.Error(fmt.Sprintf("Error getting cancels: %s", err))
@@ -150,7 +152,36 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 			}
 		}
 
+		// If not cancelled.
 		if !ctx.UserData.(*State).IsCancelled {
+
+			// Redirects
+			redirects, err := a.database.GetMany(REDIRECT)
+			if err != nil {
+				a.logger.Error(fmt.Sprintf("Error getting %s: %s", REDIRECT, err))
+				log.Fatalf("Error getting %s: %s", REDIRECT, err)
+			} else {
+				for _, v := range redirects {
+					redirect := v.(Redirect)
+					if !redirect.Enabled {
+						continue
+					}
+					if matches(redirect.Request, r) {
+						ctx.UserData.(*State).IsRedirected = true
+
+						res := &http.Response{
+							Request:    r,
+							StatusCode: 307,
+							Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
+							Header: http.Header{
+								"Location": []string{redirect.ToValue},
+							},
+						}
+						return nil, res
+					}
+				}
+			}
+
 			// Check for modify request body
 			modRequestBodies, err := a.database.GetMany(MODIFY_REQUEST_BODY)
 			if err != nil {
@@ -169,7 +200,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 				}
 			}
 
-			// Change headers
+			// Change request headers
 			modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
 			if err != nil {
 				fmt.Println("Error getting modify headers: ", err)
@@ -185,9 +216,10 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 								continue
 							}
 							if v.Action == "add" {
-								fmt.Println("Modifying request header: ", v.Name, v.Value, v.Action)
+								fmt.Println("Adding request header: ", v.Name, v.Value, v.Action)
 								r.Header.Add(v.Name, v.Value)
 							} else if v.Action == "remove" {
+								fmt.Println("Removing request header: ", v.Name, v.Action)
 								r.Header.Del(v.Name)
 							} else if v.Action == "override" {
 								fmt.Println("Overriding request header: ", v.Name, v.Value, v.Action)
@@ -205,25 +237,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 
+		fmt.Println(ctx.UserData.(*State))
+
 		if !ctx.UserData.(*State).IsCancelled {
-			redirects, err := a.database.GetMany(REDIRECT)
-			if err != nil {
-				a.logger.Error(fmt.Sprintf("Error getting %s: %s", REDIRECT, err))
-				log.Fatalf("Error getting %s: %s", REDIRECT, err)
-			} else {
-				for _, v := range redirects {
-					redirect := v.(Redirect)
-					if !redirect.Enabled {
-						continue
-					}
-					if matches(redirect.Request, resp.Request) {
-						a.logger.Info("Redirect  rule matched", getResponseLogValues(resp, "rule", REDIRECT)...)
-						ctx.UserData.(*State).IsRedirected = true
-						resp.Header.Set("Location", redirect.ToValue)
-						resp.StatusCode = 307
-					}
-				}
-			}
 
 			// Modify response body
 			modResBodies, err := a.database.GetMany(MODIFY_RESPONSE_BODY)
@@ -258,7 +274,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 			}
 		}
 
-		// Change headers
+		// Change response headers
 		modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
 		if err != nil {
 			fmt.Println("Error getting modify headers: ", err)
