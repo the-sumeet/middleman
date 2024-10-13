@@ -110,33 +110,6 @@ func NewProxy(certPath, keyPath string) *Proxy {
 				return res
 			}
 
-			// res = proxyutil.NewResponse(307, nil, req)
-			// res.Header.Add("Location", "https://www.google.com")
-
-			// b, err := proxyutil.ReadDecompressedBody(res)
-			// // Close the original body
-			// _ = res.Body.Close()
-			// if err != nil {
-			// 	return proxyutil.NewErrorResponse(req, err)
-			// }
-
-			// // Use latin1 before modifying the body
-			// // Using this 1-byte encoding will let us preserve all original characters
-			// // regardless of what exactly is the encoding
-			// body, err := proxyutil.DecodeLatin1(bytes.NewReader(b))
-			// if err != nil {
-			// 	return proxyutil.NewErrorResponse(session.Request(), err)
-			// }
-
-			// // Modifying the original body
-			// modifiedBody, err := proxyutil.EncodeLatin1(body + "<!-- EDITED -->")
-			// if err != nil {
-			// 	return proxyutil.NewErrorResponse(session.Request(), err)
-			// }
-
-			// res.Body = ioutil.NopCloser(bytes.NewReader(modifiedBody))
-			// res.Header.Del("Content-Encoding")
-			// res.ContentLength = int64(len(modifiedBody))
 			return res
 		},
 	})
