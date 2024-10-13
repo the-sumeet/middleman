@@ -4,12 +4,7 @@
   let logs = [];
 
   GetLogs().then((res) => {
-    const logStrings = res.logs;
-    const newLogs = [];
-    for (let i = 0; i < logStrings.length; i++) {
-      newLogs.push(JSON.parse(logStrings[i]));
-    }
-    logs = newLogs;
+    logs = res.httpRequests
   });
 </script>
 
@@ -36,20 +31,13 @@
                 <tr>
                   <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
                     <div class="flex space-x-2 items-center">
-                      {#if log.rule == RULE_CANCEL}
-                        <i class="text-xl text-white bi bi-x-square"></i>
-                        <h2 class="font-medium text-gray-800 dark:text-white">
-                          Cancel Matched
-                        </h2>
-
-                        {#if log.method && log.method != ""}
+                      {#if log.method && log.method != ""}
                           <div
                             class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800"
                           >
                             {log.method}
                           </div>
                         {/if}
-
                         {#if log.host && log.host != ""}
                           <div
                             class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800"
@@ -57,7 +45,6 @@
                             {log.host}
                           </div>
                         {/if}
-
                         {#if log.path && log.path != ""}
                           <div
                             class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800"
@@ -65,12 +52,6 @@
                             {log.path}
                           </div>
                         {/if}
-
-                      {:else}
-                        <h2 class="font-medium text-gray-800 dark:text-white">
-                          {log.msg}
-                        </h2>
-                      {/if}
                     </div>
                   </td>
 
