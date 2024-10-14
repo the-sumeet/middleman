@@ -203,7 +203,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 			// Change request headers
 			modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
 			if err != nil {
-				fmt.Println("Error getting modify headers: ", err)
+				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_HEADERS, err))
 			} else {
 				for _, v := range modifyHeaders {
 					modifyHeader := v.(ModifyHeader)
@@ -216,13 +216,13 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 								continue
 							}
 							if v.Action == "add" {
-								fmt.Println("Adding request header: ", v.Name, v.Value, v.Action)
+								a.logger.Info("Adding request header", "name", v.Name, "value", v.Value, "action", v.Action)
 								r.Header.Add(v.Name, v.Value)
 							} else if v.Action == "remove" {
-								fmt.Println("Removing request header: ", v.Name, v.Action)
+								a.logger.Info("Removing request header: ", "name", v.Name, "value", v.Value)
 								r.Header.Del(v.Name)
 							} else if v.Action == "override" {
-								fmt.Println("Overriding request header: ", v.Name, v.Value, v.Action)
+								a.logger.Info("Overriding request header: ", "name", v.Name, "value", v.Value)
 								r.Header.Set(v.Name, v.Value)
 							}
 						}
@@ -237,14 +237,12 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 
-		fmt.Println(ctx.UserData.(*State))
-
 		if !ctx.UserData.(*State).IsCancelled {
 
 			// Modify response body
 			modResBodies, err := a.database.GetMany(MODIFY_RESPONSE_BODY)
 			if err != nil {
-				fmt.Println("Error getting modify resposne bodies: ", err)
+				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_RESPONSE_BODY, err))
 			} else {
 				for _, v := range modResBodies {
 					modResBody := v.(ModifyResponseBody)
@@ -261,7 +259,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		// Add delay
 		delays, err := a.database.GetMany("delay")
 		if err != nil {
-			fmt.Println("Error getting delays: ", err)
+			a.logger.Error(fmt.Sprintf("Error getting %s: %s", DELAY, err))
 		} else {
 			for _, v := range delays {
 				delay := v.(Delay)
@@ -277,7 +275,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		// Change response headers
 		modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
 		if err != nil {
-			fmt.Println("Error getting modify headers: ", err)
+			a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_HEADERS, err))
 		} else {
 			for _, v := range modifyHeaders {
 				modifyHeader := v.(ModifyHeader)
@@ -290,12 +288,13 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 							continue
 						}
 						if v.Action == "add" {
-							fmt.Println("Adding header: ", v.Name, v.Value)
+							a.logger.Info("Adding response header", "name", v.Name, "value", v.Value)
 							resp.Header.Add(v.Name, v.Value)
 						} else if v.Action == "remove" {
-							fmt.Println("Removing header: ", v.Name)
+							a.logger.Info("Removing response header: ", "name", v.Name, "value", v.Value)
 							resp.Header.Del(v.Name)
 						} else if v.Action == "override" {
+							a.logger.Info("Overriding response header: ", "name", v.Name, "value", v.Value)
 							resp.Header.Set(v.Name, v.Value)
 						}
 					}
@@ -343,9 +342,10 @@ func (a *App) StartProxy(port int) ReturnValue {
 	log.Println("Starting Proxy", portString)
 	l, err := net.Listen("tcp", portString)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
+		log.Fatal("Error start listening: ", err)
 	}
-	log.Println("TCP listener started on ", portString)
+	log.Println("Error start listening: ", portString)
 
 	go func() {
 
@@ -357,7 +357,8 @@ func (a *App) StartProxy(port int) ReturnValue {
 		go func() {
 			err := http.Serve(l, a.proxy)
 			if err != nil {
-				fmt.Println("Error starting server: ", err)
+				a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
+				log.Fatal("Error starting server: ", err)
 			}
 			log.Println("Proxy serving started")
 		}()
@@ -472,7 +473,6 @@ func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
 		}
 	}
 	if recordType == MODIFY_HEADERS {
-		fmt.Println(input.ModifyHeader.Mods)
 		err := a.database.Save(recordType, recordId, input.ModifyHeader)
 		if err != nil {
 			return ReturnValue{Error: err.Error()}
