@@ -1,10 +1,12 @@
 <script>
   import { GetLogs } from "../../../wailsjs/go/main/App";
-  import { RULE_CANCEL } from "../../../src/constants";
+
   let logs = [];
 
   GetLogs().then((res) => {
-    logs = res.httpRequests
+    if (res.httpRequests) {
+      logs = res.httpRequests;
+    }
   });
 </script>
 
