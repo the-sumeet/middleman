@@ -19,8 +19,8 @@
 
 {#if cancelList.length > 0}
     {#each cancelList as cancel, i (crypto.randomUUID())}
-    <div class="mb-4">
-        <Cancel cancelId={i} cancel={cancel} />
-    </div>
+        <div class="mb-4">
+            <Cancel cancelId={i} {cancel} />
+        </div>
     {/each}
 {/if}
