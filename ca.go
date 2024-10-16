@@ -17,6 +17,7 @@ func genCert() {
 	// Generate a private key
 	privKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
+
 		fmt.Println("Error generating private key:", err)
 		return
 	}
