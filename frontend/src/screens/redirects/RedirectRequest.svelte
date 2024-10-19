@@ -5,10 +5,12 @@
     import { main } from "../../../wailsjs/go/models";
     import { Save } from "../../../wailsjs/go/main/App";
     import { Remove } from "../../../wailsjs/go/main/App";
-    import { redirects } from "../../../src/stores";
+    import { redirects } from "../../stores";
     import { GetMany } from "../../../wailsjs/go/main/App";
-    import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
-    import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+    import BottomButtons from "../../widgets/BottomButtons.svelte";
+    import EntitySelect from "../../widgets/EntitySelect.svelte";
+    import { remove } from "../../utils";
+    import { RULE_REDIRECT } from "../../constants";
 
     let changed = false;
     let entity;
@@ -58,14 +60,6 @@
     function enableDisable() {
         redirect.enabled = !redirect.enabled;
         save();
-    }
-
-    function remove() {
-        Remove("redirect", redirectId).then(async () => {
-            const result = await GetMany("redirect");
-            redirects.set(result.redirects);
-            changed = false;
-        });
     }
 </script>
 
@@ -117,7 +111,7 @@
         {changed}
         {save}
         {cancelSave}
-        {remove}
+        remove={() => remove(RULE_REDIRECT, redirectId)}
         {enableDisable}
         enabled={redirect.enabled}
     />
