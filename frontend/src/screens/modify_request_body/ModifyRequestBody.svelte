@@ -17,6 +17,8 @@
     import "brace/mode/yaml";
     import "brace/theme/dracula";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+    import { remove } from "../../../src/utils";
+    import { RULE_MODIFY_REQUEST_BODY } from "../../../src/constants";
 
     let editor;
     const editorId = `editor${modifyBodyId}`;
@@ -68,14 +70,6 @@
     function enableDisable() {
         modifyBody.enabled = !modifyBody.enabled;
         save();
-    }
-
-    function remove() {
-        Remove(MODIFY_REQUEST_BODY, modifyBodyId).then(async () => {
-            const result = await GetMany(MODIFY_REQUEST_BODY);
-            modifyRequestBody.set(result.modifyRequestBody);
-            changed = false;
-        });
     }
     onMount(() => {
         editor = ace.edit(editorId);
@@ -134,7 +128,8 @@
         {changed}
         {save}
         {cancelSave}
-        {remove}
+        remove={() => remove(RULE_MODIFY_REQUEST_BODY, modifyBodyId)}
+
         {enableDisable}
         enabled={modifyBody.enabled}
     />
