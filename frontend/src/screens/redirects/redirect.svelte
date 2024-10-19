@@ -11,11 +11,21 @@
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
 
     let changed = false;
-    let entity = redirect.entity;
-    let op = redirect.op;
-    let value = redirect.value;
-    let toType = redirect.toType;
-    let toValue = redirect.toValue;
+    let entity;
+    let op;
+    let value;
+    let toType;
+    let toValue;
+
+    fromRedirect();
+
+    function fromRedirect() {
+        entity = redirect.entity;
+        op = redirect.op;
+        value = redirect.value;
+        toType = redirect.toType;
+        toValue = redirect.toValue;
+    }
 
     function setChanged() {
         changed = true;
@@ -33,11 +43,16 @@
 
         const input = new main.InValue({ redirect: redictRecord });
 
-        Save('redirect', redirectId, input).then(async () => {
+        Save("redirect", redirectId, input).then(async () => {
             const result = await GetMany("redirect");
             redirects.set(result.redirects);
             changed = false;
         });
+    }
+
+    function cancelSave() {
+        fromRedirect();
+        changed = false;
     }
 
     function enableDisable() {
@@ -46,7 +61,7 @@
     }
 
     function remove() {
-        Remove('redirect', redirectId).then(async () => {
+        Remove("redirect", redirectId).then(async () => {
             const result = await GetMany("redirect");
             redirects.set(result.redirects);
             changed = false;
@@ -57,10 +72,8 @@
 <div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
     <h1 class="text-md text-white">If</h1>
 
-    <div
-        class="flex items-center justify-center gap-2 p-4 rounded-md mt-4"
-    >
-    <EntitySelect bind:entity={entity} {setChanged} />  
+    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-4">
+        <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
         <select
@@ -87,9 +100,7 @@
 
     <h1 class="mt-4 text-md text-white">Then Redirect To</h1>
 
-    <div
-        class="flex items-center justify-center gap-2 p-4  rounded-md mt-4"
-    >
+    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-4">
         <input
             bind:value={toValue}
             on:input={setChanged}
@@ -103,10 +114,11 @@
 
     <!-- Bottom buttons -->
     <BottomButtons
-        changed={changed}
-        save={save}
-        remove={remove}
-        enableDisable={enableDisable}
+        {changed}
+        {save}
+        {cancelSave}
+        {remove}
+        {enableDisable}
         enabled={redirect.enabled}
     />
 </div>

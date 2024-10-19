@@ -10,24 +10,32 @@
     import { MODIFY_REQUEST_BODY } from "../../../src/constants";
     import * as ace from "brace";
     import { onMount } from "svelte";
-    import 'brace/mode/html';
-    import 'brace/mode/json';
-    import 'brace/mode/text';
-    import 'brace/mode/xml';
-    import 'brace/mode/yaml';
-    import 'brace/theme/dracula';
+    import "brace/mode/html";
+    import "brace/mode/json";
+    import "brace/mode/text";
+    import "brace/mode/xml";
+    import "brace/mode/yaml";
+    import "brace/theme/dracula";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
 
     let editor;
     const editorId = `editor${modifyBodyId}`;
     let changed = false;
+    let entity;
+    let op;
+    let value;
+    let body;
 
     // modifyBody properties
-    let entity = modifyBody.entity;
-    let op = modifyBody.op;
-    let value = modifyBody.value;
-    let body = modifyBody.body;
-    
+    fromModifyRequestBody();
+
+    function fromModifyRequestBody() {
+        entity = modifyBody.entity;
+        op = modifyBody.op;
+        value = modifyBody.value;
+        body = modifyBody.body;
+    }
+
     function setChanged() {
         changed = true;
     }
@@ -52,6 +60,11 @@
         });
     }
 
+    function cancelSave() {
+        fromModifyRequestBody();
+        changed = false;
+    }
+
     function enableDisable() {
         modifyBody.enabled = !modifyBody.enabled;
         save();
@@ -70,8 +83,8 @@
         editor.setValue(body, 1);
         // editor.setReadOnly(true);
         // editor.session.setMode("ace/mode/" + responseType);
-        editor.setFontSize('16px');
-        editor.getSession().on('change', function(delta) {
+        editor.setFontSize("16px");
+        editor.getSession().on("change", function (delta) {
             body = editor.getValue();
             changed = true;
         });
@@ -83,7 +96,7 @@
     <h1 class="text-md text-white">If</h1>
 
     <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-4">
-        <EntitySelect bind:entity={entity} {setChanged} />
+        <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
         <select
@@ -110,12 +123,17 @@
 
     <h1 class="mt-4 text-md text-white">Then user the following body</h1>
 
-    <div id={editorId} class="border border-gray-700 mt-4 w-full rounded" style="height: 256px;"></div>
+    <div
+        id={editorId}
+        class="border border-gray-700 mt-4 w-full rounded"
+        style="height: 256px;"
+    ></div>
 
     <!-- Bottom buttons -->
     <BottomButtons
         {changed}
         {save}
+        {cancelSave}
         {remove}
         {enableDisable}
         enabled={modifyBody.enabled}

@@ -24,10 +24,19 @@
     let changed = false;
 
     // modifyBody properties
-    let entity = modifyBody.entity;
-    let op = modifyBody.op;
-    let value = modifyBody.value;
-    let body = modifyBody.body;
+    let entity;
+    let op;
+    let value;
+    let body;
+
+    fromModifyRequestBody();
+
+    function fromModifyRequestBody() {
+        entity = modifyBody.entity;
+        op = modifyBody.op;
+        value = modifyBody.value;
+        body = modifyBody.body;
+    }
     
     function setChanged() {
         changed = true;
@@ -53,6 +62,11 @@
             modifyResponseBody.set(result.modifyResponseBody);
             changed = false;
         });
+    }
+
+    function cancelSave() {
+        fromModifyRequestBody();
+        changed = false;
     }
 
     function enableDisable() {
@@ -119,6 +133,7 @@
     <BottomButtons
         {changed}
         {save}
+        {cancelSave}
         {remove}
         {enableDisable}
         enabled={modifyBody.enabled}

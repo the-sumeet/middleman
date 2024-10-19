@@ -9,10 +9,19 @@
     import { cancels } from "../../../src/stores";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+
     let changed = false;
-    let entity = cancel.entity;
-    let op = cancel.op;
-    let value = cancel.value;
+    let entity;
+    let op;
+    let value;
+
+    fromCancel();
+
+    function fromCancel() {
+        entity = cancel.entity;
+        op = cancel.op;
+        value = cancel.value;
+    }
 
     function setChanged() {
         changed = true;
@@ -20,7 +29,6 @@
 
     // Go functions
     function save() {
-
         const newCancel = new main.Cancel({
             enabled: cancel.enabled,
             entity: entity,
@@ -28,13 +36,18 @@
             value: value,
         });
 
-        const input = new main.InValue({ cancel: newCancel});
+        const input = new main.InValue({ cancel: newCancel });
 
-        Save('cancel', cancelId, input).then(async( ) => {
+        Save("cancel", cancelId, input).then(async () => {
             const result = await GetMany("cancel");
             cancels.set(result.cancels);
             changed = false;
         });
+    }
+
+    function cancelSave() {
+        fromCancel();
+        changed = false;
     }
 
     function enableDisable() {
@@ -43,8 +56,8 @@
     }
 
     function remove() {
-        Remove('cancel', cancelId).then(() => {
-            GetMany('cancel').then((res) => {
+        Remove("cancel", cancelId).then(() => {
+            GetMany("cancel").then((res) => {
                 cancels.set(res.cancels);
             });
         });
@@ -54,11 +67,8 @@
 <div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
     <h1 class="text-md text-white">If</h1>
 
-    <div
-        class="flex items-center justify-center gap-2 p-4 rounded-md mt-2"
-    >
-    <EntitySelect bind:entity={entity} {setChanged} />
-
+    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-2">
+        <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
         <select
@@ -86,11 +96,12 @@
     <h1 class="mt-2 text-md text-white">Then Cancel the Request</h1>
 
     <!-- Bottom buttons -->
-     <BottomButtons
-        changed={changed}
-        save={save}
-        remove={remove}
-        enableDisable={enableDisable}
+    <BottomButtons
+        {changed}
+        {save}
+        {cancelSave}
+        {remove}
+        {enableDisable}
         enabled={cancel.enabled}
     />
 </div>

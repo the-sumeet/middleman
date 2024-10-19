@@ -9,12 +9,22 @@
     import { parse } from "svelte/compiler";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+
     let changed = false;
-    let entity = delay.entity;
-    let op = delay.op;
-    let value = delay.value;
-    let delaySec = delay.delaySec;
     let error = "";
+    let entity;
+    let op;
+    let value;
+    let delaySec;
+
+    fromDelay();
+
+    function fromDelay() {
+        entity = delay.entity;
+        op = delay.op;
+        value = delay.value;
+        delaySec = delay.delaySec;
+    }
 
     function setChanged() {
         changed = true;
@@ -28,11 +38,9 @@
             error = "Delay seconds must be a number";
             return false;
         }
-        
     }
     // Go functions
     function save() {
-        
         if (validate() === false) {
             return;
         }
@@ -54,6 +62,11 @@
         });
     }
 
+    function cancelSave() {
+        fromDelay();
+        changed = false;
+    }
+
     function enableDisable() {
         delay.enabled = !delay.enabled;
         save();
@@ -72,7 +85,7 @@
     <h1 class="text-md text-white">If</h1>
 
     <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-2">
-\        <EntitySelect bind:entity={entity} {setChanged} />
+        \ <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
         <select
@@ -87,7 +100,7 @@
         </select>
 
         <input
-            bind:value={value}
+            bind:value
             on:input={setChanged}
             autocapitalize="off"
             autocorrect="off"
@@ -115,11 +128,12 @@
     {/if}
 
     <!-- Bottom buttons -->
-     <BottomButtons 
-        changed={changed} 
-        save={save} 
-        remove={remove} 
-        enableDisable={enableDisable} 
+    <BottomButtons
+        {changed}
+        {save}
+        {cancelSave}
+        {remove}
+        {enableDisable}
         enabled={delay.enabled}
     />
 </div>

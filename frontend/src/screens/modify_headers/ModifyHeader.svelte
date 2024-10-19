@@ -16,9 +16,17 @@
     const tabUnselectedStyle =
         "border-transparent  text-white whitespace-nowrap cursor-base focus:outline-none hover:border-gray-400";
     let changed = false;
-    let entity = modifyHeader.entity;
-    let op = modifyHeader.op;
-    let value = modifyHeader.value;
+    let entity;
+    let op;
+    let value;
+
+    fromModifyHeader();
+
+    function fromModifyHeader() {
+        entity = modifyHeader.entity;
+        op = modifyHeader.op;
+        value = modifyHeader.value;
+    }
 
     function setChanged() {
         changed = true;
@@ -88,6 +96,11 @@
         });
     }
 
+    function cancelSave() {
+        fromModifyHeader();
+        changed = false;
+    }
+
     function enableDisable() {
         modifyHeader.enabled = !modifyHeader.enabled;
         save();
@@ -106,7 +119,7 @@
     <h1 class="text-md text-white">If</h1>
 
     <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-4">
-        <EntitySelect bind:entity={entity} {setChanged} />
+        <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
         <select
@@ -217,11 +230,11 @@
 
     <!-- Bottom buttons -->
     <BottomButtons
-        changed={changed}
-        save={save}
-        remove={remove}
-        enableDisable={enableDisable}
+        {changed}
+        {save}
+        {cancelSave}
+        {remove}
+        {enableDisable}
         enabled={modifyHeader.enabled}
     />
-   
 </div>
