@@ -29,7 +29,7 @@
     import ModifyHeadersScreen from "../modify_headers/ModifyHeadersScreen.svelte";
     import ModifyRequestBodyScreen from "../modify_request_body/ModifyRequestBodyScreen.svelte";
     import ModifyResponseBodyScreen from "../modify_response_body/ModifyResponseBodyScreen.svelte";
-    
+
     let selectedRule;
     let currPage;
     const initAttributes = { enabled: true, entity: "host", op: "contains" };
