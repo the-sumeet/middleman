@@ -7,11 +7,10 @@
     import { modifyResponseBody } from "../../stores";
     import { GetMany } from "../../../wailsjs/go/main/App";
     import BottomButtons from "../../widgets/BottomButtons.svelte";
-    import { MODIFY_RESPONSE_BODY } from "../../../src/constants";
     import * as ace from "brace";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
     import { remove } from "../../../src/utils";
-    import { RULE_MODIFY_RESPONSE_BODY } from "../../../src/constants";
+    import { MODIFY_RESPONSE_BODY } from "../../../src/constants";
 
     import { onMount } from "svelte";
     import 'brace/mode/html';
@@ -129,7 +128,7 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(RULE_MODIFY_RESPONSE_BODY, modifyBodyId)}
+        remove={() => remove(MODIFY_RESPONSE_BODY, modifyBodyId)}
         {enableDisable}
         enabled={modifyBody.enabled}
     />

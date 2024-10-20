@@ -18,7 +18,6 @@
     import "brace/theme/dracula";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
     import { remove } from "../../../src/utils";
-    import { RULE_MODIFY_REQUEST_BODY } from "../../../src/constants";
 
     let editor;
     const editorId = `editor${modifyBodyId}`;
@@ -128,7 +127,7 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(RULE_MODIFY_REQUEST_BODY, modifyBodyId)}
+        remove={() => remove(MODIFY_REQUEST_BODY, modifyBodyId)}
 
         {enableDisable}
         enabled={modifyBody.enabled}
