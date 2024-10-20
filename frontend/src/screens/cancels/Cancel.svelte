@@ -9,7 +9,7 @@
     import { cancels } from "../../../src/stores";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
-    import { RULE_CANCEL } from "src/constants";
+    import { RULE_CANCEL } from "../../../src/constants";
     import { remove } from "../../../src/utils";
 
     let changed = false;
