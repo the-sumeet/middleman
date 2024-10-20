@@ -9,6 +9,8 @@
     import { parse } from "svelte/compiler";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+    import { remove } from "../../../src/utils";
+    import { RULE_DELAY } from "../../../src/constants";
 
     let changed = false;
     let error = "";
@@ -71,14 +73,6 @@
         delay.enabled = !delay.enabled;
         save();
     }
-
-    function remove() {
-        Remove("delay", delayId).then(() => {
-            GetMany("delay").then((res) => {
-                delays.set(res.delays);
-            });
-        });
-    }
 </script>
 
 <div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
@@ -132,7 +126,7 @@
         {changed}
         {save}
         {cancelSave}
-        {remove}
+        remove={() => remove(RULE_DELAY, delayId)}
         {enableDisable}
         enabled={delay.enabled}
     />

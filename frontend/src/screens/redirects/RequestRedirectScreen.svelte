@@ -1,7 +1,7 @@
 <script>
     import { onDestroy } from "svelte";
-    import Redirect from "./redirect.svelte";
-    import { redirects } from "../../../src/stores";
+    import Redirect from "./RedirectRequest.svelte";
+    import { redirects } from "../../stores";
     
     let redirectsList = [];
 
