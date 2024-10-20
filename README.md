@@ -1,8 +1,6 @@
 # Middleman
 
-## About
-
-This is the official Wails Svelte template.
+Middleman is a tool that allows you to intercept and modify HTTP requests and responses. It is useful for testing and debugging web applications.
 
 ## Live Development
 
@@ -15,18 +13,6 @@ to this in your browser, and you can call your Go code from devtools.
 
 To build a redistributable, production mode package, use `wails build`.
 
-## AnTLR
-
-```
-java -jar antlr-4.13.2-complete.jar -Dlanguage=Go -visitor Expression.g4 -o parser
-```
-
-## Gen Certificate
-
-```
-openssl genrsa -out ca.key 2048
-openssl req -new -x509 -key ca.key -out ca.crt
-```
 
 ## Rules
 
