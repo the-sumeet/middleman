@@ -65,7 +65,7 @@ func main() {
 		},
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
-				TitlebarAppearsTransparent: true,
+				TitlebarAppearsTransparent: false,
 				HideTitle:                  false,
 				HideTitleBar:               false,
 				FullSizeContent:            false,
@@ -74,13 +74,13 @@ func main() {
 				// OnFileOpen:                 app.onFileOpen,
 				// OnUrlOpen:                  app.onUrlOpen,
 			},
-			Appearance:           mac.NSAppearanceNameDarkAqua,
+			// Appearance:           mac.NSAppearanceNameDarkAqua,
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  false,
 			About: &mac.AboutInfo{
-				Title:   "My Application",
-				Message: "© 2021 Me",
-				// Icon:    icon,
+				Title:   "Middleman",
+				Message: "© 2024 Middleman",
+				// Icon:    []byte("./logo.png"),
 			},
 		},
 		Linux: &linux.Options{
