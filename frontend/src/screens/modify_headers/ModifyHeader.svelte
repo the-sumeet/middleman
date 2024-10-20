@@ -10,7 +10,7 @@
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
     import { remove } from "../../../src/utils";
-    import { RULE_MODIFY_HEADER } from "../../../src/constants";
+    import { RULE_MOD_HEADER } from "../../../src/constants";
 
     let requestTab = true;
     const tabSelectedStyle =
@@ -227,7 +227,7 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(RULE_MODIFY_HEADER, modifyHeaderId)}
+        remove={() => remove(RULE_MOD_HEADER, modifyHeaderId)}
         {enableDisable}
         enabled={modifyHeader.enabled}
     />
