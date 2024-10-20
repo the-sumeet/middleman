@@ -2,9 +2,15 @@
 
 Middleman is a tool that allows you to intercept and modify HTTP requests and responses. It is useful for testing and debugging web applications.
 
-# Demo Video
+## Demo Video
 
 [Watch the video](https://www.youtube.com/watch?v=tVchu5zLN_o)
+
+## How to Use?
+
+- Add CA Certificate to your browser or system. Path given in the settings.
+- Start the Middleman.
+- Use middleman server port as proxy in your browser or system.
 
 ## Live Development
 
