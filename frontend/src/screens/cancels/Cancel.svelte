@@ -9,6 +9,8 @@
     import { cancels } from "../../../src/stores";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+    import { RULE_CANCEL } from "src/constants";
+    import { remove } from "../../../src/utils";
 
     let changed = false;
     let entity;
@@ -54,14 +56,6 @@
         cancel.enabled = !cancel.enabled;
         save();
     }
-
-    function remove() {
-        Remove("cancel", cancelId).then(() => {
-            GetMany("cancel").then((res) => {
-                cancels.set(res.cancels);
-            });
-        });
-    }
 </script>
 
 <div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
@@ -100,7 +94,7 @@
         {changed}
         {save}
         {cancelSave}
-        {remove}
+        remove={() => remove(RULE_CANCEL, cancelId)}
         {enableDisable}
         enabled={cancel.enabled}
     />

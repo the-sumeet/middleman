@@ -11,7 +11,7 @@
         modifyResponseBody,
     } from "../../stores";
     import { onDestroy } from "svelte";
-    import RedirectList from "../../screens/redirects/redirect_list.svelte";
+    import RedirectList from "../redirects/RequestRedirectScreen.svelte";
     import {
         RULE_CANCEL,
         RULE_MOD_HEADER,

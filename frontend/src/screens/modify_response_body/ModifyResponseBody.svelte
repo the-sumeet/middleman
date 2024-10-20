@@ -10,6 +10,8 @@
     import { MODIFY_RESPONSE_BODY } from "../../../src/constants";
     import * as ace from "brace";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+    import { remove } from "../../../src/utils";
+    import { RULE_MODIFY_RESPONSE_BODY } from "../../../src/constants";
 
     import { onMount } from "svelte";
     import 'brace/mode/html';
@@ -74,13 +76,6 @@
         save();
     }
 
-    function remove() {
-        Remove(MODIFY_RESPONSE_BODY, modifyBodyId).then(async () => {
-            const result = await GetMany(MODIFY_RESPONSE_BODY);
-            modifyResponseBody.set(result.modifyResponseBody);
-            changed = false;
-        });
-    }
     onMount(() => {
         editor = ace.edit(editorId);
         editor.setTheme("ace/theme/dracula");
@@ -134,7 +129,7 @@
         {changed}
         {save}
         {cancelSave}
-        {remove}
+        remove={() => remove(RULE_MODIFY_RESPONSE_BODY, modifyBodyId)}
         {enableDisable}
         enabled={modifyBody.enabled}
     />

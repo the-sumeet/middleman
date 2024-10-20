@@ -9,6 +9,8 @@
     import { GetMany } from "../../../wailsjs/go/main/App";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
+    import { remove } from "../../../src/utils";
+    import { RULE_MODIFY_HEADER } from "../../../src/constants";
 
     let requestTab = true;
     const tabSelectedStyle =
@@ -104,14 +106,6 @@
     function enableDisable() {
         modifyHeader.enabled = !modifyHeader.enabled;
         save();
-    }
-
-    function remove() {
-        Remove("modifyHeader", modifyHeaderId).then(async () => {
-            const result = await GetMany("modifyHeader");
-            modifyHeaders.set(result.modifyHeaders);
-            changed = false;
-        });
     }
 </script>
 
@@ -233,7 +227,7 @@
         {changed}
         {save}
         {cancelSave}
-        {remove}
+        remove={() => remove(RULE_MODIFY_HEADER, modifyHeaderId)}
         {enableDisable}
         enabled={modifyHeader.enabled}
     />
