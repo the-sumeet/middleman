@@ -2,6 +2,10 @@
 
 Middleman is a tool that allows you to intercept and modify HTTP requests and responses. It is useful for testing and debugging web applications.
 
+# Demo Video
+
+[Watch the video](https://www.youtube.com/watch?v=tVchu5zLN_o)
+
 ## Live Development
 
 To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
