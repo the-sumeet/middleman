@@ -12,6 +12,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
+	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed all:frontend/dist
@@ -62,6 +63,18 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
+		},
+		Windows: &windows.Options{
+			WebviewIsTransparent:              false,
+			WindowIsTranslucent:               false,
+			BackdropType:                      windows.Mica,
+			DisablePinchZoom:                  false,
+			DisableWindowIcon:                 false,
+			DisableFramelessWindowDecorations: false,
+			WebviewUserDataPath:               "",
+			WebviewBrowserPath:                "",
+			Theme:                             windows.SystemDefault,
+			// Class name for the window. If empty, 'wailsWindow' will be used.
 		},
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
