@@ -1,11 +1,12 @@
 <script>
   export let log;
 
+  import RuleIcons from "./RuleIcons.svelte";
+
   console.log(log);
 
   function getUrl() {
     return `${log.scheme}://${log.host}${log.path}`;
-
   }
 </script>
 
@@ -16,15 +17,13 @@
     <!-- Datetime -->
     <p class="text-white text-xs">{new Date(log.timestamp)}</p>
 
+    {#if log.cancelled || log.redirected || log.requestHeaderModified || log.responseHeaderModified || log.requestBodyModified || log.responseBodyModified || log.delayed}
+      <RuleIcons {log} />
+    {/if}
+
     <div class="mt-2 flex space-x-4 justify-between">
       <!-- Right Side -->
       <div class="flex gap-2 items-center">
-        <!-- Rule Icons -->
-        {#if log.cancelled}
-          <i class="text-2xl text-yellow-500 bi bi-x-square" title="Cancelled"
-          ></i>
-        {/if}
-
         <!-- Text -->
         <div class="flex gap-2 text-md text-emerald-500">
           <div>{log.method}</div>
