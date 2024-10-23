@@ -32,8 +32,8 @@
       ></i>
     {/if}
 
-    {#if log.delayed}
-      <i class="text-md text-yellow-500 bi bi-clock" title="Delayed"
+    {#if log.delayed != 0}
+      <i class="text-md text-yellow-500 bi bi-clock" title="Delayed by {log.delayed} second(s)"
       ></i>
     {/if}
 

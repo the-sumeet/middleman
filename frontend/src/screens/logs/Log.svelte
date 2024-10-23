@@ -17,7 +17,7 @@
     <!-- Datetime -->
     <p class="text-white text-xs">{new Date(log.timestamp)}</p>
 
-    {#if log.cancelled || log.redirected || log.requestHeaderModified || log.responseHeaderModified || log.requestBodyModified || log.responseBodyModified || log.delayed}
+    {#if log.cancelled || log.redirected || log.requestHeaderModified || log.responseHeaderModified || log.requestBodyModified || log.responseBodyModified || log.delayed != 0}
       <RuleIcons {log} />
     {/if}
 
