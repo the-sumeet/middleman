@@ -11,7 +11,7 @@
 
 <div class="mt-4">
   <div
-    class="mt-4 flex flex-col bg-gray-800 p-4 rounded border-2 border-gray-700 items-start overflow-x-auto"
+    class="flex flex-col bg-gray-800 p-2 rounded border-2 border-gray-700 items-start overflow-x-auto"
   >
     <!-- Datetime -->
     <p class="text-white text-xs">{new Date(log.timestamp)}</p>
@@ -26,7 +26,7 @@
         {/if}
 
         <!-- Text -->
-        <div class="gap-2 text-lg text-emerald-500">
+        <div class="flex gap-2 text-md text-emerald-500">
           <div>{log.method}</div>
           <div class="break-all">{getUrl()}</div>
         </div>
