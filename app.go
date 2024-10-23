@@ -39,7 +39,7 @@ type HttpRequestLog struct {
 	ResponseHeaderModified bool      `json:"responseHeaderModified"`
 	RequestBodyModified    bool      `json:"requestBodyModified"`
 	ResponseBodyModified   bool      `json:"responseBodyModified"`
-	Delayed                bool      `json:"delayed"`
+	Delayed                int       `json:"delayed"`
 }
 
 type App struct {
@@ -286,7 +286,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				}
 				if matches(delay.Request, resp.Request) {
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
-					a.httpRequests[ctx.UserData.(*State).requestId].Delayed = true
+					a.httpRequests[ctx.UserData.(*State).requestId].Delayed = delay.DelaySec
 				}
 			}
 		}
