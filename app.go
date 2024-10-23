@@ -26,14 +26,20 @@ type State struct {
 }
 
 type HttpRequestLog struct {
-	Timestamp    time.Time `json:"timestamp"`
-	Scheme       string    `json:"scheme"`
-	Method       string    `json:"method"`
-	Host         string    `json:"host"`
-	Path         string    `json:"path"`
-	RequestBody  string    `json:"requestBody"`
-	ResponseBody string    `json:"responseBody"`
-	Cancelled    bool      `json:"cancelled"`
+	Timestamp              time.Time `json:"timestamp"`
+	Scheme                 string    `json:"scheme"`
+	Method                 string    `json:"method"`
+	Host                   string    `json:"host"`
+	Path                   string    `json:"path"`
+	RequestBody            string    `json:"requestBody"`
+	ResponseBody           string    `json:"responseBody"`
+	Cancelled              bool      `json:"cancelled"`
+	Redirected             bool      `json:"redirected"`
+	RequestHeaderModified  bool      `json:"requestHeaderModified"`
+	ResponseHeaderModified bool      `json:"responseHeaderModified"`
+	RequestBodyModified    bool      `json:"requestBodyModified"`
+	ResponseBodyModified   bool      `json:"responseBodyModified"`
+	Delayed                bool      `json:"delayed"`
 }
 
 type App struct {
