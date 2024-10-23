@@ -26,11 +26,14 @@ type State struct {
 }
 
 type HttpRequestLog struct {
-	Method       string `json:"method"`
-	Host         string `json:"host"`
-	Path         string `json:"path"`
-	RequestBody  string `json:"requestBody"`
-	ResponseBody string `json:"responseBody"`
+	Timestamp    time.Time `json:"timestamp"`
+	Scheme       string    `json:"scheme"`
+	Method       string    `json:"method"`
+	Host         string    `json:"host"`
+	Path         string    `json:"path"`
+	RequestBody  string    `json:"requestBody"`
+	ResponseBody string    `json:"responseBody"`
+	Cancelled    bool      `json:"cancelled"`
 }
 
 type App struct {
@@ -117,9 +120,11 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		// Add request to logs
 		a.httpRequestsLock.Lock()
 		a.httpRequests = append(a.httpRequests, HttpRequestLog{
-			Method: r.Method,
-			Host:   r.Host,
-			Path:   r.URL.Path,
+			Timestamp: time.Now(),
+			Scheme:    r.URL.Scheme,
+			Method:    r.Method,
+			Host:      r.Host,
+			Path:      r.URL.Path,
 		})
 		requestLogId := len(a.httpRequests) - 1
 		a.httpRequestsLock.Unlock()
@@ -141,6 +146,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 				if matches(Request(cancel), r) {
 					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
+					a.httpRequests[requestLogId].Cancelled = true
 					res := &http.Response{
 						Request:    r,
 						StatusCode: 418,
