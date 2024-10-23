@@ -159,6 +159,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
 						Header:     make(http.Header),
 					}
+
+					// ToDo: Save request and response body to log
+
 					return nil, res
 				}
 			}
@@ -189,6 +192,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 								"Location": []string{redirect.ToValue},
 							},
 						}
+
+						// ToDo: Save request and response body to log
+
 						return nil, res
 					}
 				}
@@ -246,6 +252,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 				}
 			}
 		}
+
+		// ToDo: Save request body to log
+
 		return r, nil
 	}
 }
@@ -323,7 +332,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				}
 			}
 		}
-
+		// ToDo: Save response body to log
 		return resp
 	}
 }
