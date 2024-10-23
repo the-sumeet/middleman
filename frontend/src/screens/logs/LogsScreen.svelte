@@ -10,7 +10,7 @@
   });
 </script>
 
-<div class="flex flex-col h-screen mx-auto p-4 w-full">
+<div class="flex flex-col h-screen p-4 w-full">
   <h2 class="text-2xl font-medium text-white">Logs</h2>
 
   <div class="flex flex-col overflow-y-auto border-gray-700">

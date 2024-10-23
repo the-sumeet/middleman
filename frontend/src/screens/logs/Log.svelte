@@ -4,7 +4,8 @@
   console.log(log);
 
   function getUrl() {
-    return log.scheme + "://" + log.host + log.path;
+    return `${log.scheme}://${log.host}${log.path}`;
+
   }
 </script>
 
@@ -27,7 +28,7 @@
         <!-- Text -->
         <div class="gap-2 text-lg text-emerald-500">
           <div>{log.method}</div>
-          <div class="">{getUrl() + getUrl() + getUrl()}</div>
+          <div class="break-all">{getUrl()}</div>
         </div>
       </div>
 
