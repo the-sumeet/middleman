@@ -377,10 +377,9 @@ func (a *App) StartProxy(port int) ReturnValue {
 	goproxy.MitmConnect = &goproxy.ConnectAction{Action: goproxy.ConnectMitm, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
 	goproxy.HTTPMitmConnect = &goproxy.ConnectAction{Action: goproxy.ConnectHTTPMitm, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
 	goproxy.RejectConnect = &goproxy.ConnectAction{Action: goproxy.ConnectReject, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
-	//
 
 	if err := PortAvailable("localhost", fmt.Sprintf("%d", port)); err == nil {
-		log.Println("Port is not available")
+		a.logger.Info(fmt.Sprintf("Port %d is not available", port))
 		return ReturnValue{Error: fmt.Sprintf("Port %d is not available", port)}
 	}
 
@@ -391,7 +390,7 @@ func (a *App) StartProxy(port int) ReturnValue {
 		a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
 		log.Fatal("Error start listening: ", err)
 	}
-	log.Println("Error start listening: ", portString)
+	a.logger.Info(fmt.Sprintf("Started listening on: %s", portString))
 
 	go func() {
 
@@ -406,13 +405,13 @@ func (a *App) StartProxy(port int) ReturnValue {
 				a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
 				log.Fatal("Error starting server: ", err)
 			}
-			log.Println("Proxy serving started")
+			a.logger.Info("Proxy server started")
 		}()
 
-		log.Println("Proxy server goroutine started, waiting to stop")
+		a.logger.Info("Proxy server goroutine started, waiting to stop")
 		<-a.proxyStartStoop
 		l.Close()
-		log.Println("Proxy TCP listener closed")
+		a.logger.Info("Proxy TCP listener closed")
 	}()
 
 	return ReturnValue{}
