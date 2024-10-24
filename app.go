@@ -26,20 +26,22 @@ type State struct {
 }
 
 type HttpRequestLog struct {
-	Timestamp              time.Time `json:"timestamp"`
-	Scheme                 string    `json:"scheme"`
-	Method                 string    `json:"method"`
-	Host                   string    `json:"host"`
-	Path                   string    `json:"path"`
-	RequestBody            string    `json:"requestBody"`
-	ResponseBody           string    `json:"responseBody"`
-	Cancelled              bool      `json:"cancelled"`
-	Redirected             bool      `json:"redirected"`
-	RequestHeaderModified  bool      `json:"requestHeaderModified"`
-	ResponseHeaderModified bool      `json:"responseHeaderModified"`
-	RequestBodyModified    bool      `json:"requestBodyModified"`
-	ResponseBodyModified   bool      `json:"responseBodyModified"`
-	Delayed                int       `json:"delayed"`
+	Timestamp              time.Time   `json:"timestamp"`
+	Scheme                 string      `json:"scheme"`
+	Method                 string      `json:"method"`
+	Host                   string      `json:"host"`
+	Path                   string      `json:"path"`
+	RequestHeaders         http.Header `json:"requestHeaders"`
+	ResponseHeaders        http.Header `json:"responseHeaders"`
+	RequestBody            string      `json:"requestBody"`
+	ResponseBody           string      `json:"responseBody"`
+	Cancelled              bool        `json:"cancelled"`
+	Redirected             bool        `json:"redirected"`
+	RequestHeaderModified  bool        `json:"requestHeaderModified"`
+	ResponseHeaderModified bool        `json:"responseHeaderModified"`
+	RequestBodyModified    bool        `json:"requestBodyModified"`
+	ResponseBodyModified   bool        `json:"responseBodyModified"`
+	Delayed                int         `json:"delayed"`
 }
 
 type App struct {
@@ -120,6 +122,16 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
+func (a *App) requestToLog(r *http.Request, logId int) {
+
+	a.httpRequests[logId].RequestHeaders = r.Header
+
+}
+
+func (a *App) responseToLog(r *http.Response, logId int) {
+	a.httpRequests[logId].ResponseHeaders = r.Header
+}
+
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 
@@ -153,16 +165,17 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
 					a.httpRequests[requestLogId].Cancelled = true
-					res := &http.Response{
+					resp := &http.Response{
 						Request:    r,
 						StatusCode: 418,
 						Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
 						Header:     make(http.Header),
 					}
 
-					// ToDo: Save request and response body to log
+					a.requestToLog(r, requestLogId)
+					a.responseToLog(resp, requestLogId)
 
-					return nil, res
+					return nil, resp
 				}
 			}
 		}
@@ -184,7 +197,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					if matches(redirect.Request, r) {
 						ctx.UserData.(*State).IsRedirected = true
 						a.httpRequests[requestLogId].Redirected = true
-						res := &http.Response{
+						resp := &http.Response{
 							Request:    r,
 							StatusCode: 307,
 							Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
@@ -193,9 +206,10 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 							},
 						}
 
-						// ToDo: Save request and response body to log
+						a.requestToLog(r, requestLogId)
+						a.responseToLog(resp, requestLogId)
 
-						return nil, res
+						return nil, resp
 					}
 				}
 			}
@@ -254,6 +268,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		}
 
 		// ToDo: Save request body to log
+		a.requestToLog(r, requestLogId)
 
 		return r, nil
 	}
@@ -332,7 +347,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				}
 			}
 		}
-		// ToDo: Save response body to log
+		a.responseToLog(resp, ctx.UserData.(*State).requestId)
 		return resp
 	}
 }
