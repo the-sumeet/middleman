@@ -1,4 +1,29 @@
 @tailwind base;
+/* 
+* {
+    scrollbar-width: thin;
+    scrollbar-color: red red;
+} */
+
+
+/* *::-webkit-scrollbar {
+    width: 4px;
+}
+*::-webkit-scrollbar:horizontal {
+    height:4px;
+}
+
+*::-webkit-scrollbar-track {
+    background: white;
+    border-radius: 2px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 2px;
+    border: 1px solid red;
+} */
+
 @tailwind components;
 @tailwind utilities;
 @tailwindcss forms;

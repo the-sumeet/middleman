@@ -9,6 +9,16 @@ export const scrollToBottom = async (el) => {
   el.scroll({ top: el.scrollHeight, behavior: 'smooth' });
 };
 
+export const isAtBottom = async (el) => {
+  return el.scrollHeight - el.scrollTop === el.clientHeight;
+}
+
+export const scrollToBottomIfAtBottom = async (el) => {
+  if (await isAtBottom(el)) {
+    scrollToBottom(el);
+  }
+}
+
 
 export const remove = (type, id) => {
   if (type === RULE_DELAY) {

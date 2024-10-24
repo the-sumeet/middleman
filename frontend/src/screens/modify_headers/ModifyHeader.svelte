@@ -10,13 +10,9 @@
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
     import { remove } from "../../../src/utils";
-    import { RULE_MOD_HEADER } from "../../../src/constants";
+    import { RULE_MOD_HEADER, tabSelectedStyle, tabUnselectedStyle } from "../../../src/constants";
 
     let requestTab = true;
-    const tabSelectedStyle =
-        "border-blue-400 text-blue-300 whitespace-nowrap focus:outline-none";
-    const tabUnselectedStyle =
-        "border-transparent  text-white whitespace-nowrap cursor-base focus:outline-none hover:border-gray-400";
     let changed = false;
     let entity;
     let op;
@@ -145,7 +141,7 @@
     >
         <button
             on:click={() => (requestTab = true)}
-            class="inline-flex items-center h-10 px-2 py-2 -mb-px text-center bg-transparent border-b-2 sm:px-4 -px-1 {requestTab ===
+            class="inline-flex whitespace-nowrap items-center h-10 px-2 py-2 -mb-px text-center bg-transparent border-b-2 sm:px-4 -px-1 {requestTab ===
             true
                 ? tabSelectedStyle
                 : tabUnselectedStyle}"
@@ -155,7 +151,7 @@
 
         <button
             on:click={() => (requestTab = false)}
-            class="inline-flex items-center h-10 px-2 py-2 -mb-px text-center bg-transparent border-b-2 sm:px-4 -px-1 {requestTab ===
+            class="inline-flex whitespace-nowrap items-center h-10 px-2 py-2 -mb-px text-center bg-transparent border-b-2 sm:px-4 -px-1 {requestTab ===
             false
                 ? tabSelectedStyle
                 : tabUnselectedStyle}"

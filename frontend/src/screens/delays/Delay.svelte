@@ -79,7 +79,7 @@
     <h1 class="text-md text-white">If</h1>
 
     <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-2">
-        \ <EntitySelect bind:entity {setChanged} />
+        <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
         <select

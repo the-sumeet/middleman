@@ -59,7 +59,7 @@
       ? activePageCss
       : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
   >
-    <i class="text-2xl bi bi-journal-text"></i>
+    <i class="text-2xl bi bi-arrow-down-up"></i>
   </a>
 
   <!-- <a

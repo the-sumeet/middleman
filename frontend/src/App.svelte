@@ -21,7 +21,7 @@
   });
 </script>
 
-<aside class="flex bg-gray-900">
+<div class="flex bg-gray-900">
 
   <Sidebar />
 
@@ -37,4 +37,4 @@
   <HomeScreen />
   {/if}
 
-</aside>
+</div>
