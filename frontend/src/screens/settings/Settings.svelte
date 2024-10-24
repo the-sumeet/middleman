@@ -42,7 +42,7 @@
 <div class="p-4 w-full">
     <!-- Certificates -->
     <div>
-        <h1 class="text-white font-bold text-xl">Certificates</h1>
+        <h2 class="text-2xl font-medium text-gray-800 dark:text-white">Certificates</h2>
 
         <div class="mt-4">
             <label

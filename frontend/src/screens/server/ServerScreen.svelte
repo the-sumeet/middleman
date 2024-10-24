@@ -70,8 +70,8 @@
     });
 </script>
 
-<div class="flex flex-col w-full">
-    <h1 class="mt-4 text-2xl text-white mx-auto">Proxy Server</h1>
+<div class="flex flex-col w-full p-4">
+    <h1 class="text-2xl font-medium text-gray-800 dark:text-white">Proxy Server</h1>
 
     <div class="mt-10 flex gap-2 mx-auto items-center">
         <input
