@@ -17,6 +17,12 @@ export const SERVER = "server";
 export const SETTINGS = "settings";
 export const LOGS = "logs";
 
+// Tabs CSS
+export const tabSelectedStyle =
+"border-blue-400 text-blue-300  focus:outline-none";
+export const tabUnselectedStyle =
+"border-transparent  text-white cursor-base focus:outline-none hover:border-gray-400";
+
 // Rule info
 export const RULE_INFO = {
     'redirect': "Redirects the request to the given URL. Status 307, and 'Location' header is added with value of given URL.",
