@@ -26,11 +26,22 @@ type State struct {
 }
 
 type HttpRequestLog struct {
-	Method       string `json:"method"`
-	Host         string `json:"host"`
-	Path         string `json:"path"`
-	RequestBody  string `json:"requestBody"`
-	ResponseBody string `json:"responseBody"`
+	Timestamp              time.Time   `json:"timestamp"`
+	Scheme                 string      `json:"scheme"`
+	Method                 string      `json:"method"`
+	Host                   string      `json:"host"`
+	Path                   string      `json:"path"`
+	RequestHeaders         http.Header `json:"requestHeaders"`
+	ResponseHeaders        http.Header `json:"responseHeaders"`
+	RequestBody            string      `json:"requestBody"`
+	ResponseBody           string      `json:"responseBody"`
+	Cancelled              bool        `json:"cancelled"`
+	Redirected             bool        `json:"redirected"`
+	RequestHeaderModified  bool        `json:"requestHeaderModified"`
+	ResponseHeaderModified bool        `json:"responseHeaderModified"`
+	RequestBodyModified    bool        `json:"requestBodyModified"`
+	ResponseBodyModified   bool        `json:"responseBodyModified"`
+	Delayed                int         `json:"delayed"`
 }
 
 type App struct {
@@ -111,15 +122,27 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
+func (a *App) requestToLog(r *http.Request, logId int) {
+
+	a.httpRequests[logId].RequestHeaders = r.Header
+
+}
+
+func (a *App) responseToLog(r *http.Response, logId int) {
+	a.httpRequests[logId].ResponseHeaders = r.Header
+}
+
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 
 		// Add request to logs
 		a.httpRequestsLock.Lock()
 		a.httpRequests = append(a.httpRequests, HttpRequestLog{
-			Method: r.Method,
-			Host:   r.Host,
-			Path:   r.URL.Path,
+			Timestamp: time.Now(),
+			Scheme:    r.URL.Scheme,
+			Method:    r.Method,
+			Host:      r.Host,
+			Path:      r.URL.Path,
 		})
 		requestLogId := len(a.httpRequests) - 1
 		a.httpRequestsLock.Unlock()
@@ -128,7 +151,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		ctx.UserData = &State{requestId: requestLogId}
 
 		// Cancels
-		cancels, err := a.database.GetMany("cancel")
+		cancels, err := a.database.GetMany(CANCEL)
 		if err != nil {
 			a.logger.Error(fmt.Sprintf("Error getting cancels: %s", err))
 			log.Fatal("Error getting cancels: ", err)
@@ -141,13 +164,18 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 				if matches(Request(cancel), r) {
 					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
-					res := &http.Response{
+					a.httpRequests[requestLogId].Cancelled = true
+					resp := &http.Response{
 						Request:    r,
 						StatusCode: 418,
 						Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
 						Header:     make(http.Header),
 					}
-					return nil, res
+
+					a.requestToLog(r, requestLogId)
+					a.responseToLog(resp, requestLogId)
+
+					return nil, resp
 				}
 			}
 		}
@@ -168,8 +196,8 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					}
 					if matches(redirect.Request, r) {
 						ctx.UserData.(*State).IsRedirected = true
-
-						res := &http.Response{
+						a.httpRequests[requestLogId].Redirected = true
+						resp := &http.Response{
 							Request:    r,
 							StatusCode: 307,
 							Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
@@ -177,7 +205,11 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 								"Location": []string{redirect.ToValue},
 							},
 						}
-						return nil, res
+
+						a.requestToLog(r, requestLogId)
+						a.responseToLog(resp, requestLogId)
+
+						return nil, resp
 					}
 				}
 			}
@@ -194,6 +226,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						continue
 					}
 					if matches(modResBody.Request, r) {
+						a.httpRequests[requestLogId].RequestBodyModified = true
 						a.logger.Info("ModifyRequestBody  rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
 						r.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
 					}
@@ -218,18 +251,25 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 							if v.Action == "add" {
 								a.logger.Info("Adding request header", "name", v.Name, "value", v.Value, "action", v.Action)
 								r.Header.Add(v.Name, v.Value)
+								a.httpRequests[requestLogId].RequestHeaderModified = true
 							} else if v.Action == "remove" {
 								a.logger.Info("Removing request header: ", "name", v.Name, "value", v.Value)
 								r.Header.Del(v.Name)
+								a.httpRequests[requestLogId].RequestHeaderModified = true
 							} else if v.Action == "override" {
 								a.logger.Info("Overriding request header: ", "name", v.Name, "value", v.Value)
 								r.Header.Set(v.Name, v.Value)
+								a.httpRequests[requestLogId].RequestHeaderModified = true
 							}
 						}
 					}
 				}
 			}
 		}
+
+		// ToDo: Save request body to log
+		a.requestToLog(r, requestLogId)
+
 		return r, nil
 	}
 }
@@ -251,6 +291,8 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					}
 					if matches(modResBody.Request, resp.Request) {
 						resp.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
+						a.httpRequests[ctx.UserData.(*State).requestId].ResponseBodyModified = true
+
 					}
 				}
 			}
@@ -268,6 +310,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				}
 				if matches(delay.Request, resp.Request) {
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
+					a.httpRequests[ctx.UserData.(*State).requestId].Delayed = delay.DelaySec
 				}
 			}
 		}
@@ -290,18 +333,21 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 						if v.Action == "add" {
 							a.logger.Info("Adding response header", "name", v.Name, "value", v.Value)
 							resp.Header.Add(v.Name, v.Value)
+							a.httpRequests[ctx.UserData.(*State).requestId].ResponseHeaderModified = true
 						} else if v.Action == "remove" {
 							a.logger.Info("Removing response header: ", "name", v.Name, "value", v.Value)
 							resp.Header.Del(v.Name)
+							a.httpRequests[ctx.UserData.(*State).requestId].ResponseHeaderModified = true
 						} else if v.Action == "override" {
 							a.logger.Info("Overriding response header: ", "name", v.Name, "value", v.Value)
 							resp.Header.Set(v.Name, v.Value)
+							a.httpRequests[ctx.UserData.(*State).requestId].ResponseHeaderModified = true
 						}
 					}
 				}
 			}
 		}
-
+		a.responseToLog(resp, ctx.UserData.(*State).requestId)
 		return resp
 	}
 }
