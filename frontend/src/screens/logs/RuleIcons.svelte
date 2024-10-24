@@ -1,7 +1,7 @@
 <script>
     export let log;
 </script>
-<div class="flex mt-2">
+<div class="flex gap-2 mt-2">
     {#if log.cancelled}
       <i class="text-md text-yellow-500 bi bi-x-square" title="Cancelled"
       ></i>
