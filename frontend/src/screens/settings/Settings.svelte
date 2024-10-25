@@ -1,13 +1,14 @@
 <script>
     import { GetConfig, GenerateCert } from "../../../wailsjs/go/main/App";
     import { onMount } from "svelte";
-    import { AddConfigPort } from "../../../wailsjs/go/main/App";
+    import { AddProxyPort, AddWebPort } from "../../../wailsjs/go/main/App";
+    import PortSetting from "./PortSetting.svelte";
 
     let certPath;
     let generatingCert = false;
     // Port
-    let port;
-    let portChanged = false;
+    let proxyServerPort;
+    let webServerPort;
     let portError = "";
 
     function generateCert() {
@@ -20,29 +21,20 @@
             generatingCert = false;
         });
     }
-
-    function savePort() {
-        if (port.length != 4) {
-            portError = "Port must be of length 4";
-            return;
-        }
-        AddConfigPort(port).then(() => {
-            portError = "";
-            portChanged = false;
-        });
-    }
-
     onMount(async () => {
         const config = await GetConfig();
         certPath = config.certPath;
-        port = config.serverPort;
+        proxyServerPort = config.proxyServerPort;
+        webServerPort = config.webServerPort;
     });
 </script>
 
 <div class="p-4 w-full">
     <!-- Certificates -->
     <div>
-        <h2 class="text-2xl font-medium text-gray-800 dark:text-white">Certificates</h2>
+        <h2 class="text-2xl font-medium text-gray-800 dark:text-white">
+            Certificates
+        </h2>
 
         <div class="mt-4">
             <label
@@ -74,8 +66,24 @@
         </button>
     </div>
 
-    <!-- Proxy Server -->
     <div class="mt-8">
+        <PortSetting
+        title="Proxy Server Port"
+        description="Default port for proxy server to run on"
+        port={proxyServerPort}
+        addPortFunc={AddProxyPort}
+    />
+
+    <PortSetting
+        title="Web Server Port"
+        description="Default port for web server to run on"
+        port={webServerPort}
+        addPortFunc={AddWebPort}
+    />
+    </div>
+
+    <!-- Proxy Server -->
+    <!-- <div class="mt-8">
         <h1 class="text-white font-bold text-xl">Proxy Server</h1>
 
         <div class="mt-4">
@@ -95,7 +103,7 @@
         </div>
 
         {#if portError != ""}
-        <p class="text-red-500">{portError}</p>
+            <p class="text-red-500">{portError}</p>
         {/if}
 
         {#if portChanged === true}
@@ -106,5 +114,5 @@
                 <i class="bi bi-floppy"></i>
             </button>
         {/if}
-    </div>
+    </div> -->
 </div>
