@@ -1,6 +1,6 @@
 <script>
   import "bootstrap-icons/font/bootstrap-icons.css";
-  import { currentRule, serverRunning } from "./stores";
+  import { currentRule, webServerRunning, proxyServerRunning } from "./stores";
   import { onDestroy } from "svelte";
   import { StartProxy, StopProxy } from "../wailsjs/go/main/App";
   import { currentPage } from "./stores";
@@ -43,12 +43,20 @@
     class="{inactivePageCss} p-1.5 focus:outline-nones transition-colors duration-200 rounded-lg"
   >
     <button type="button" class="relative">
-      <i class="text-2xl bi bi-hdd-network"></i>
+      <!-- Web server indicator -->
       <div
-        class="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white {$serverRunning
+        class="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white {$webServerRunning
+          ? 'bg-green-500'
+          : 'bg-green-500'} border-2 border-white rounded-full -bottom-2 -end-2 dark:border-gray-900"
+      ></div>
+      <i class="text-2xl bi bi-hdd-network"></i>
+      <!-- Proxy server indicator -->
+      <div
+        class="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white {$proxyServerRunning
           ? 'bg-green-500'
           : 'bg-red-500'} border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"
       ></div>
+      
     </button>
   </a>
 
