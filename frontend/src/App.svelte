@@ -5,7 +5,7 @@
   import HomeScreen from "./screens/home/HomeScreen.svelte";
   import {REQUESTS, SERVER, SETTINGS, LOGS } from "./constants";
   import Requests from "./screens/requests/Requests.svelte";
-  import Sidebar from "./Sidebar.svelte";
+  import Sidebar from "./widgets/Sidebar.svelte";
   import ServerScreen from "./screens/server/ServerScreen.svelte";
     import Settings from "./screens/settings/Settings.svelte";
   import LogsScreen from "./screens/logs/LogsScreen.svelte";
