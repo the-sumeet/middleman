@@ -47,7 +47,7 @@
       <div
         class="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white {$webServerRunning
           ? 'bg-green-500'
-          : 'bg-green-500'} border-2 border-white rounded-full -bottom-2 -end-2 dark:border-gray-900"
+          : 'bg-red-500'} border-2 border-white rounded-full -bottom-2 -end-2 dark:border-gray-900"
       ></div>
       <i class="text-2xl bi bi-hdd-network"></i>
       <!-- Proxy server indicator -->
