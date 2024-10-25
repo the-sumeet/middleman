@@ -2,9 +2,10 @@
     export let serverRunning;
     export let port;
     export let title;
+    export let startProxy;
+    export let stopProxy;
 
     import "bootstrap-icons/font/bootstrap-icons.css";
-    import { StartProxy, StopProxy, StartWebServer, StopWebServer } from "../../../wailsjs/go/main/App";
     import { onDestroy, onMount } from "svelte";
     import { GetConfig } from "../../../wailsjs/go/main/App";
     import { GetWebServerPath } from "../../../wailsjs/go/main/App";
@@ -29,7 +30,7 @@
 
         if (isServerRunning === true) {
             console.log("Stopping proxy");
-            StopProxy().then(() => {
+            stopProxy().then(() => {
                 serverRunning.set(false);
                 // serverRunning.set(false);
                 console.log("Proxy stopped");
@@ -42,7 +43,7 @@
             }
             const portNumber = parseInt(port);
             console.log("Starting proxy");
-            StartProxy(portNumber).then((result) => {
+            startProxy(portNumber).then((result) => {
                 if (result.error != "") {
                     error = result.error;
                     serverRunning.set(false);
@@ -78,9 +79,9 @@
             : startButtonCss} flex items-center rounded-lg px-4 py-2.5 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform focus:outline-none focus:ring focus:ring-opacity-80"
     >
         {#if isServerRunning}
-            Stop Proxy Server
+            Stop {title}
         {:else}
-            Start Proxy Server
+            Start {title}
         {/if}
     </button>
 </div>

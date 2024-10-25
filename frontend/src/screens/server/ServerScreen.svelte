@@ -5,6 +5,12 @@
     import { GetConfig } from "../../../wailsjs/go/main/App";
     import { GetWebServerPath } from "../../../wailsjs/go/main/App";
     import ServerInput from "./ServerInput.svelte";
+    import {
+        StartProxy,
+        StopProxy,
+        StartWebServer,
+        StopWebServer,
+    } from "../../../wailsjs/go/main/App";
 
     let isServerRunning;
     const startButtonCss = "bg-blue-600 hover:bg-blue-500 focus:ring-blue-300";
@@ -27,8 +33,20 @@
 </script>
 
 <div class="flex flex-col w-full p-4">
-    <ServerInput title={"Proxy Server"} serverRunning={proxyServerRunning} port={proxyServerPort} />
-    <ServerInput title={"Web Server"} serverRunning={webServerRunning} port={webServerPort} />
+    <ServerInput
+        startProxy={StartProxy}
+        stopProxy={StopProxy}
+        title={"Proxy Server"}
+        serverRunning={proxyServerRunning}
+        port={proxyServerPort}
+    />
+    <ServerInput
+        startProxy={StartWebServer}
+        stopProxy={StopWebServer}
+        title={"Web Server"}
+        serverRunning={webServerRunning}
+        port={webServerPort}
+    />
 
     {#if webServerPath}
         <div class="mx-auto mt-4 text-white">
