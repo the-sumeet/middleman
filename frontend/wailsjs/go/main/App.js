@@ -42,12 +42,12 @@ export function Save(arg1, arg2, arg3) {
   return window['go']['main']['App']['Save'](arg1, arg2, arg3);
 }
 
-export function StartProxy(arg1) {
-  return window['go']['main']['App']['StartProxy'](arg1);
+export function StartProxy() {
+  return window['go']['main']['App']['StartProxy']();
 }
 
-export function StartWebServer(arg1) {
-  return window['go']['main']['App']['StartWebServer'](arg1);
+export function StartWebServer() {
+  return window['go']['main']['App']['StartWebServer']();
 }
 
 export function StopProxy() {
