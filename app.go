@@ -17,6 +17,8 @@ import (
 	"github.com/elazarl/goproxy"
 )
 
+const WebServerPath = "/middleman"
+
 type App struct {
 	ctx              context.Context
 	proxy            *goproxy.ProxyHttpServer
@@ -73,7 +75,7 @@ func NewApp() *App {
 		proxyStartStop: make(chan bool),
 		config:         config,
 		logger:         slog.New(slog.NewJSONHandler(logWriter, nil)),
-		webServerPath:  webserverPath,
+		webServerPath:  WebServerPath,
 	}
 
 	return app
