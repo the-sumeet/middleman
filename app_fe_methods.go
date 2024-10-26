@@ -5,6 +5,7 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -66,7 +67,7 @@ func (a *App) StartProxy() ReturnValue {
 		return ReturnValue{Error: fmt.Sprintf("Port %s is not available", a.config.ProxyServerPort)}
 	}
 
-	portString := ":1111"
+	portString := fmt.Sprintf(":%s", a.config.ProxyServerPort)
 	log.Println("Starting Proxy", portString)
 	l, err := net.Listen("tcp", portString)
 	if err != nil {
@@ -86,17 +87,21 @@ func (a *App) StartProxy() ReturnValue {
 
 			err = http.Serve(l, a.proxy)
 			if err != nil {
-				fmt.Printf("%T", err)
+				opErr, ok := err.(*net.OpError)
+				if ok {
+					if errors.Is(opErr.Err, net.ErrClosed) {
+						a.logger.Info("Proxy TCP listener closed")
+						return
+					}
+				}
 				a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
 				log.Fatal("Error starting server: ", err)
 			}
-			a.logger.Info("Proxy server started")
 		}()
 
 		a.logger.Info("Proxy server goroutine started, waiting to stop")
 		<-a.proxyStartStop
 		l.Close()
-		a.logger.Info("Proxy TCP listener closed")
 	}()
 
 	return ReturnValue{}
