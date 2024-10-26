@@ -52,29 +52,19 @@ func NewApp() *App {
 
 	logFile := getLogFilePath()
 	logWriter, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	multiWriter := io.MultiWriter(os.Stdout, logWriter)
 	if err != nil {
 		panic(err)
 	}
 
 	proxy := goproxy.NewProxyHttpServer()
 
-	// Get hostname
-	hostname, err := os.Hostname()
-	if err != nil {
-		hostname = ""
-	}
-	hostname = strings.ReplaceAll(hostname, " ", "")
-	webserverPath := "/middleman"
-	if hostname != "" {
-		webserverPath += "-on-" + hostname
-	}
-
 	app := &App{
 		proxy:          proxy,
 		database:       &database,
 		proxyStartStop: make(chan bool),
 		config:         config,
-		logger:         slog.New(slog.NewJSONHandler(logWriter, nil)),
+		logger:         slog.New(slog.NewJSONHandler(multiWriter, nil)),
 		webServerPath:  WebServerPath,
 	}
 
