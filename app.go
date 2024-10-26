@@ -63,6 +63,7 @@ func NewApp() *App {
 		proxy:          proxy,
 		database:       &database,
 		proxyStartStop: make(chan bool),
+		webStartStop:   make(chan bool),
 		config:         config,
 		logger:         slog.New(slog.NewJSONHandler(multiWriter, nil)),
 		webServerPath:  WebServerPath,
