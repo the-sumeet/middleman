@@ -35,7 +35,7 @@ type InValue struct {
 	ModifyResponseBody ModifyResponseBody `json:"modifyResponseBody"`
 }
 
-func (a *App) StartProxy(port int) ReturnValue {
+func (a *App) StartProxy() ReturnValue {
 	certPath, certKey := getCertKeyPath()
 
 	certytes, err := os.ReadFile(certPath)
@@ -61,16 +61,16 @@ func (a *App) StartProxy(port int) ReturnValue {
 	goproxy.HTTPMitmConnect = &goproxy.ConnectAction{Action: goproxy.ConnectHTTPMitm, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
 	goproxy.RejectConnect = &goproxy.ConnectAction{Action: goproxy.ConnectReject, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
 
-	if err := PortAvailable("localhost", fmt.Sprintf("%d", port)); err == nil {
-		a.logger.Info(fmt.Sprintf("Port %d is not available", port))
-		return ReturnValue{Error: fmt.Sprintf("Port %d is not available", port)}
+	if err := PortAvailable("localhost", a.config.ProxyServerPort); err == nil {
+		a.logger.Info(fmt.Sprintf("Port %s is not available", a.config.ProxyServerPort))
+		return ReturnValue{Error: fmt.Sprintf("Port %s is not available", a.config.ProxyServerPort)}
 	}
 
-	portString := fmt.Sprintf(":%d", port)
+	portString := ":1111"
 	log.Println("Starting Proxy", portString)
 	l, err := net.Listen("tcp", portString)
 	if err != nil {
-		a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
+		a.logger.Error(fmt.Sprintf("Error listening: %s", err))
 		log.Fatal("Error start listening: ", err)
 	}
 	a.logger.Info(fmt.Sprintf("Started listening on: %s", portString))
@@ -84,14 +84,9 @@ func (a *App) StartProxy(port int) ReturnValue {
 
 		go func() {
 
-			mux := http.NewServeMux()
-
-			mux.HandleFunc(a.webServerPath, a.middlemanWeb)
-			mux.HandleFunc(fmt.Sprintf("%s/cert", a.webServerPath), a.downloadCert)
-			mux.HandleFunc("/", a.proxy.ServeHTTP)
-
 			err = http.Serve(l, a.proxy)
 			if err != nil {
+				fmt.Printf("%T", err)
 				a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
 				log.Fatal("Error starting server: ", err)
 			}
@@ -112,13 +107,13 @@ func (a *App) StopProxy() {
 	a.proxyStartStop <- true
 }
 
-func (a *App) StartWebServer(port int) ReturnValue {
-	if err := PortAvailable("localhost", fmt.Sprintf("%d", port)); err == nil {
-		a.logger.Info(fmt.Sprintf("Port %d is not available for web server", port))
-		return ReturnValue{Error: fmt.Sprintf("Port %d is not available", port)}
+func (a *App) StartWebServer() ReturnValue {
+	if err := PortAvailable("localhost", a.config.WebServerPort); err == nil {
+		a.logger.Info(fmt.Sprintf("Port %s is not available for web server", a.config.WebServerPort))
+		return ReturnValue{Error: fmt.Sprintf("Port %s is not available", a.config.WebServerPort)}
 	}
 
-	portString := fmt.Sprintf(":%d", port)
+	portString := fmt.Sprintf(":%s", a.config.WebServerPort)
 	a.logger.Info(fmt.Sprintf("Starting web server on: %s", portString))
 	l, err := net.Listen("tcp", portString)
 	if err != nil {
