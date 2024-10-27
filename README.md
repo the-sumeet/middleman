@@ -33,3 +33,14 @@ To build a redistributable, production mode package, use `wails build`.
 - Modify Response Body, if not cancelled.
 - Modify Headers, if not cancelled.
 - Add Delay, if not cancelled.
+
+## Building
+
+- `wails build` will store the release binary in `build/bin`.
+    - If you are using a Linux distribution that does not have webkit2gtk-4.0 (such as Ubuntu 24.04), you will need to add -tags webkit2_41.
+
+### Manual
+
+`wails build` will do some steps to generate binary, we can do those steps manually.
+
+1. Install FE deps with `npm install`.

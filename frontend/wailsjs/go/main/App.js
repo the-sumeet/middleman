@@ -6,8 +6,12 @@ export function Add(arg1, arg2) {
   return window['go']['main']['App']['Add'](arg1, arg2);
 }
 
-export function AddConfigPort(arg1) {
-  return window['go']['main']['App']['AddConfigPort'](arg1);
+export function AddProxyPort(arg1) {
+  return window['go']['main']['App']['AddProxyPort'](arg1);
+}
+
+export function AddWebPort(arg1) {
+  return window['go']['main']['App']['AddWebPort'](arg1);
 }
 
 export function GenerateCert() {
@@ -26,6 +30,10 @@ export function GetMany(arg1) {
   return window['go']['main']['App']['GetMany'](arg1);
 }
 
+export function GetWebServerPath() {
+  return window['go']['main']['App']['GetWebServerPath']();
+}
+
 export function Remove(arg1, arg2) {
   return window['go']['main']['App']['Remove'](arg1, arg2);
 }
@@ -34,10 +42,18 @@ export function Save(arg1, arg2, arg3) {
   return window['go']['main']['App']['Save'](arg1, arg2, arg3);
 }
 
-export function StartProxy(arg1) {
-  return window['go']['main']['App']['StartProxy'](arg1);
+export function StartProxy() {
+  return window['go']['main']['App']['StartProxy']();
+}
+
+export function StartWebServer() {
+  return window['go']['main']['App']['StartWebServer']();
 }
 
 export function StopProxy() {
   return window['go']['main']['App']['StopProxy']();
+}
+
+export function StopWebServer() {
+  return window['go']['main']['App']['StopWebServer']();
 }

@@ -4,7 +4,9 @@ import {main} from '../models';
 
 export function Add(arg1:string,arg2:main.InValue):Promise<main.ReturnValue>;
 
-export function AddConfigPort(arg1:string):Promise<void>;
+export function AddProxyPort(arg1:string):Promise<main.ReturnValue>;
+
+export function AddWebPort(arg1:string):Promise<main.ReturnValue>;
 
 export function GenerateCert():Promise<void>;
 
@@ -14,10 +16,16 @@ export function GetLogs():Promise<main.ReturnValue>;
 
 export function GetMany(arg1:string):Promise<main.ReturnValue>;
 
+export function GetWebServerPath():Promise<string>;
+
 export function Remove(arg1:string,arg2:number):Promise<main.ReturnValue>;
 
 export function Save(arg1:string,arg2:number,arg3:main.InValue):Promise<main.ReturnValue>;
 
-export function StartProxy(arg1:number):Promise<main.ReturnValue>;
+export function StartProxy():Promise<main.ReturnValue>;
+
+export function StartWebServer():Promise<main.ReturnValue>;
 
 export function StopProxy():Promise<void>;
+
+export function StopWebServer():Promise<void>;
