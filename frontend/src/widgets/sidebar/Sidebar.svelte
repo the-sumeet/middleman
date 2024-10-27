@@ -6,31 +6,46 @@
     proxyServerRunning,
   } from "../../stores";
   import { onDestroy } from "svelte";
-  import { StartProxy, StopProxy } from "../../../wailsjs/go/main/App";
+  import { StartProxy, StartWebServer, StopProxy, StopWebServer } from "../../../wailsjs/go/main/App";
   import { currentPage } from "../../stores";
   import { HOME, LOGS, SERVER, SETTINGS } from "../../constants";
   import Button from "./Button.svelte";
 
   let currPage;
-  let isProxyRunning = false;
+  let isProxyRunning;
+  let isWebRunning;
+  let proxyServerDesc = null;
+  let webServerDesc = null;
 
-  const activePageCss = "text-blue-500 bg-gray-800";
-  const inactivePageCss = "text-gray-200 hover:bg-gray-800";
+  $: if (isProxyRunning) {
+    proxyServerDesc = "Stop Proxy Server";
+  } else {
+    proxyServerDesc = "Start Proxy Server";
+  }
+
+  $: if (isWebRunning) {
+    webServerDesc = "Stop Web Server";
+  } else {
+    webServerDesc = "Start Web Server";
+  }
 
   const unCurrentPage = currentPage.subscribe((value) => {
     currPage = value;
   });
 
   const unsubProxyServerRunning = proxyServerRunning.subscribe((value) => {
-    console.log("Proxy server running: ", value);
     isProxyRunning = value;
+  });
+
+  const unsubWebServerRunning = webServerRunning.subscribe((value) => {
+    isWebRunning = value;
   });
 
   function setPage(page) {
     currentPage.set(page);
   }
 
-  export async function toggleProxy() {
+  async function toggleProxyServer() {
     if ($proxyServerRunning === true) {
       console.log("Stopping proxy");
       await StopProxy();
@@ -51,9 +66,31 @@
     return null;
   }
 
+  async function toggleWebServer() {
+    if ($webServerRunning === true) {
+      console.log("Stopping web server");
+      await StopWebServer();
+      webServerRunning.set(false);
+      console.log("Web server stopped");
+    } else {
+      console.log("Starting web server");
+      const result = await StartWebServer();
+      if (result.error != "") {
+        webServerRunning.set(false);
+        return result.error;
+      } else {
+        webServerRunning.set(true);
+        console.log("Web server started");
+      }
+    }
+
+    return null;
+  }
+
   onDestroy(() => {
     unCurrentPage();
     unsubProxyServerRunning();
+    unsubWebServerRunning();
   });
 </script>
 
@@ -62,74 +99,46 @@
 >
   <!-- Rules -->
   <Button
-    green={null}
+    indicatorStore={null}
     bsIcon={"bi bi bi-list-task"}
     page={HOME}
     descriptipn={null}
     onClick={() => setPage(HOME)}
   />
 
-  <!-- Toggle Proxy -->
   <Button
-    onClick={toggleProxy}
-    green={isProxyRunning}
-    bsIcon={"bi bi-hdd-network"}
+    onClick={() => setPage(LOGS)}
+    indicatorStore={null}
+    bsIcon={"bi bi-arrow-down-up"}
     page={null}
-    descriptipn={"Proxy server"}
+    descriptipn={null}
   />
 
-  <a
-    on:click={() => setPage(SERVER)}
-    href="#!"
-    class="{inactivePageCss} p-1.5 focus:outline-nones transition-colors duration-200 rounded-lg"
-  >
-    <button type="button" class="relative">
-      <!-- Web server indicator -->
-      <div
-        title="Web server"
-        class="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white {$webServerRunning
-          ? 'bg-green-500'
-          : 'bg-red-500'} border-2 border-white rounded-full -bottom-2 -end-2 dark:border-gray-900"
-      ></div>
-      <i class="text-2xl bi bi-hdd-network"></i>
-      <!-- Proxy server indicator -->
-      <div
-        title="Proxy server"
-        class="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white {$proxyServerRunning
-          ? 'bg-green-500'
-          : 'bg-red-500'} border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"
-      ></div>
-    </button>
-  </a>
+  <Button
+    onClick={() => setPage(SETTINGS)}
+    indicatorStore={null}
+    bsIcon={"bi bi-gear"}
+    page={null}
+    descriptipn={null}
+  />
 
-  <a
-    on:click={() => setPage(LOGS)}
-    href="#!"
-    class="{currPage == LOGS
-      ? activePageCss
-      : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
-  >
-    <i class="text-2xl bi bi-arrow-down-up"></i>
-  </a>
+  <hr class="border border-gray-800 w-full" />
 
-  <!-- <a
-        on:click={() => setPage(REQUESTS)}
-        href="#!"
-        class="{currPage == REQUESTS
-            ? activePageCss
-            : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
-    >
-        <i class="text-2xl bi bi-arrow-down-up"></i>
-    </a> -->
+  <Button
+    onClick={toggleProxyServer}
+    indicatorStore={proxyServerRunning}
+    bsIcon={"bi bi-hdd-network"}
+    page={null}
+    descriptipn={proxyServerDesc}
+  />
 
-  <!-- Settings -->
-  <a
-    on:click={() => setPage(SETTINGS)}
-    href="#!"
-    class="{currPage == SETTINGS
-      ? activePageCss
-      : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400"
-  >
-    <i class="text-2xl bi bi-gear"></i>
-  </a>
+  <Button
+    onClick={toggleWebServer}
+    indicatorStore={webServerRunning}
+    bsIcon={"bi bi-hdd-network"}
+    page={null}
+    descriptipn={webServerDesc}
+  />
+
+  
 </div>
