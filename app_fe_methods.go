@@ -136,6 +136,13 @@ func (a *App) StartWebServer() ReturnValue {
 
 			err = http.Serve(l, mux)
 			if err != nil {
+				opErr, ok := err.(*net.OpError)
+				if ok {
+					if errors.Is(opErr.Err, net.ErrClosed) {
+						a.logger.Info("Web TCP listener closed")
+						return
+					}
+				}
 				a.logger.Error(fmt.Sprintf("Error starting web server: %s", err))
 				log.Fatal("Error starting web server: ", err)
 			}
