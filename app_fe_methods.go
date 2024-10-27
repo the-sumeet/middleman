@@ -111,7 +111,7 @@ func (a *App) StartProxy() ReturnValue {
 }
 
 func (a *App) StopProxy() {
-	log.Println("Stopping proxy")
+	a.logger.Info("Stopping proxy")
 	a.proxyStartStop <- true
 }
 
@@ -163,7 +163,7 @@ func (a *App) StartWebServer() ReturnValue {
 }
 
 func (a *App) StopWebServer() {
-	log.Println("Stopping web server")
+	a.logger.Info("Stopping web server")
 	a.webStartStop <- true
 }
 
