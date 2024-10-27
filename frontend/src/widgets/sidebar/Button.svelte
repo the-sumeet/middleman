@@ -2,38 +2,56 @@
     export let bsIcon;
     export let page;
     export let descriptipn;
-    export let green
+    export let indicatorStore;
     export let onClick;
 
     import { currentPage } from "../../../src/stores";
     import { onDestroy } from "svelte";
     import { activePageCss, inactivePageCss } from "./constants";
 
+    let on = null;
+
     let currPage;
     let error = null;
     let showTooltip = false;
 
-    let indicatorCss = "absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white border-2 rounded-full -top-2 -end-2 border-gray-900";
-    if (green === true) {
-        indicatorCss += " bg-green-500";
-    } else if (green === false) {
-        indicatorCss += " bg-red-500";
+    const indicatorCssConst =
+        "absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white border-2 rounded-full -top-2 -end-2 border-gray-900";
+
+    let indicatorCss = "";
+
+    $: if (on === true) {
+        indicatorCss = indicatorCssConst + " bg-green-500";
+    } else if (on === false) {
+        indicatorCss = indicatorCssConst + " bg-red-500";
+    } else {
+        indicatorCss = indicatorCssConst;
     }
     console.log(indicatorCss);
-    
+
     const unCurrentPage = currentPage.subscribe((value) => {
         currPage = value;
     });
 
+    let ubSubIndicatorStore = null;
+    if (indicatorStore) {
+        ubSubIndicatorStore = indicatorStore.subscribe((value) => {
+            on = value;
+        });
+    }
+
     async function onClickHandler() {
         const res = await onClick();
-        if (!res) {
+        if (res && res != "") {
             error = res;
         }
     }
 
     onDestroy(() => {
         unCurrentPage();
+        if (ubSubIndicatorStore) {
+            ubSubIndicatorStore();
+        }
     });
 </script>
 
@@ -49,9 +67,11 @@
         on:click={onClickHandler}
         class="text-gray-600 transition-colors duration-200 focus:outline-none dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500"
     >
-        <i class="{currPage == page
-        ? activePageCss
-        : inactivePageCss} text-2xl {bsIcon}"></i>
+        <i
+            class="{currPage == page
+                ? activePageCss
+                : inactivePageCss} text-2xl {bsIcon}"
+        ></i>
     </button>
 
     <!-- Indicator -->
@@ -59,11 +79,8 @@
         <i
             class="absolute inline-flex items-center justify-center w-4 h-4 text-lg font-bold text-red-400 border-2 -top-2 -end-2 border-gray-900 bi bi-exclamation-triangle-fill"
         ></i>
-    {:else if green !== null}
-        <div
-            title="Web server"
-            class="{indicatorCss}"
-        ></div>
+    {:else if on !== null}
+        <div title="Web server" class={indicatorCss}></div>
     {/if}
 
     {#if descriptipn && showTooltip}
@@ -72,7 +89,9 @@
         >
             <div class="flex flex-col items-start">
                 <span class="">{descriptipn}</span>
-                <span class="text-xs text-red-400">{descriptipn}</span>
+                {#if error}
+                    <span class="text-xs text-red-400">{error}</span>
+                {/if}
             </div>
 
             <svg
