@@ -72,7 +72,7 @@ func (a *App) StartProxy() ReturnValue {
 	l, err := net.Listen("tcp", portString)
 	if err != nil {
 		a.logger.Error(fmt.Sprintf("Error listening: %s", err))
-		log.Fatal("Error start listening: ", err)
+		return ReturnValue{Error: fmt.Sprintf("Error listening: %s", err)}
 	}
 	a.logger.Info(fmt.Sprintf("Started listening on: %s", portString))
 
