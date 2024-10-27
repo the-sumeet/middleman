@@ -92,6 +92,9 @@ func (a *App) StartProxy() ReturnValue {
 					if errors.Is(opErr.Err, net.ErrClosed) {
 						a.logger.Info("Proxy TCP listener closed")
 						return
+					} else {
+						a.logger.Error(fmt.Sprintf("Error starting web server: %s", err))
+						log.Fatal("Error starting web server: ", err)
 					}
 				}
 				a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
@@ -141,18 +144,19 @@ func (a *App) StartWebServer() ReturnValue {
 					if errors.Is(opErr.Err, net.ErrClosed) {
 						a.logger.Info("Web TCP listener closed")
 						return
+					} else {
+						a.logger.Error(fmt.Sprintf("Error starting web server: %s", err))
+						log.Fatal("Error starting web server: ", err)
 					}
 				}
 				a.logger.Error(fmt.Sprintf("Error starting web server: %s", err))
 				log.Fatal("Error starting web server: ", err)
 			}
-			a.logger.Info("Web server started")
 		}()
 
 		a.logger.Info("Web server goroutine started, waiting to stop")
 		<-a.webStartStop
 		l.Close()
-		a.logger.Info("Web TCP listener closed")
 	}()
 
 	return ReturnValue{}
