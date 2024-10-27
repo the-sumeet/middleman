@@ -16,8 +16,12 @@
             return;
         }
         addPortFunc(port).then((result) => {
-            portError = "";
-            portChanged = false;
+            if (result.error != "") {
+                portError = result.error;
+            } else {
+                portError = "";
+                portChanged = false;
+            }
         });
     }
 </script>
