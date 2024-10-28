@@ -56,24 +56,15 @@ type App struct {
 }
 
 type ReturnValue struct {
-	Redirects          []Redirect           `json:"redirects"`
-	Cancels            []Cancel             `json:"cancels"`
-	Delays             []Delay              `json:"delays"`
-	ModifyHeaders      []ModifyHeader       `json:"modifyHeaders"`
-	ModifyRequestBody  []ModifyRequestBody  `json:"modifyRequestBody"`
-	ModifyResponseBody []ModifyResponseBody `json:"modifyResponseBody"`
-	Logs               []string             `json:"logs"`
-	HttpRequests       []HttpRequestLog     `json:"httpRequests"`
-	Error              string               `json:"error"`
+	InsertedId   any              `json:"insertedId"`
+	Rules        []Rule           `json:"redirects"`
+	Logs         []string         `json:"logs"`
+	HttpRequests []HttpRequestLog `json:"httpRequests"`
+	Error        string           `json:"error"`
 }
 
 type InValue struct {
-	Redirect           Redirect           `json:"redirect"`
-	Cancel             Cancel             `json:"cancel"`
-	Delay              Delay              `json:"delay"`
-	ModifyHeader       ModifyHeader       `json:"modifyHeader"`
-	ModifyRequestBody  ModifyRequestBody  `json:"modifyRequestBody"`
-	ModifyResponseBody ModifyResponseBody `json:"modifyResponseBody"`
+	Rule Rule `json:"rule"`
 }
 
 func NewApp() *App {
@@ -439,91 +430,34 @@ func (a *App) GetMany(recordType string) ReturnValue {
 		return ReturnValue{Error: err.Error()}
 	}
 
-	if recordType == REDIRECT {
-		redirects := make([]Redirect, len(res))
-		for i, v := range res {
-			redirects[i] = v.(Redirect)
-		}
-		return ReturnValue{
-			Redirects: redirects,
-		}
-	}
-	if recordType == CANCEL {
-		cancels := make([]Cancel, len(res))
-		for i, v := range res {
-			cancels[i] = v.(Cancel)
-		}
-		return ReturnValue{
-			Cancels: cancels,
-		}
-	}
-	if recordType == DELAY {
-		delays := make([]Delay, len(res))
-		for i, v := range res {
-			delays[i] = v.(Delay)
-		}
-		return ReturnValue{
-			Delays: delays,
-		}
-	}
-
-	if recordType == MODIFY_HEADERS {
-		modifyHeader := make([]ModifyHeader, len(res))
-		for i, v := range res {
-			modifyHeader[i] = v.(ModifyHeader)
-		}
-		return ReturnValue{
-			ModifyHeaders: modifyHeader,
-		}
-	}
-
-	if recordType == MODIFY_REQUEST_BODY {
-		modifyRequestBody := make([]ModifyRequestBody, len(res))
-		for i, v := range res {
-			modifyRequestBody[i] = v.(ModifyRequestBody)
-		}
-		return ReturnValue{
-			ModifyRequestBody: modifyRequestBody,
-		}
-	}
-
-	if recordType == MODIFY_RESPONSE_BODY {
-		modifyResponseBody := make([]ModifyResponseBody, len(res))
-		for i, v := range res {
-			modifyResponseBody[i] = v.(ModifyResponseBody)
-		}
-		return ReturnValue{
-			ModifyResponseBody: modifyResponseBody,
-		}
-	}
-	return ReturnValue{}
+	return ReturnValue{Rules: res}
 }
 
-func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
-	if recordType == REDIRECT {
-		err := a.database.Save(recordType, recordId, input.Redirect)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == CANCEL {
-		err := a.database.Save(recordType, recordId, input.Cancel)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == DELAY {
-		err := a.database.Save(recordType, recordId, input.Delay)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == MODIFY_HEADERS {
-		err := a.database.Save(recordType, recordId, input.ModifyHeader)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
+// func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
+// 	if recordType == REDIRECT {
+// 		err := a.database.Save(recordType, recordId, input.Redirect)
+// 		if err != nil {
+// 			return ReturnValue{Error: err.Error()}
+// 		}
+// 	}
+// 	if recordType == CANCEL {
+// 		err := a.database.Save(recordType, recordId, input.Cancel)
+// 		if err != nil {
+// 			return ReturnValue{Error: err.Error()}
+// 		}
+// 	}
+// 	if recordType == DELAY {
+// 		err := a.database.Save(recordType, recordId, input.Delay)
+// 		if err != nil {
+// 			return ReturnValue{Error: err.Error()}
+// 		}
+// 	}
+// 	if recordType == MODIFY_HEADERS {
+// 		err := a.database.Save(recordType, recordId, input.ModifyHeader)
+// 		if err != nil {
+// 			return ReturnValue{Error: err.Error()}
+// 		}
+// 	}
 
 	if recordType == MODIFY_REQUEST_BODY {
 		err := a.database.Save(recordType, recordId, input.ModifyRequestBody)
