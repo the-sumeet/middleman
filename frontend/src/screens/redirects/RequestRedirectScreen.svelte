@@ -1,25 +1,21 @@
 <script>
-    import { onDestroy } from "svelte";
+    import { onMount } from "svelte";
     import Redirect from "./RedirectRequest.svelte";
     import { redirects } from "../../stores";
+    import { refreshList } from "../../stores";
+    import { REDIRECT_TYPE } from "../../../src/constants";
+
+    onMount(() => {
+        console.debug(`Updating ${REDIRECT_TYPE} on mount`);
+        refreshList(REDIRECT_TYPE);
+    });
     
-    let redirectsList = [];
-
-    // Subs
-    const unSubRedirects = redirects.subscribe((value) => {
-        redirectsList = value;
-        console.log(redirectsList);
-    });
-
-    onDestroy(() => {
-        unSubRedirects();
-    });
 </script>
 
-{#if redirectsList.length > 0}
-    {#each redirectsList as redirect, i (crypto.randomUUID())}
+{#if $redirects.length > 0}
+    {#each $redirects as redirect, i (crypto.randomUUID())}
     <div class="mb-4">
-        <Redirect redirectId={i} {redirect} />
+        <Redirect rule={redirect} />
     </div>
     {/each}
 {/if}

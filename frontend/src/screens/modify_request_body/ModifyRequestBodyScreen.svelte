@@ -1,24 +1,22 @@
 <script>
-    import { onDestroy } from "svelte";
+    import { onMount } from "svelte";
     import { modifyRequestBody } from "../../stores";
     import ModifyRequestBody from "./ModifyRequestBody.svelte";
+    import { refreshList } from "../../stores";
+    import { RULE_MODIFY_REQUEST_BODY } from "../../../src/constants";
 
-    let modifyBodyList = [];
-
-    // Subs
-    const unSubRequestBody = modifyRequestBody.subscribe((value) => {
-        modifyBodyList = value;
+    onMount(() => {
+        console.debug(`Updating ${RULE_MODIFY_REQUEST_BODY} on mount`);
+        refreshList(RULE_MODIFY_REQUEST_BODY);
     });
+    
 
-    onDestroy(() => {
-        unSubRequestBody();
-    });
 </script>
 
-{#if modifyBodyList.length > 0}
-    {#each modifyBodyList as modifyBody, i (crypto.randomUUID())}
+{#if $modifyRequestBody.length > 0}
+    {#each $modifyRequestBody as modifyBody, i (crypto.randomUUID())}
     <div class="mb-4">
-        <ModifyRequestBody modifyBodyId={i} {modifyBody} />
+        <ModifyRequestBody rule={modifyBody} />
     </div>
     {/each}
 {/if}

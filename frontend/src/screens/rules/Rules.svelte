@@ -2,8 +2,8 @@
   import {
     RULE_CANCEL,
     RULE_DELAY,
-    MODIFY_REQUEST_BODY,
-    MODIFY_RESPONSE_BODY,
+    RULE_MODIFY_REQUEST_BODY,
+    RULE_MODIFY_RESPONSE_BODY,
     RULE_MOD_HEADER,
     RULE_REDIRECT,
   } from "../../../src/constants";
@@ -11,7 +11,7 @@
 </script>
 
 <div
-  class="h-screen py-8 overflow-y-auto border-l border-r sm:w-64 w-60 min-w-60 bg-gray-900 border-gray-700"
+  class="h-screen overflow-y-auto border-l border-r sm:w-64 w-60 min-w-60 bg-gray-900 border-gray-700"
 >
   <!-- <h2 class="px-5 text-lg font-medium text-gray-800 dark:text-white">Accounts</h2> -->
 
@@ -20,12 +20,12 @@
     <RuleTile
       icon={"bi bi-body-text"}
       title={"Modify Request Body"}
-      rule={MODIFY_REQUEST_BODY}
+      rule={RULE_MODIFY_REQUEST_BODY}
     />
     <RuleTile
       icon={"bi bi-body-text"}
       title={"Modify Response Body"}
-      rule={MODIFY_RESPONSE_BODY}
+      rule={RULE_MODIFY_RESPONSE_BODY}
     />
     <RuleTile
       icon={"bi bi-h-square"}

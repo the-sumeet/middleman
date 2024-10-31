@@ -1,14 +1,12 @@
 <script>
   import "bootstrap-icons/font/bootstrap-icons.css";
-  import { currentRule, serverRunning } from "./stores";
+  import { serverRunning } from "./stores";
   import { onDestroy } from "svelte";
-  import { StartProxy, StopProxy } from "../wailsjs/go/main/App";
   import { currentPage } from "./stores";
   import { HOME, LOGS, SERVER, SETTINGS } from "./constants";
 
-  // let isServerRunning = false;
   let currPage;
-  const activePageCss = "text-blue-500 bg-gray-800";
+  const activePageCss = "text-blue-500 bg-gray-900";
   const inactivePageCss = "text-gray-200 hover:bg-gray-800";
 
   const unCurrentPage = currentPage.subscribe((value) => {
@@ -25,7 +23,7 @@
 </script>
 
 <div
-  class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-900 b border-r border-gray-800"
+  class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-800 b border-r border-gray-800"
 >
   <a
     on:click={() => setPage(HOME)}

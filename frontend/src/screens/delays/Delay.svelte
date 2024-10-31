@@ -1,16 +1,18 @@
 <script>
-    export let delay;
-    export let delayId;
+    export let rule;
 
     import { main } from "../../../wailsjs/go/models";
-    import { Save, Remove, GetMany } from "../../../wailsjs/go/main/App";
-    import { delays } from "../../stores";
-    import { onDestroy } from "svelte";
-    import { parse } from "svelte/compiler";
+    import {
+        UpdateRule,
+        GetOneRule,
+        GetManyRules,
+    } from "../../../wailsjs/go/main/App";
+    import { delays, errorMessage } from "../../stores";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
-    import { remove } from "../../../src/utils";
+    import { removeAndRefresh, updateRule } from "../../../src/utils";
     import { RULE_DELAY } from "../../../src/constants";
+    import { onMount } from "svelte";
 
     let changed = false;
     let error = "";
@@ -19,13 +21,11 @@
     let value;
     let delaySec;
 
-    fromDelay();
-
     function fromDelay() {
-        entity = delay.entity;
-        op = delay.op;
-        value = delay.value;
-        delaySec = delay.delaySec;
+        entity = rule.entity;
+        op = rule.op;
+        value = rule.value;
+        delaySec = rule.delaySec;
     }
 
     function setChanged() {
@@ -41,26 +41,25 @@
             return false;
         }
     }
-    // Go functions
-    function save() {
-        if (validate() === false) {
-            return;
-        }
 
-        const newDelay = new main.Delay({
-            enabled: delay.enabled,
+    function save() {
+        const newDelay = new main.Rule({
+            type: RULE_DELAY,
+            enabled: rule.enabled,
             entity: entity,
             op: op,
             value: value,
             delaySec: parseInt(delaySec),
         });
 
-        const input = new main.InValue({ delay: newDelay });
-
-        Save("delay", delayId, input).then(async () => {
-            const result = await GetMany("delay");
-            delays.set(result.delays);
-            changed = false;
+        updateRule(rule.id, newDelay).then(async (result) => {
+            if (result.error === "") {
+                console.debug("Updated Rule", result.rules[0]);
+                rule = result.rules[0];
+                changed = false;
+            } else {
+                errorMessage.set(result.error);
+            }
         });
     }
 
@@ -70,9 +69,13 @@
     }
 
     function enableDisable() {
-        delay.enabled = !delay.enabled;
+        rule.enabled = !rule.enabled;
         save();
     }
+
+    onMount(() => {
+        fromDelay();
+    });
 </script>
 
 <div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
@@ -126,8 +129,8 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(RULE_DELAY, delayId)}
+        remove={() => removeAndRefresh(RULE_DELAY, rule.id)}
         {enableDisable}
-        enabled={delay.enabled}
+        enabled={rule.enabled}
     />
 </div>

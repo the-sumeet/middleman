@@ -12,7 +12,6 @@
   import RuleIcons from "./RuleIcons.svelte";
   import { tabSelectedStyle, tabUnselectedStyle } from "../../../src/constants";
 
-  console.log(log);
   let expanded = false;
   let tab = "headers"; // header, body
   let requestEditor;
@@ -21,7 +20,6 @@
   const requestEditorId = `requestBody${random}`;
   const responseEditorId = `responseBody${random}`;
 
-  console.log(log);
 
   function getUrl() {
     return `${log.scheme}://${log.host}${log.path}`;
