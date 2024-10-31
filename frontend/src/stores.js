@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
-import { MODIFY_REQUEST_BODY, MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_DELAY, RULE_MOD_HEADER, RULE_REDIRECT } from "./constants";
-import { GetMany } from "../wailsjs/go/main/App";
+import { RULE_MODIFY_REQUEST_BODY, RULE_MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_DELAY, RULE_MOD_HEADER, RULE_REDIRECT } from "./constants";
+import { GetManyRules } from "../wailsjs/go/main/App";
 import { HOME } from "./constants";
 
 // Messages
@@ -19,21 +19,93 @@ export const modifyResponseBody = writable([]);
 export const serverRunning = writable(false);
 export const currentPage = writable(HOME);
 
-GetMany(RULE_REDIRECT).then((res) => {
-    redirects.set(res.redirects);
-});
-GetMany(RULE_CANCEL).then((res) => {
-    cancels.set(res.cancels);
-});
-GetMany(RULE_DELAY).then((res) => {
-    delays.set(res.delays);
-});
-GetMany(RULE_MOD_HEADER).then((res) => {
-    modifyHeaders.set(res.modifyHeaders);
-});
-GetMany(MODIFY_REQUEST_BODY).then((res) => {
-    modifyRequestBody.set(res.modifyRequestBody);
-});
-GetMany(MODIFY_RESPONSE_BODY).then((res) => {
-    modifyResponseBody.set(res.modifyResponseBody);
-});
+
+// export async function refreshRedirects() {
+//     const result = await GetManyRules(RULE_REDIRECT);
+//     if (result.error != "") {
+//         return result.error;
+//     }
+//     redirects.set(result.rules);
+// }
+
+// export async function refreshCancels() {
+//     const result = await GetManyRules(RULE_CANCEL);
+//     if (result.error != "") {
+//         return result.error;
+//     }
+//     cancels.set(result.rules);
+// }
+
+// export async function refreshDelays() {
+//     const result = await GetManyRules(RULE_DELAY);
+//     if (result.error != "") {
+//         return result.error;
+//     }
+//     delays.set(result.rules);
+// }
+
+// export async function refreshModifyHeaders() {
+//     const result = await GetManyRules(RULE_MOD_HEADER);
+//     if (result.error != "") {
+//         return result.error;
+//     }
+//     modifyHeaders.set(result.rules);
+// }
+
+// export async function refreshModifyRequestBody() {
+//     const result = await GetManyRules(RULE_MODIFY_REQUEST_BODY);
+//     if (result.error != "") {
+//         return result.error;
+//     }
+//     modifyRequestBody.set(result.rules);
+// }
+
+// export async function refreshModifyResponseBody() {
+//     const result = await GetManyRules(RULE_MODIFY_RESPONSE_BODY);
+//     if (result.error != "") {
+//         return result.error;
+//     }
+//     modifyResponseBody.set(result.rules);
+// }
+
+export async function refreshList(type) {
+    
+    console.debug("Refreshing list", type);
+    const result = await GetManyRules(type);
+    if (result.error != "") {
+        return result.error;
+    }
+
+    switch (type) {
+        case RULE_DELAY:
+            delays.set(result.rules);
+            break;
+        case RULE_MODIFY_REQUEST_BODY:
+            modifyRequestBody.set(result.rules);
+            break;
+        case RULE_CANCEL:
+            console.debug("Setting cancels", result.rules);
+            cancels.set(result.rules);
+            break;
+        case RULE_MODIFY_RESPONSE_BODY:
+            modifyResponseBody.set(result.rules);
+            break;
+        case RULE_MOD_HEADER:
+            modifyHeaders.set(result.rules);
+            break;
+        case RULE_REDIRECT:
+            redirects.set(result.rules);
+            break;
+    }
+
+    return "";
+}
+
+async function refreshAllLists() {
+    await refreshList(RULE_REDIRECT);
+    await refreshList(RULE_CANCEL);
+    await refreshList(RULE_DELAY);
+    await refreshList(RULE_MOD_HEADER);
+    await refreshList(RULE_MODIFY_REQUEST_BODY);
+    await refreshList(RULE_MODIFY_RESPONSE_BODY);
+}
