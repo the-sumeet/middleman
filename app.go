@@ -137,8 +137,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					continue
 				}
 				// ToDo: Fix this
-				// if matches(Request(cancel), r) {
-				if true {
+				if matches(cancel, r) {
 					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
 					a.httpRequests[requestLogId].Cancelled = true
@@ -170,9 +169,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					if !redirect.Enabled {
 						continue
 					}
-					// ToDo: Fix this
-					if true {
-						// if matches(redirect.Request, r) {
+					if matches(redirect, r) {
 						ctx.UserData.(*State).IsRedirected = true
 						a.httpRequests[requestLogId].Redirected = true
 						resp := &http.Response{
@@ -202,9 +199,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					if !modifyBody.Enabled {
 						continue
 					}
-					// ToDo: Fix this
-					if true {
-						// if matches(modResBody.Request, r) {
+					if matches(modifyBody, r) {
 						a.httpRequests[requestLogId].RequestBodyModified = true
 						a.logger.Info("ModifyRequestBody  rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
 						r.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.RequestBody)))
@@ -222,9 +217,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					if !modifyHeader.Enabled {
 						continue
 					}
-					// if matches(modifyHeader.Request, r) {
-					// ToDo: Fix this
-					if true {
+					if matches(modifyHeader, r) {
 						for _, v := range modifyHeader.RequestHeaderMods {
 							if !v.IsRequest {
 								continue
@@ -270,9 +263,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					if !modifyBody.Enabled {
 						continue
 					}
-					// ToDo: Fix this
-					if true {
-						// if matches(modResBody.Request, resp.Request) {
+					if matches(modifyBody, resp.Request) {
 						resp.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.ResponseBody)))
 						a.httpRequests[ctx.UserData.(*State).requestId].ResponseBodyModified = true
 
@@ -290,9 +281,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				if !delay.Enabled {
 					continue
 				}
-				// ToDo: Fix this
-				if true {
-					// if matches(delay.Request, resp.Request) {
+				if matches(delay, resp.Request) {
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
 					a.httpRequests[ctx.UserData.(*State).requestId].Delayed = delay.DelaySec
 				}
@@ -308,9 +297,7 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				if !modifyHeader.Enabled {
 					continue
 				}
-				// ToDo: Fix this
-				if true {
-					// if matches(modifyHeader.Request, resp.Request) {
+				if matches(modifyHeader, resp.Request) {
 					for _, v := range modifyHeader.ResponseHeaderMods {
 						if v.IsRequest {
 							continue
@@ -426,49 +413,6 @@ func (a *App) GetManyRules(recordType string) ReturnValue {
 
 	return ReturnValue{Rules: res}
 }
-
-// func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
-// 	if recordType == REDIRECT {
-// 		err := a.database.Save(recordType, recordId, input.Redirect)
-// 		if err != nil {
-// 			return ReturnValue{Error: err.Error()}
-// 		}
-// 	}
-// 	if recordType == CANCEL {
-// 		err := a.database.Save(recordType, recordId, input.Cancel)
-// 		if err != nil {
-// 			return ReturnValue{Error: err.Error()}
-// 		}
-// 	}
-// 	if recordType == DELAY {
-// 		err := a.database.Save(recordType, recordId, input.Delay)
-// 		if err != nil {
-// 			return ReturnValue{Error: err.Error()}
-// 		}
-// 	}
-// 	if recordType == MODIFY_HEADERS {
-// 		err := a.database.Save(recordType, recordId, input.ModifyHeader)
-// 		if err != nil {
-// 			return ReturnValue{Error: err.Error()}
-// 		}
-// 	}
-
-// 	if recordType == MODIFY_REQUEST_BODY {
-// 		err := a.database.Save(recordType, recordId, input.ModifyRequestBody)
-// 		if err != nil {
-// 			return ReturnValue{Error: err.Error()}
-// 		}
-// 	}
-
-// 	if recordType == MODIFY_RESPONSE_BODY {
-// 		err := a.database.Save(recordType, recordId, input.ModifyResponseBody)
-// 		if err != nil {
-// 			return ReturnValue{Error: err.Error()}
-// 		}
-// 	}
-
-// 	return ReturnValue{}
-// }
 
 func (a *App) RemoveRule(recordId int) ReturnValue {
 	err := a.database.RemoveRule(recordId)
