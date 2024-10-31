@@ -18,7 +18,9 @@ export function GetOneRule(arg1:number):Promise<main.ReturnValue>;
 
 export function RemoveRule(arg1:number):Promise<main.ReturnValue>;
 
-export function StartProxy(arg1:number):Promise<main.ReturnValue>;
+export function StartProxy():Promise<main.ReturnValue>;
+
+export function StartWebServer():Promise<main.ReturnValue>;
 
 export function StopProxy():Promise<void>;
 

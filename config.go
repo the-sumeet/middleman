@@ -7,24 +7,28 @@ import (
 )
 
 const (
-	DefaultServerPort = "8888"
+	DefaultProxyServerPort = "8888"
+	DefaultWebServerPort   = "8080"
 )
 
 type Config struct {
-	ServerPort   string `json:"serverPort"`
-	CertPath     string `json:"certPath"`
-	KeyPath      string `json:"keyPath"`
-	DatabasePath string `json:"databasePath"`
+	ProxyServerPort string `json:"proxyServerPort"`
+	WebServerPort   string `json:"webServerPort"`
+	CertPath        string `json:"certPath"`
+	KeyPath         string `json:"keyPath"`
+	DatabasePath    string `json:"databasePath"`
+	WebServerPath   string `json:"webServerPath"`
 }
 
 func getConfig() Config {
 
 	certPath, keyPath := getCertKeyPath()
 	config := Config{
-		ServerPort:   DefaultServerPort,
-		DatabasePath: getDatabasePath(),
-		CertPath:     certPath,
-		KeyPath:      keyPath,
+		ProxyServerPort: DefaultProxyServerPort,
+		WebServerPort:   DefaultWebServerPort,
+		DatabasePath:    getDatabasePath(),
+		CertPath:        certPath,
+		KeyPath:         keyPath,
 	}
 
 	configPath := getConfigPath()

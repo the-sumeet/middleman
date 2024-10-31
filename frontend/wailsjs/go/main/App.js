@@ -34,8 +34,12 @@ export function RemoveRule(arg1) {
   return window['go']['main']['App']['RemoveRule'](arg1);
 }
 
-export function StartProxy(arg1) {
-  return window['go']['main']['App']['StartProxy'](arg1);
+export function StartProxy() {
+  return window['go']['main']['App']['StartProxy']();
+}
+
+export function StartWebServer() {
+  return window['go']['main']['App']['StartWebServer']();
 }
 
 export function StopProxy() {

@@ -3,56 +3,33 @@ package main
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"fmt"
 	"io"
 	"log"
 	"log/slog"
-	"net"
 	"net/http"
 	"os"
 	"strings"
 	"sync"
+	"text/template"
 	"time"
 
 	"github.com/elazarl/goproxy"
 )
 
-type State struct {
-	requestId    int
-	IsCancelled  bool
-	IsRedirected bool
-}
-
-type HttpRequestLog struct {
-	Timestamp              time.Time   `json:"timestamp"`
-	Scheme                 string      `json:"scheme"`
-	Method                 string      `json:"method"`
-	Host                   string      `json:"host"`
-	Path                   string      `json:"path"`
-	RequestHeaders         http.Header `json:"requestHeaders"`
-	ResponseHeaders        http.Header `json:"responseHeaders"`
-	RequestBody            string      `json:"requestBody"`
-	ResponseBody           string      `json:"responseBody"`
-	Cancelled              bool        `json:"cancelled"`
-	Redirected             bool        `json:"redirected"`
-	RequestHeaderModified  bool        `json:"requestHeaderModified"`
-	ResponseHeaderModified bool        `json:"responseHeaderModified"`
-	RequestBodyModified    bool        `json:"requestBodyModified"`
-	ResponseBodyModified   bool        `json:"responseBodyModified"`
-	Delayed                int         `json:"delayed"`
-}
+const WebServerPath = "/middleman"
 
 type App struct {
 	ctx              context.Context
 	proxy            *goproxy.ProxyHttpServer
-	proxyStartStoop  chan bool
+	proxyStartStop   chan bool
+	webStartStop     chan bool
 	database         Database
 	config           Config
 	logger           *slog.Logger
 	httpRequests     []HttpRequestLog
 	httpRequestsLock sync.Mutex
+	webServerPath    string
 }
 
 type ReturnValue struct {
@@ -72,17 +49,21 @@ func NewApp() *App {
 	config := getConfig()
 	logFile := getLogFilePath()
 	logWriter, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	multiWriter := io.MultiWriter(os.Stdout, logWriter)
 	if err != nil {
 		panic(err)
 	}
 
 	proxy := goproxy.NewProxyHttpServer()
+
 	app := &App{
-		proxy:           proxy,
-		database:        NewSqliteDatabase(getDatabasePath()),
-		proxyStartStoop: make(chan bool),
-		config:          config,
-		logger:          slog.New(slog.NewJSONHandler(logWriter, nil)),
+		proxy:          proxy,
+		database:       NewSqliteDatabase(getDatabasePath()),
+		proxyStartStop: make(chan bool),
+		webStartStop:   make(chan bool),
+		config:         config,
+		logger:         slog.New(slog.NewJSONHandler(multiWriter, nil)),
+		webServerPath:  WebServerPath,
 	}
 
 	return app
@@ -324,84 +305,21 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 	}
 }
 
-func (a *App) StartProxy(port int) ReturnValue {
-	certPath, certKey := getCertKeyPath()
+func (a *App) middlemanWeb(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
 
-	certytes, err := os.ReadFile(certPath)
-	if err != nil {
-		panic(err)
-	}
-
-	keybytes, err := os.ReadFile(certKey)
-	if err != nil {
-		panic(err)
-	}
-
-	goproxyCa, err := tls.X509KeyPair(certytes, keybytes)
-	if err != nil {
-		panic(err)
-	}
-	if goproxyCa.Leaf, err = x509.ParseCertificate(goproxyCa.Certificate[0]); err != nil {
-		panic(err)
-	}
-	goproxy.GoproxyCa = goproxyCa
-	goproxy.OkConnect = &goproxy.ConnectAction{Action: goproxy.ConnectAccept, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
-	goproxy.MitmConnect = &goproxy.ConnectAction{Action: goproxy.ConnectMitm, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
-	goproxy.HTTPMitmConnect = &goproxy.ConnectAction{Action: goproxy.ConnectHTTPMitm, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
-	goproxy.RejectConnect = &goproxy.ConnectAction{Action: goproxy.ConnectReject, TLSConfig: goproxy.TLSConfigFromCA(&goproxyCa)}
-	//
-
-	if err := PortAvailable("localhost", fmt.Sprintf("%d", port)); err == nil {
-		log.Println("Port is not available")
-		return ReturnValue{Error: fmt.Sprintf("Port %d is not available", port)}
-	}
-
-	portString := fmt.Sprintf(":%d", port)
-	log.Println("Starting Proxy", portString)
-	l, err := net.Listen("tcp", portString)
-	if err != nil {
-		a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
-		log.Fatal("Error start listening: ", err)
-	}
-	log.Println("Error start listening: ", portString)
-
-	go func() {
-
-		// a.proxy.Verbose = true
-		a.proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
-		a.proxy.OnRequest().DoFunc(a.getOnRequest())
-		a.proxy.OnResponse().DoFunc(a.getOnResponse())
-
-		go func() {
-			err := http.Serve(l, a.proxy)
-			if err != nil {
-				a.logger.Error(fmt.Sprintf("Error starting server: %s", err))
-				log.Fatal("Error starting server: ", err)
-			}
-			log.Println("Proxy serving started")
-		}()
-
-		log.Println("Proxy server goroutine started, waiting to stop")
-		<-a.proxyStartStoop
-		l.Close()
-		log.Println("Proxy TCP listener closed")
-	}()
-
-	return ReturnValue{}
+	var tmplFile = "/Users/sumeetmathpati/Projects/sumeet/middleman/webserver/index.html"
+	tmpl := template.Must(template.ParseFiles(tmplFile))
+	tmpl.Execute(w, struct{ WebServerPath string }{WebServerPath: a.webServerPath})
 }
 
 func (a *App) StopProxy() {
 	log.Println("Stopping Proxy")
-	a.proxyStartStoop <- true
+	a.proxyStartStop <- true
 }
 
 func (a *App) GetConfig() Config {
 	return a.config
-}
-
-func (a *App) AddConfigPort(port string) {
-	a.config.ServerPort = port
-	saveConfig(a.config)
 }
 
 func (a *App) GetManyRules(recordType string) ReturnValue {
@@ -440,6 +358,13 @@ func (a *App) GetLogs() ReturnValue {
 	return ReturnValue{
 		HttpRequests: a.httpRequests,
 	}
+}
+
+func (a *App) downloadCert(w http.ResponseWriter, r *http.Request) {
+	certPath, _ := getCertKeyPath()
+	w.Header().Set("Content-Disposition", "attachment; filename=\"Middleman.crt\"")
+	w.Header().Set("Content-Type", "application/octet-stream")
+	http.ServeFile(w, r, certPath)
 }
 
 func (a *App) UpdateRule(ruleIn InValue) ReturnValue {

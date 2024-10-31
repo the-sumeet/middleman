@@ -1,10 +1,12 @@
 export namespace main {
 	
 	export class Config {
-	    serverPort: string;
+	    proxyServerPort: string;
+	    webServerPort: string;
 	    certPath: string;
 	    keyPath: string;
 	    databasePath: string;
+	    webServerPath: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -12,10 +14,12 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.serverPort = source["serverPort"];
+	        this.proxyServerPort = source["proxyServerPort"];
+	        this.webServerPort = source["webServerPort"];
 	        this.certPath = source["certPath"];
 	        this.keyPath = source["keyPath"];
 	        this.databasePath = source["databasePath"];
+	        this.webServerPath = source["webServerPath"];
 	    }
 	}
 	export class Header {

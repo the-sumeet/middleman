@@ -16,7 +16,8 @@ export const delays = writable([]);
 export const modifyHeaders = writable([]);
 export const modifyRequestBody = writable([]);
 export const modifyResponseBody = writable([]);
-export const serverRunning = writable(false);
+export const proxyServerRunning = writable(false);
+export const webServerRunning = writable(false);
 export const currentPage = writable(HOME);
 
 
