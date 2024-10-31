@@ -64,6 +64,7 @@ type ReturnValue struct {
 }
 
 type InValue struct {
+	Id   any  `json:"id"`
 	Rule Rule `json:"rule"`
 }
 
