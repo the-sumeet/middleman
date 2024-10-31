@@ -1,23 +1,20 @@
 <script>
-    import { onDestroy } from "svelte";
+    import { onMount } from "svelte";
     import { modifyResponseBody } from "../../stores";
     import ModifyResponseBody from "./ModifyResponseBody.svelte";
-    let modifyBodyList = [];
+    import { refreshList } from "../../stores";
+    import { RULE_MODIFY_RESPONSE_BODY } from "../../../src/constants";
 
-    // Subs
-    const unSubResponseBody = modifyResponseBody.subscribe((value) => {
-        modifyBodyList = value;
-    });
-
-    onDestroy(() => {
-        unSubResponseBody();
+    onMount(() => {
+        console.debug(`Updating ${RULE_MODIFY_RESPONSE_BODY} on mount`);
+        refreshList(RULE_MODIFY_RESPONSE_BODY);
     });
 </script>
 
-{#if modifyBodyList.length > 0}
-    {#each modifyBodyList as modifyBody, i (crypto.randomUUID())}
-    <div class="mb-4">
-        <ModifyResponseBody modifyBodyId={i} {modifyBody} />
-    </div>
+{#if $modifyResponseBody.length > 0}
+    {#each $modifyResponseBody as modifyBody, i (crypto.randomUUID())}
+        <div class="mb-4">
+            <ModifyResponseBody rule={modifyBody} />
+        </div>
     {/each}
 {/if}

@@ -1,13 +1,12 @@
 <script>
-    export let modifyBody;
-    export let modifyBodyId;
+    export let rule;
+
     import { main } from "../../../wailsjs/go/models";
-    import { Save } from "../../../wailsjs/go/main/App";
-    import { Remove } from "../../../wailsjs/go/main/App";
-    import { modifyRequestBody } from "../../stores";
-    import { GetMany } from "../../../wailsjs/go/main/App";
+    import { UpdateRule } from "../../../wailsjs/go/main/App";
+    import { errorMessage } from "../../stores";
+    import { GetManyRules } from "../../../wailsjs/go/main/App";
     import BottomButtons from "../../widgets/BottomButtons.svelte";
-    import { MODIFY_REQUEST_BODY } from "../../../src/constants";
+    import { RULE_MODIFY_REQUEST_BODY } from "../../../src/constants";
     import * as ace from "brace";
     import { onMount } from "svelte";
     import "brace/mode/html";
@@ -17,24 +16,21 @@
     import "brace/mode/yaml";
     import "brace/theme/dracula";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
-    import { remove } from "../../../src/utils";
+    import { removeAndRefresh, updateRule } from "../../../src/utils";
 
     let editor;
-    const editorId = `editor${modifyBodyId}`;
+    const editorId = `editor${rule.id}`;
     let changed = false;
     let entity;
     let op;
     let value;
     let body;
 
-    // modifyBody properties
-    fromModifyRequestBody();
-
     function fromModifyRequestBody() {
-        entity = modifyBody.entity;
-        op = modifyBody.op;
-        value = modifyBody.value;
-        body = modifyBody.body;
+        entity = rule.entity;
+        op = rule.op;
+        value = rule.value;
+        body = rule.requestBody;
     }
 
     function setChanged() {
@@ -42,22 +38,23 @@
     }
 
     function save() {
-        const modifyHeaderRecord = new main.ModifyRequestBody({
-            enabled: modifyBody.enabled,
+        const modifyRequestBodyRecord = new main.Rule({
+            type: RULE_MODIFY_REQUEST_BODY,
+            enabled: rule.enabled,
             entity: entity,
             op: op,
             value: value,
-            body: body,
+            requestBody: body,
         });
 
-        const input = new main.InValue({
-            modifyRequestBody: modifyHeaderRecord,
-        });
-
-        Save(MODIFY_REQUEST_BODY, modifyBodyId, input).then(async () => {
-            const result = await GetMany(MODIFY_REQUEST_BODY);
-            modifyRequestBody.set(result.modifyRequestBody);
-            changed = false;
+        updateRule(rule.id, modifyRequestBodyRecord).then(async (result) => {
+            if (result.error === "") {
+                console.debug("Updated Rule", result.rules[0]);
+                rule = result.rules[0];
+                changed = false;
+            } else {
+                errorMessage.set(result.error);
+            }
         });
     }
 
@@ -67,10 +64,13 @@
     }
 
     function enableDisable() {
-        modifyBody.enabled = !modifyBody.enabled;
+        rule.enabled = !rule.enabled;
         save();
     }
     onMount(() => {
+
+        fromModifyRequestBody();
+
         editor = ace.edit(editorId);
         editor.setTheme("ace/theme/dracula");
         editor.setValue(body, 1);
@@ -114,7 +114,7 @@
         />
     </div>
 
-    <h1 class="mt-4 text-md text-white">Then user the following body</h1>
+    <h1 class="mt-4 text-md text-white">Then use the following body</h1>
 
     <div
         id={editorId}
@@ -127,9 +127,8 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(MODIFY_REQUEST_BODY, modifyBodyId)}
-
+        remove={() => removeAndRefresh(RULE_MODIFY_REQUEST_BODY, rule.id)}
         {enableDisable}
-        enabled={modifyBody.enabled}
+        enabled={rule.enabled}
     />
 </div>

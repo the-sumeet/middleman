@@ -7,8 +7,8 @@ export const RULE_REDIRECT = "redirect";
 export const RULE_MOD_HEADER = "modifyHeader";
 export const RULE_CANCEL = "cancel";
 export const RULE_DELAY= "delay";
-export const MODIFY_REQUEST_BODY= "modifyRequestBody";
-export const MODIFY_RESPONSE_BODY= "modifyResponseBody";
+export const RULE_MODIFY_REQUEST_BODY= "modifyRequestBody";
+export const RULE_MODIFY_RESPONSE_BODY= "modifyResponseBody";
 
 // Tabs
 export const HOME = "home";
@@ -21,7 +21,7 @@ export const LOGS = "logs";
 export const tabSelectedStyle =
 "border-blue-400 text-blue-300  focus:outline-none";
 export const tabUnselectedStyle =
-"border-transparent  text-white cursor-base focus:outline-none hover:border-gray-400";
+"border-transparent text-white cursor-base focus:outline-none hover:border-gray-400";
 
 // Rule info
 export const RULE_INFO = {
@@ -31,4 +31,17 @@ export const RULE_INFO = {
     'modifyHeader': "Modifies the request header. You can add, remove or modify the header.",
     'modifyRequestBody': "Replace the request body",
     'modifyResponseBody': "Replace the response body"
+};
+
+// Alert types
+export const ALERT_INFO = "info";
+export const ALERT_SUCCESS = "success";
+export const ALERT_ERROR = "error";
+export const ALERT_WARNING = "warning";
+
+export const ALERT_BG_COLOR = {
+    'info': 'bg-blue-500',
+    'success': 'bg-emerald-500',
+    'error': 'bg-red-500',
+    "warning": 'bg-yellow-400'
 };

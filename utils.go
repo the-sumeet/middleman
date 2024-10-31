@@ -68,7 +68,7 @@ func getResponseLogValues(r *http.Response, args ...any) []any {
 	return getRequestLogValues(r.Request, args...)
 }
 
-func matches(r Request, hr *http.Request) bool {
+func matches(r Rule, hr *http.Request) bool {
 	entityValue := getRequestEntity(r.Entity, hr)
 	if entityValue == "" || r.Value == "" {
 		return false

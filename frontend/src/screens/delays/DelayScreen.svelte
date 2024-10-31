@@ -1,25 +1,19 @@
 <script>
-    import { onDestroy } from "svelte";
-    import { delays } from "../../stores";
+    import { onMount } from "svelte";
+    import { delays, refreshList } from "../../stores";
     import Delay from "./Delay.svelte";
+    import { RULE_DELAY } from "../../../src/constants";
 
-    let delayList = [];
-
-    // Subs
-    const unSubDelays = delays.subscribe((value) => {
-        console.log(value);
-        delayList = value;
-    });
-
-    onDestroy(() => {
-        unSubDelays();
+    onMount(() => {
+        console.debug("Updating delays on mount");
+        refreshList(RULE_DELAY);
     });
 </script>
 
-{#if delayList.length > 0}
-    {#each delayList as delay, i (crypto.randomUUID())}
+{#if $delays.length > 0}
+    {#each $delays as delay, i (crypto.randomUUID())}
     <div class="mb-4">
-        <Delay delayId={i} delay={delay} />
+        <Delay rule={delay} />
     </div>
     {/each}
 {/if}

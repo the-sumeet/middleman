@@ -1,26 +1,22 @@
 <script>
-    import { onDestroy, onMount } from "svelte";
+    import { onDestroy } from "svelte";
     import { cancels } from "../../../src/stores";
     import Cancel from "./Cancel.svelte";
-    import { GetMany } from "../../../wailsjs/go/main/App";
+    import { refreshList } from "../../../src/stores";
+    import { RULE_CANCEL } from "../../../src/constants";
+    import { onMount } from "svelte";
 
-    let cancelList = [];
-
-    // Subs
-    const unSubRedirects = cancels.subscribe((value) => {
-        console.log(value);
-        cancelList = value;
+    onMount(() => {
+        console.debug("Updating cancels on mount");
+        refreshList(RULE_CANCEL);
     });
 
-    onDestroy(() => {
-        unSubRedirects();
-    });
 </script>
 
-{#if cancelList.length > 0}
-    {#each cancelList as cancel, i (crypto.randomUUID())}
+{#if $cancels.length > 0}
+    {#each $cancels as cancel, i (crypto.randomUUID())}
         <div class="mb-4">
-            <Cancel cancelId={i} {cancel} />
+            <Cancel rule={cancel} />
         </div>
     {/each}
 {/if}

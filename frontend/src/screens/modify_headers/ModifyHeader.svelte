@@ -1,16 +1,18 @@
 <script>
-    export let modifyHeader;
-    export let modifyHeaderId;
+    export let rule;
 
     import { main } from "../../../wailsjs/go/models";
-    import { Save } from "../../../wailsjs/go/main/App";
-    import { Remove } from "../../../wailsjs/go/main/App";
-    import { modifyHeaders } from "../../stores";
-    import { GetMany } from "../../../wailsjs/go/main/App";
+    import { UpdateRule } from "../../../wailsjs/go/main/App";
+    import { errorMessage } from "../../stores";
+    import { GetManyRules } from "../../../wailsjs/go/main/App";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
-    import { remove } from "../../../src/utils";
-    import { RULE_MOD_HEADER, tabSelectedStyle, tabUnselectedStyle } from "../../../src/constants";
+    import { removeAndRefresh, updateRule } from "../../../src/utils";
+    import {
+        RULE_MOD_HEADER,
+        tabSelectedStyle,
+        tabUnselectedStyle,
+    } from "../../../src/constants";
 
     let requestTab = true;
     let changed = false;
@@ -21,76 +23,98 @@
     fromModifyHeader();
 
     function fromModifyHeader() {
-        entity = modifyHeader.entity;
-        op = modifyHeader.op;
-        value = modifyHeader.value;
+        entity = rule.entity;
+        op = rule.op;
+        value = rule.value;
     }
 
     function setChanged() {
         changed = true;
     }
 
-    function addRecord() {
-        modifyHeader.mods = [
-            ...(modifyHeader.mods === null ? [] : modifyHeader.mods),
-            new main.Header({
-                isRequest: requestTab,
-                action: "remove",
-                name: "name",
-                value: "value",
-            }),
-        ];
+    function addMod() {
+        const newMod = new main.Header({
+            isRequest: requestTab,
+            action: "remove",
+            name: "name",
+            value: "value",
+        });
+        if (requestTab == true) {
+            const currentRequestMods =
+                rule.requestHeaderMods != undefined ||
+                rule.requestHeaderMods != null
+                    ? rule.requestHeaderMods
+                    : [];
+            rule.requestHeaderMods = [...currentRequestMods, newMod];
+        } else {
+            const currentResponseMods =
+                rule.responseHeaderMods != undefined ||
+                rule.responseHeaderMods != null
+                    ? rule.responseHeaderMods
+                    : [];
+            rule.responseHeaderMods = [...currentResponseMods, newMod];
+        }
         changed = true;
     }
 
     function removeMod(index) {
-        modifyHeader.mods = modifyHeader.mods.filter((_, i) => i !== index);
+        if (requestTab) {
+            rule.requestHeaderMods = rule.requestHeaderMods.filter((_, i) => i !== index);
+        } else {
+            rule.responseHeaderMods = rule.responseHeaderMods.filter((_, i) => i !== index);
+        }
+        
         changed = true;
     }
 
-    function setAction(index, action) {
-        modifyHeader.mods[index].action = action;
+    function setAction(index, action) {        
+        if (requestTab) {
+            rule.requestHeaderMods[index].action = action;
+        } else {
+            rule.responseHeaderMods[index].action = action;
+        }
         changed = true;
     }
 
     function setName(e, i) {
         const name = e.target.value;
-        modifyHeader.mods[i].name = name;
+        if (requestTab) {
+            rule.requestHeaderMods[i].name = name;
+        } else {
+            rule.responseHeaderMods[i].name = name;
+        }
         changed = true;
     }
 
     function setValue(e, i) {
         const value = e.target.value;
-        modifyHeader.mods[i].value = value;
+        if (requestTab) {
+            rule.requestHeaderMods[i].value = value;
+        } else {
+            rule.responseHeaderMods[i].value = value;
+        }
         changed = true;
     }
 
     function save() {
-        const modifyHeaderRecord = new main.ModifyHeader({
-            enabled: modifyHeader.enabled,
+        const modifyHeaderRecord = new main.Rule({
+            type: RULE_MOD_HEADER,
+            enabled: rule.enabled,
             entity: entity,
             op: op,
             value: value,
-            mods: [
-                ...modifyHeader.mods.map((mod) => {
-                    return new main.Header({
-                        isRequest: mod.isRequest,
-                        action: mod.action,
-                        name: mod.name,
-                        value: mod.value,
-                    });
-                }),
-            ],
+            requestHeaderMods: rule.requestHeaderMods,
+            responseHeaderMods: rule.responseHeaderMods,
         });
 
-        const input = new main.InValue({
-            modifyHeader: modifyHeaderRecord,
-        });
-
-        Save("modifyHeader", modifyHeaderId, input).then(async () => {
-            const result = await GetMany("modifyHeader");
-            modifyHeaders.set(result.modifyHeaders);
-            changed = false;
+        updateRule(rule.id, modifyHeaderRecord).then(async (result) => {
+            if (result.error === "") {
+                console.debug("Updated Rule", result.rules[0]);
+                rule = result.rules[0];
+                changed = false;
+            } else {
+                errorMessage.set(result.error);
+            }
         });
     }
 
@@ -100,7 +124,7 @@
     }
 
     function enableDisable() {
-        modifyHeader.enabled = !modifyHeader.enabled;
+        rule.enabled = !rule.enabled;
         save();
     }
 </script>
@@ -161,57 +185,55 @@
     </div>
 
     <div class="mt-4 border-2 rounded-md border-gray-700">
-        {#if modifyHeader.mods}
-            {#each modifyHeader.mods as mod, i}
-                {#if mod.isRequest === requestTab}
-                    <div class="flex space-x-2 p-4">
-                        <select
-                            bind:value={mod.action}
-                            class="p-2 rounded text-whites"
-                            name=""
-                            id=""
+        {#if (requestTab && rule.requestHeaderMods) || (!requestTab && rule.responseHeaderMods)}
+            {#each requestTab ? rule.requestHeaderMods : rule.responseHeaderMods as mod, i}
+                <div class="flex space-x-2 p-4">
+                    <select
+                        on:change={() => changed = true}
+                        bind:value={mod.action}
+                        class="p-2 rounded text-whites"
+                        name=""
+                        id=""
+                    >
+                        <option class="text-white" value="add">Add</option>
+                        <option class="text-white" value="remove">Remove</option
                         >
-                            <option class="text-white" value="add">Add</option>
-                            <option class="text-white" value="remove"
-                                >Remove</option
-                            >
-                            <option class="text-white" value="override"
-                                >Override</option
-                            >
-                        </select>
-
-                        <input
-                            on:input={(e) => setName(e, i)}
-                            value={mod.name}
-                            autocapitalize="off"
-                            autocorrect="off"
-                            type="text"
-                            placeholder="example"
-                            class="w-full placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-blue-300"
-                        />
-
-                        <input
-                            on:input={(e) => setValue(e, i)}
-                            value={mod.value}
-                            autocapitalize="off"
-                            autocorrect="off"
-                            type="text"
-                            placeholder="example"
-                            class="w-full placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-blue-300"
-                        />
-
-                        <button
-                            on:click={() => removeMod(i)}
-                            class="w-max px-2 py-1 font-medium tracking-wide text-white hover:text-red-500"
+                        <option class="text-white" value="override"
+                            >Override</option
                         >
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                {/if}
+                    </select>
+
+                    <input
+                        on:input={(e) => setName(e, i)}
+                        value={mod.name}
+                        autocapitalize="off"
+                        autocorrect="off"
+                        type="text"
+                        placeholder="example"
+                        class="w-full placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-blue-300"
+                    />
+
+                    <input
+                        on:input={(e) => setValue(e, i)}
+                        value={mod.value}
+                        autocapitalize="off"
+                        autocorrect="off"
+                        type="text"
+                        placeholder="example"
+                        class="w-full placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-blue-300"
+                    />
+
+                    <button
+                        on:click={() => removeMod(i)}
+                        class="w-max px-2 py-1 font-medium tracking-wide text-white hover:text-red-500"
+                    >
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
             {/each}
         {/if}
         <button
-            on:click={addRecord}
+            on:click={addMod}
             class="m-4 w-max px-6 py-2 font-medium tracking-wide text-white border-2 border-dashed rounded border-gray-700"
         >
             Add Modification
@@ -223,8 +245,8 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(RULE_MOD_HEADER, modifyHeaderId)}
+        remove={() => removeAndRefresh(RULE_MOD_HEADER, rule.id)}
         {enableDisable}
-        enabled={modifyHeader.enabled}
+        enabled={rule.enabled}
     />
 </div>

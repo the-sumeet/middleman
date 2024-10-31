@@ -1,32 +1,28 @@
 <script>
-    export let redirect;
-    export let redirectId;
+    export let rule;
 
     import { main } from "../../../wailsjs/go/models";
-    import { Save } from "../../../wailsjs/go/main/App";
-    import { Remove } from "../../../wailsjs/go/main/App";
-    import { redirects } from "../../stores";
-    import { GetMany } from "../../../wailsjs/go/main/App";
+    import { UpdateRule } from "../../../wailsjs/go/main/App";
+    import { errorMessage } from "../../stores";
+    import { GetManyRules } from "../../../wailsjs/go/main/App";
     import BottomButtons from "../../widgets/BottomButtons.svelte";
     import EntitySelect from "../../widgets/EntitySelect.svelte";
-    import { remove } from "../../utils";
+    import { updateRule, removeAndRefresh } from "../../utils";
     import { RULE_REDIRECT } from "../../constants";
+    import { onMount } from "svelte";
 
     let changed = false;
     let entity;
     let op;
     let value;
-    let toType;
-    let toValue;
+    let redirectTo;
 
-    fromRedirect();
 
     function fromRedirect() {
-        entity = redirect.entity;
-        op = redirect.op;
-        value = redirect.value;
-        toType = redirect.toType;
-        toValue = redirect.toValue;
+        entity = rule.entity;
+        op = rule.op;
+        value = rule.value;
+        redirectTo = rule.redirectTo;
     }
 
     function setChanged() {
@@ -34,21 +30,23 @@
     }
 
     function save() {
-        const redictRecord = new main.Redirect({
-            enabled: redirect.enabled,
+        const redictRecord = new main.Rule({
+            type: RULE_REDIRECT,
+            enabled: rule.enabled,
             entity: entity,
             op: op,
             value: value,
-            toType: toType,
-            toValue: toValue,
+            redirectTo: redirectTo,
         });
 
-        const input = new main.InValue({ redirect: redictRecord });
-
-        Save("redirect", redirectId, input).then(async () => {
-            const result = await GetMany("redirect");
-            redirects.set(result.redirects);
-            changed = false;
+        updateRule(rule.id, redictRecord).then(async (result) => {
+            if (result.error === "") {
+                console.debug("Updated Rule", result.rules[0]);
+                rule = result.rules[0];
+                changed = false;
+            } else {
+                errorMessage.set(result.error);
+            }
         });
     }
 
@@ -58,9 +56,13 @@
     }
 
     function enableDisable() {
-        redirect.enabled = !redirect.enabled;
+        rule.enabled = !rule.enabled;
         save();
     }
+
+    onMount(() => {
+        fromRedirect();
+    });
 </script>
 
 <div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
@@ -96,7 +98,7 @@
 
     <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-4">
         <input
-            bind:value={toValue}
+            bind:value={redirectTo}
             on:input={setChanged}
             autocapitalize="off"
             autocorrect="off"
@@ -111,8 +113,8 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(RULE_REDIRECT, redirectId)}
+        remove={() => removeAndRefresh(RULE_REDIRECT, rule.id)}
         {enableDisable}
-        enabled={redirect.enabled}
+        enabled={rule.enabled}
     />
 </div>

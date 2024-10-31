@@ -1,16 +1,13 @@
 <script>
-    export let cancel;
-    export let cancelId;
-
+    export let rule;
+    import { onMount } from "svelte";
     import { main } from "../../../wailsjs/go/models";
-    import { Save } from "../../../wailsjs/go/main/App";
-    import { Remove } from "../../../wailsjs/go/main/App";
-    import { GetMany } from "../../../wailsjs/go/main/App";
-    import { cancels } from "../../../src/stores";
+    import { GetOneRule } from "../../../wailsjs/go/main/App";
+    import { errorMessage, refreshList } from "../../../src/stores";
     import BottomButtons from "../../../src/widgets/BottomButtons.svelte";
     import EntitySelect from "../../../src/widgets/EntitySelect.svelte";
     import { RULE_CANCEL } from "../../../src/constants";
-    import { remove } from "../../../src/utils";
+    import { removeAndRefresh, updateRule } from "../../../src/utils";
 
     let changed = false;
     let entity;
@@ -20,30 +17,33 @@
     fromCancel();
 
     function fromCancel() {
-        entity = cancel.entity;
-        op = cancel.op;
-        value = cancel.value;
+        entity = rule.entity;
+        op = rule.op;
+        value = rule.value;
     }
 
     function setChanged() {
         changed = true;
     }
 
-    // Go functions
+    
     function save() {
-        const newCancel = new main.Cancel({
-            enabled: cancel.enabled,
+        const newCancel = new main.Rule({
+            type: RULE_CANCEL,
+            enabled: rule.enabled,
             entity: entity,
             op: op,
             value: value,
         });
 
-        const input = new main.InValue({ cancel: newCancel });
-
-        Save("cancel", cancelId, input).then(async () => {
-            const result = await GetMany("cancel");
-            cancels.set(result.cancels);
-            changed = false;
+        updateRule(rule.id, newCancel).then(async (result) => {
+            if (result.error === "") {
+                console.debug("Updated Rule", result.rules[0]);
+                rule = result.rules[0];
+                changed = false;
+            } else {
+                errorMessage.set(result.error);
+            }
         });
     }
 
@@ -53,7 +53,7 @@
     }
 
     function enableDisable() {
-        cancel.enabled = !cancel.enabled;
+        rule.enabled = !rule.enabled;
         save();
     }
 </script>
@@ -94,8 +94,8 @@
         {changed}
         {save}
         {cancelSave}
-        remove={() => remove(RULE_CANCEL, cancelId)}
+        remove={() => removeAndRefresh(RULE_CANCEL, rule.id)}
         {enableDisable}
-        enabled={cancel.enabled}
+        enabled={rule.enabled}
     />
 </div>
