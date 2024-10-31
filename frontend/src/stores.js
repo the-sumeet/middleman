@@ -3,6 +3,11 @@ import { MODIFY_REQUEST_BODY, MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_DELAY, RUL
 import { GetMany } from "../wailsjs/go/main/App";
 import { HOME } from "./constants";
 
+// Messages
+export const successMessage = writable("");
+export const errorMessage = writable("");
+export const infoMessage = writable("");
+export const warningMessage = writable("");
 
 export const currentRule = writable(RULE_REDIRECT);
 export const redirects = writable([]);
