@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -49,7 +48,6 @@ func (s *SqliteDatabase) migrate() {
 		row.Scan(&version)
 		s.migrateVersion(version + 1)
 	}
-
 }
 
 func NewSqliteDatabase(filePath string) *SqliteDatabase {
@@ -64,15 +62,14 @@ func NewSqliteDatabase(filePath string) *SqliteDatabase {
 }
 
 func (s *SqliteDatabase) AddRule(rule Rule) (any, error) {
-	recordId := time.Now().UTC().Unix()
 	var res sql.Result
 
 	marshalled, err := json.Marshal(rule)
 	if err != nil {
-		return recordId, err
+		return nil, err
 	}
 
-	res, err = s.db.Exec(fmt.Sprintf("INSERT INTO %s (id, data) VALUES (?, ?)", RULE), recordId, marshalled)
+	res, err = s.db.Exec(fmt.Sprintf("INSERT INTO %s (data) VALUES (?)", RULE), marshalled)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +80,26 @@ func (s *SqliteDatabase) AddRule(rule Rule) (any, error) {
 	}
 
 	return lastInsertId, nil
+}
+
+func (s *SqliteDatabase) UpdateRule(id any, rule Rule) (Rule, error) {
+
+	marshalled, err := json.Marshal(rule)
+	if err != nil {
+		return rule, err
+	}
+
+	_, err = s.db.Exec(fmt.Sprintf("UPDATE %s SET data = ? WHERE id = ?", RULE), marshalled, id)
+	if err != nil {
+		return rule, err
+	}
+
+	updatedRule, err := s.GetOneRule(id)
+	if err != nil {
+		return rule, err
+	}
+
+	return updatedRule, nil
 }
 
 func (s *SqliteDatabase) GetOneRule(id any) (Rule, error) {
@@ -102,6 +119,7 @@ func (s *SqliteDatabase) GetOneRule(id any) (Rule, error) {
 		return rule, err
 	}
 
+	rule.Id = id
 	return rule, err
 }
 
@@ -129,8 +147,15 @@ func (s *SqliteDatabase) GetManyRules(recordType string) ([]Rule, error) {
 			return nil, err
 		}
 
+		rule.Id = id
+
 		rules = append(rules, rule)
 	}
 
 	return rules, nil
+}
+
+func (s *SqliteDatabase) RemoveRule(id any) error {
+	_, err := s.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE id = ?", RULE), id)
+	return err
 }
