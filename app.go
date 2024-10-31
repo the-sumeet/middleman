@@ -32,19 +32,6 @@ type App struct {
 	webServerPath    string
 }
 
-type ReturnValue struct {
-	InsertedId   any              `json:"insertedId"`
-	Rules        []Rule           `json:"rules"`
-	Logs         []string         `json:"logs"`
-	HttpRequests []HttpRequestLog `json:"httpRequests"`
-	Error        string           `json:"error"`
-}
-
-type InValue struct {
-	Id   any  `json:"id"`
-	Rule Rule `json:"rule"`
-}
-
 func NewApp() *App {
 	config := getConfig()
 	logFile := getLogFilePath()
@@ -313,72 +300,9 @@ func (a *App) middlemanWeb(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, struct{ WebServerPath string }{WebServerPath: a.webServerPath})
 }
 
-func (a *App) StopProxy() {
-	log.Println("Stopping Proxy")
-	a.proxyStartStop <- true
-}
-
-func (a *App) GetConfig() Config {
-	return a.config
-}
-
-func (a *App) GetManyRules(recordType string) ReturnValue {
-
-	res, err := a.database.GetManyRules(recordType)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-
-	return ReturnValue{Rules: res}
-}
-
-func (a *App) RemoveRule(recordId int) ReturnValue {
-	err := a.database.RemoveRule(recordId)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-	return ReturnValue{}
-}
-
-func (a *App) AddRule(records InValue) ReturnValue {
-
-	fmt.Println("Adding rule", records.Rule)
-	id, err := a.database.AddRule(records.Rule)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-	return ReturnValue{InsertedId: id, Rules: []Rule{records.Rule}}
-}
-
-func (a *App) GenerateCert() {
-	genCert()
-}
-
-func (a *App) GetLogs() ReturnValue {
-	return ReturnValue{
-		HttpRequests: a.httpRequests,
-	}
-}
-
 func (a *App) downloadCert(w http.ResponseWriter, r *http.Request) {
 	certPath, _ := getCertKeyPath()
 	w.Header().Set("Content-Disposition", "attachment; filename=\"Middleman.crt\"")
 	w.Header().Set("Content-Type", "application/octet-stream")
 	http.ServeFile(w, r, certPath)
-}
-
-func (a *App) UpdateRule(ruleIn InValue) ReturnValue {
-	updatedRule, err := a.database.UpdateRule(ruleIn.Id, ruleIn.Rule)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-	return ReturnValue{Rules: []Rule{updatedRule}}
-}
-
-func (a *App) GetOneRule(id int) ReturnValue {
-	rule, err := a.database.GetOneRule(id)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-	return ReturnValue{Rules: []Rule{rule}}
 }

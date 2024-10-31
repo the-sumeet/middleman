@@ -186,11 +186,11 @@ export namespace main {
 		}
 	}
 	export class ReturnValue {
-	    insertedId: any;
-	    rules: Rule[];
 	    logs: string[];
 	    httpRequests: HttpRequestLog[];
 	    error: string;
+	    insertedId: any;
+	    rules: Rule[];
 	
 	    static createFrom(source: any = {}) {
 	        return new ReturnValue(source);
@@ -198,11 +198,11 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.insertedId = source["insertedId"];
-	        this.rules = this.convertValues(source["rules"], Rule);
 	        this.logs = source["logs"];
 	        this.httpRequests = this.convertValues(source["httpRequests"], HttpRequestLog);
 	        this.error = source["error"];
+	        this.insertedId = source["insertedId"];
+	        this.rules = this.convertValues(source["rules"], Rule);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

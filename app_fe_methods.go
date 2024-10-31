@@ -16,24 +16,16 @@ import (
 )
 
 type ReturnValue struct {
-	Redirects          []Redirect           `json:"redirects"`
-	Cancels            []Cancel             `json:"cancels"`
-	Delays             []Delay              `json:"delays"`
-	ModifyHeaders      []ModifyHeader       `json:"modifyHeaders"`
-	ModifyRequestBody  []ModifyRequestBody  `json:"modifyRequestBody"`
-	ModifyResponseBody []ModifyResponseBody `json:"modifyResponseBody"`
-	Logs               []string             `json:"logs"`
-	HttpRequests       []HttpRequestLog     `json:"httpRequests"`
-	Error              string               `json:"error"`
+	Logs         []string         `json:"logs"`
+	HttpRequests []HttpRequestLog `json:"httpRequests"`
+	Error        string           `json:"error"`
+	InsertedId   any              `json:"insertedId"`
+	Rules        []Rule           `json:"rules"`
 }
 
 type InValue struct {
-	Redirect           Redirect           `json:"redirect"`
-	Cancel             Cancel             `json:"cancel"`
-	Delay              Delay              `json:"delay"`
-	ModifyHeader       ModifyHeader       `json:"modifyHeader"`
-	ModifyRequestBody  ModifyRequestBody  `json:"modifyRequestBody"`
-	ModifyResponseBody ModifyResponseBody `json:"modifyResponseBody"`
+	Id   any  `json:"id"`
+	Rule Rule `json:"rule"`
 }
 
 func (a *App) StartProxy() ReturnValue {
@@ -195,166 +187,8 @@ func (a *App) AddWebPort(webPort string) ReturnValue {
 	return ReturnValue{}
 }
 
-func (a *App) GetMany(recordType string) ReturnValue {
-
-	res, err := a.database.GetMany(recordType)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-
-	if recordType == REDIRECT {
-		redirects := make([]Redirect, len(res))
-		for i, v := range res {
-			redirects[i] = v.(Redirect)
-		}
-		return ReturnValue{
-			Redirects: redirects,
-		}
-	}
-	if recordType == CANCEL {
-		cancels := make([]Cancel, len(res))
-		for i, v := range res {
-			cancels[i] = v.(Cancel)
-		}
-		return ReturnValue{
-			Cancels: cancels,
-		}
-	}
-	if recordType == DELAY {
-		delays := make([]Delay, len(res))
-		for i, v := range res {
-			delays[i] = v.(Delay)
-		}
-		return ReturnValue{
-			Delays: delays,
-		}
-	}
-
-	if recordType == MODIFY_HEADERS {
-		modifyHeader := make([]ModifyHeader, len(res))
-		for i, v := range res {
-			modifyHeader[i] = v.(ModifyHeader)
-		}
-		return ReturnValue{
-			ModifyHeaders: modifyHeader,
-		}
-	}
-
-	if recordType == MODIFY_REQUEST_BODY {
-		modifyRequestBody := make([]ModifyRequestBody, len(res))
-		for i, v := range res {
-			modifyRequestBody[i] = v.(ModifyRequestBody)
-		}
-		return ReturnValue{
-			ModifyRequestBody: modifyRequestBody,
-		}
-	}
-
-	if recordType == MODIFY_RESPONSE_BODY {
-		modifyResponseBody := make([]ModifyResponseBody, len(res))
-		for i, v := range res {
-			modifyResponseBody[i] = v.(ModifyResponseBody)
-		}
-		return ReturnValue{
-			ModifyResponseBody: modifyResponseBody,
-		}
-	}
-	return ReturnValue{}
-}
-
-func (a *App) Save(recordType string, recordId int, input InValue) ReturnValue {
-	if recordType == REDIRECT {
-		err := a.database.Save(recordType, recordId, input.Redirect)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == CANCEL {
-		err := a.database.Save(recordType, recordId, input.Cancel)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == DELAY {
-		err := a.database.Save(recordType, recordId, input.Delay)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == MODIFY_HEADERS {
-		err := a.database.Save(recordType, recordId, input.ModifyHeader)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	if recordType == MODIFY_REQUEST_BODY {
-		err := a.database.Save(recordType, recordId, input.ModifyRequestBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	if recordType == MODIFY_RESPONSE_BODY {
-		err := a.database.Save(recordType, recordId, input.ModifyResponseBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	return ReturnValue{}
-}
-
-func (a *App) Remove(recordType string, recordId int) ReturnValue {
-	err := a.database.Remove(recordType, recordId)
-	if err != nil {
-		return ReturnValue{Error: err.Error()}
-	}
-	return ReturnValue{}
-}
-
-func (a *App) Add(recordType string, records InValue) ReturnValue {
-
-	if recordType == REDIRECT {
-		err := a.database.Add(recordType, records.Redirect)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == CANCEL {
-		err := a.database.Add(recordType, records.Cancel)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == DELAY {
-		err := a.database.Add(recordType, records.Delay)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == MODIFY_HEADERS {
-		err := a.database.Add(recordType, records.ModifyHeader)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	if recordType == MODIFY_REQUEST_BODY {
-		err := a.database.Add(recordType, records.ModifyRequestBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	if recordType == MODIFY_RESPONSE_BODY {
-		err := a.database.Add(recordType, records.ModifyResponseBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	return ReturnValue{}
+func (a *App) GetWebServerPath() string {
+	return a.webServerPath
 }
 
 func (a *App) GenerateCert() {
@@ -367,6 +201,48 @@ func (a *App) GetLogs() ReturnValue {
 	}
 }
 
-func (a *App) GetWebServerPath() string {
-	return a.webServerPath
+// Rule CRUD
+
+func (a *App) UpdateRule(ruleIn InValue) ReturnValue {
+	updatedRule, err := a.database.UpdateRule(ruleIn.Id, ruleIn.Rule)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{Rules: []Rule{updatedRule}}
+}
+
+func (a *App) GetOneRule(id int) ReturnValue {
+	rule, err := a.database.GetOneRule(id)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{Rules: []Rule{rule}}
+}
+
+func (a *App) GetManyRules(recordType string) ReturnValue {
+
+	res, err := a.database.GetManyRules(recordType)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+
+	return ReturnValue{Rules: res}
+}
+
+func (a *App) RemoveRule(recordId int) ReturnValue {
+	err := a.database.RemoveRule(recordId)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{}
+}
+
+func (a *App) AddRule(records InValue) ReturnValue {
+
+	fmt.Println("Adding rule", records.Rule)
+	id, err := a.database.AddRule(records.Rule)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{InsertedId: id, Rules: []Rule{records.Rule}}
 }
