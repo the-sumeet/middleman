@@ -62,7 +62,7 @@ func getLogFilePath() string {
 
 func getDatabasePath() string {
 	appConfigDir := getAppConfigDir()
-	databasePath := filepath.Join(appConfigDir, "database.json")
+	databasePath := filepath.Join(appConfigDir, "middleman.db")
 	err := os.MkdirAll(filepath.Dir(databasePath), os.ModePerm)
 	if err != nil {
 		panic(err)
