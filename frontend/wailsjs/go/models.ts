@@ -1,23 +1,5 @@
 export namespace main {
 	
-	export class Cancel {
-	    enabled: boolean;
-	    entity: string;
-	    op: string;
-	    value: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Cancel(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.enabled = source["enabled"];
-	        this.entity = source["entity"];
-	        this.op = source["op"];
-	        this.value = source["value"];
-	    }
-	}
 	export class Config {
 	    serverPort: string;
 	    certPath: string;
@@ -34,26 +16,6 @@ export namespace main {
 	        this.certPath = source["certPath"];
 	        this.keyPath = source["keyPath"];
 	        this.databasePath = source["databasePath"];
-	    }
-	}
-	export class Delay {
-	    enabled: boolean;
-	    entity: string;
-	    op: string;
-	    value: string;
-	    delaySec: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new Delay(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.enabled = source["enabled"];
-	        this.entity = source["entity"];
-	        this.op = source["op"];
-	        this.value = source["value"];
-	        this.delaySec = source["delaySec"];
 	    }
 	}
 	export class Header {
@@ -135,64 +97,38 @@ export namespace main {
 		    return a;
 		}
 	}
-	export class ModifyResponseBody {
+	export class Rule {
+	    id: any;
+	    type: string;
 	    enabled: boolean;
 	    entity: string;
 	    op: string;
 	    value: string;
-	    body: string;
+	    redirectTo: string;
+	    delaySec: number;
+	    requestBody: string;
+	    responseBody: string;
+	    requestHeaderMods: Header[];
+	    responseHeaderMods: Header[];
 	
 	    static createFrom(source: any = {}) {
-	        return new ModifyResponseBody(source);
+	        return new Rule(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.type = source["type"];
 	        this.enabled = source["enabled"];
 	        this.entity = source["entity"];
 	        this.op = source["op"];
 	        this.value = source["value"];
-	        this.body = source["body"];
-	    }
-	}
-	export class ModifyRequestBody {
-	    enabled: boolean;
-	    entity: string;
-	    op: string;
-	    value: string;
-	    body: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new ModifyRequestBody(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.enabled = source["enabled"];
-	        this.entity = source["entity"];
-	        this.op = source["op"];
-	        this.value = source["value"];
-	        this.body = source["body"];
-	    }
-	}
-	export class ModifyHeader {
-	    enabled: boolean;
-	    entity: string;
-	    op: string;
-	    value: string;
-	    mods: Header[];
-	
-	    static createFrom(source: any = {}) {
-	        return new ModifyHeader(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.enabled = source["enabled"];
-	        this.entity = source["entity"];
-	        this.op = source["op"];
-	        this.value = source["value"];
-	        this.mods = this.convertValues(source["mods"], Header);
+	        this.redirectTo = source["redirectTo"];
+	        this.delaySec = source["delaySec"];
+	        this.requestBody = source["requestBody"];
+	        this.responseBody = source["responseBody"];
+	        this.requestHeaderMods = this.convertValues(source["requestHeaderMods"], Header);
+	        this.responseHeaderMods = this.convertValues(source["responseHeaderMods"], Header);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -213,33 +149,9 @@ export namespace main {
 		    return a;
 		}
 	}
-	export class Redirect {
-	    enabled: boolean;
-	    entity: string;
-	    op: string;
-	    value: string;
-	    toValue: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Redirect(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.enabled = source["enabled"];
-	        this.entity = source["entity"];
-	        this.op = source["op"];
-	        this.value = source["value"];
-	        this.toValue = source["toValue"];
-	    }
-	}
 	export class InValue {
-	    redirect: Redirect;
-	    cancel: Cancel;
-	    delay: Delay;
-	    modifyHeader: ModifyHeader;
-	    modifyRequestBody: ModifyRequestBody;
-	    modifyResponseBody: ModifyResponseBody;
+	    id: any;
+	    rule: Rule;
 	
 	    static createFrom(source: any = {}) {
 	        return new InValue(source);
@@ -247,12 +159,8 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.redirect = this.convertValues(source["redirect"], Redirect);
-	        this.cancel = this.convertValues(source["cancel"], Cancel);
-	        this.delay = this.convertValues(source["delay"], Delay);
-	        this.modifyHeader = this.convertValues(source["modifyHeader"], ModifyHeader);
-	        this.modifyRequestBody = this.convertValues(source["modifyRequestBody"], ModifyRequestBody);
-	        this.modifyResponseBody = this.convertValues(source["modifyResponseBody"], ModifyResponseBody);
+	        this.id = source["id"];
+	        this.rule = this.convertValues(source["rule"], Rule);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -273,17 +181,9 @@ export namespace main {
 		    return a;
 		}
 	}
-	
-	
-	
-	
 	export class ReturnValue {
-	    redirects: Redirect[];
-	    cancels: Cancel[];
-	    delays: Delay[];
-	    modifyHeaders: ModifyHeader[];
-	    modifyRequestBody: ModifyRequestBody[];
-	    modifyResponseBody: ModifyResponseBody[];
+	    insertedId: any;
+	    rules: Rule[];
 	    logs: string[];
 	    httpRequests: HttpRequestLog[];
 	    error: string;
@@ -294,12 +194,8 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.redirects = this.convertValues(source["redirects"], Redirect);
-	        this.cancels = this.convertValues(source["cancels"], Cancel);
-	        this.delays = this.convertValues(source["delays"], Delay);
-	        this.modifyHeaders = this.convertValues(source["modifyHeaders"], ModifyHeader);
-	        this.modifyRequestBody = this.convertValues(source["modifyRequestBody"], ModifyRequestBody);
-	        this.modifyResponseBody = this.convertValues(source["modifyResponseBody"], ModifyResponseBody);
+	        this.insertedId = source["insertedId"];
+	        this.rules = this.convertValues(source["rules"], Rule);
 	        this.logs = source["logs"];
 	        this.httpRequests = this.convertValues(source["httpRequests"], HttpRequestLog);
 	        this.error = source["error"];
