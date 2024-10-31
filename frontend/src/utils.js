@@ -1,9 +1,11 @@
 
 
 
-import { Remove, GetMany } from "../wailsjs/go/main/App";
-import { delays, redirects, modifyHeaders, modifyRequestBody, modifyResponseBody, cancels } from "./stores";
-import { RULE_DELAY, MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_INFO, RULE_MOD_HEADER, RULE_REDIRECT, MODIFY_REQUEST_BODY } from "./constants";
+import { RemoveRule, GetManyRules, UpdateRule } from "../wailsjs/go/main/App";
+import {  errorMessage, modifyResponseBody, refreshList } from "./stores";
+import { RULE_DELAY, RULE_MODIFY_REQUEST_BODY, RULE_CANCEL, RULE_MOD_HEADER, RULE_REDIRECT, RULE_MODIFY_RESPONSE_BODY } from "./constants";
+import { main } from "../wailsjs/go/models";
+
 
 export const scrollToBottom = async (el) => {
   el.scroll({ top: el.scrollHeight, behavior: 'smooth' });
@@ -20,44 +22,41 @@ export const scrollToBottomIfAtBottom = async (el) => {
 }
 
 
-export const remove = (type, id) => {
-  if (type === RULE_DELAY) {
-    Remove(type, id).then(() => {
-      GetMany(type).then((res) => {
-        delays.set(res.delays);
-      });
-    });
-  } else if (type === RULE_REDIRECT) {
-    Remove(type, id).then(() => {
-      GetMany(type).then((res) => {
-        redirects.set(res.redirects);
-      });
-    });
-  } else if (type === RULE_MOD_HEADER) {
-    Remove(type, id).then(() => {
-      GetMany(type).then((res) => {
-        modifyHeaders.set(res.modifyHeaders);
-      });
-    });
-  } else if (type === MODIFY_RESPONSE_BODY) {
-    Remove(type, id).then(() => {
-      GetMany(type).then((res) => {
-        modifyResponseBody.set(res.modifyResponseBody);
-      });
-    });
-    
-  } else if (type === RULE_CANCEL) {
-    Remove(type, id).then(() => {
-      GetMany(type).then((res) => {
-        cancels.set(res.cancels);
-      });
-    });
-  } else if (type === MODIFY_REQUEST_BODY) {
-    Remove(type, id).then(() => {
-      GetMany(type).then((res) => {
-        modifyRequestBody.set(res.modifyRequestBody);
-      });
-    });
+export const remove = async (id) => {
+  const result = await RemoveRule(id);
+  return result;
+}
+
+export const removeAndRefresh = async (type, id) => {
+  const result = await remove(id);
+  if (result.error != "") {
+    errorMessage.set(result.error);
+    return;
+  }
+  const error = await refreshList(type);
+  if (error != "") {
+    errorMessage.set(error);
+    return;
+  }  
+}
+
+export const updateRule = async (id, rule) => {
+  console.debug("Updating rule", id, rule);
+  const inValue = new main.InValue({ id: id, rule: rule });
+  const result = await UpdateRule(inValue)
+  return result;
+}
+
+export const updateAndRefresh = async (type, id, rule) => {
+  let result = await updateRule(id, rule);
+  if (result.error != "") {
+    errorMessage.set(result.error);
+    return;
   }
 
+  const error = await refreshList(type);
+  if (error != "") {
+    errorMessage.set(error);
+    return;
+  }
 }
