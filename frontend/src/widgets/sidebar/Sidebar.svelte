@@ -6,7 +6,12 @@
     proxyServerRunning,
   } from "../../stores";
   import { onDestroy } from "svelte";
-  import { StartProxy, StartWebServer, StopProxy, StopWebServer } from "../../../wailsjs/go/main/App";
+  import {
+    StartProxy,
+    StartWebServer,
+    StopProxy,
+    StopWebServer,
+  } from "../../../wailsjs/go/main/App";
   import { currentPage } from "../../stores";
   import { HOME, LOGS, SERVER, SETTINGS } from "../../constants";
   import Button from "./Button.svelte";
@@ -95,7 +100,7 @@
 </script>
 
 <div
-  class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-900 b border-r border-gray-800"
+  class="flex flex-col items-center w-16 h-screen py-8 space-y-8 bg-gray-800 b border-r border-gray-800"
 >
   <!-- Rules -->
   <Button
@@ -110,7 +115,7 @@
     onClick={() => setPage(LOGS)}
     indicatorStore={null}
     bsIcon={"bi bi-arrow-down-up"}
-    page={null}
+    page={LOGS}
     descriptipn={null}
   />
 
@@ -118,11 +123,13 @@
     onClick={() => setPage(SETTINGS)}
     indicatorStore={null}
     bsIcon={"bi bi-gear"}
-    page={null}
+    page={SETTINGS}
     descriptipn={null}
   />
 
-  <hr class="border border-gray-800 w-full" />
+  <div class="w-full px-2">
+    <hr class="border border-gray-900 w-full" />
+  </div>
 
   <Button
     onClick={toggleProxyServer}
@@ -139,6 +146,4 @@
     page={null}
     descriptipn={webServerDesc}
   />
-
-  
 </div>
