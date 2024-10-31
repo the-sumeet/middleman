@@ -70,22 +70,6 @@ type InValue struct {
 
 func NewApp() *App {
 	config := getConfig()
-
-	databasePath := getDatabasePath()
-	if _, err := os.Stat(databasePath); os.IsNotExist(err) {
-		// Create the database file
-		file, err := os.Create(databasePath)
-		file.Write([]byte("{}"))
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	database := FileDatabase{
-		filePath: databasePath,
-	}
-	database.load()
-
 	logFile := getLogFilePath()
 	logWriter, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -95,7 +79,7 @@ func NewApp() *App {
 	proxy := goproxy.NewProxyHttpServer()
 	app := &App{
 		proxy:           proxy,
-		database:        &database,
+		database:        NewSqliteDatabase(getDatabasePath()),
 		proxyStartStoop: make(chan bool),
 		config:          config,
 		logger:          slog.New(slog.NewJSONHandler(logWriter, nil)),
@@ -143,17 +127,18 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		ctx.UserData = &State{requestId: requestLogId}
 
 		// Cancels
-		cancels, err := a.database.GetMany(CANCEL)
+		cancels, err := a.database.GetManyRules(CANCEL)
 		if err != nil {
 			a.logger.Error(fmt.Sprintf("Error getting cancels: %s", err))
 			log.Fatal("Error getting cancels: ", err)
 		} else {
-			for _, v := range cancels {
-				cancel := v.(Cancel)
+			for _, cancel := range cancels {
 				if !cancel.Enabled {
 					continue
 				}
-				if matches(Request(cancel), r) {
+				// ToDo: Fix this
+				// if matches(Request(cancel), r) {
+				if true {
 					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
 					a.httpRequests[requestLogId].Cancelled = true
@@ -176,17 +161,18 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		if !ctx.UserData.(*State).IsCancelled {
 
 			// Redirects
-			redirects, err := a.database.GetMany(REDIRECT)
+			redirects, err := a.database.GetManyRules(REDIRECT)
 			if err != nil {
 				a.logger.Error(fmt.Sprintf("Error getting %s: %s", REDIRECT, err))
 				log.Fatalf("Error getting %s: %s", REDIRECT, err)
 			} else {
-				for _, v := range redirects {
-					redirect := v.(Redirect)
+				for _, redirect := range redirects {
 					if !redirect.Enabled {
 						continue
 					}
-					if matches(redirect.Request, r) {
+					// ToDo: Fix this
+					if true {
+						// if matches(redirect.Request, r) {
 						ctx.UserData.(*State).IsRedirected = true
 						a.httpRequests[requestLogId].Redirected = true
 						resp := &http.Response{
@@ -194,7 +180,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 							StatusCode: 307,
 							Body:       io.NopCloser(strings.NewReader("Request cancelled by Middleman")),
 							Header: http.Header{
-								"Location": []string{redirect.ToValue},
+								"Location": []string{redirect.RedirectTo},
 							},
 						}
 
@@ -207,36 +193,39 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 			}
 
 			// Check for modify request body
-			modRequestBodies, err := a.database.GetMany(MODIFY_REQUEST_BODY)
+			modRequestBodies, err := a.database.GetManyRules(MODIFY_REQUEST_BODY)
 			if err != nil {
 				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_REQUEST_BODY, err))
 				log.Fatalf("Error getting %s: %s", MODIFY_REQUEST_BODY, err)
 			} else {
-				for _, v := range modRequestBodies {
-					modResBody := v.(ModifyRequestBody)
-					if !modResBody.Enabled {
+				for _, modifyBody := range modRequestBodies {
+					if !modifyBody.Enabled {
 						continue
 					}
-					if matches(modResBody.Request, r) {
+					// ToDo: Fix this
+					if true {
+						// if matches(modResBody.Request, r) {
 						a.httpRequests[requestLogId].RequestBodyModified = true
 						a.logger.Info("ModifyRequestBody  rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
-						r.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
+						r.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.RequestBody)))
 					}
 				}
 			}
 
 			// Change request headers
-			modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
+			modifyHeaders, err := a.database.GetManyRules(MODIFY_HEADERS)
 			if err != nil {
 				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_HEADERS, err))
 			} else {
-				for _, v := range modifyHeaders {
-					modifyHeader := v.(ModifyHeader)
+				for _, modifyHeader := range modifyHeaders {
+
 					if !modifyHeader.Enabled {
 						continue
 					}
-					if matches(modifyHeader.Request, r) {
-						for _, v := range modifyHeader.Mods {
+					// if matches(modifyHeader.Request, r) {
+					// ToDo: Fix this
+					if true {
+						for _, v := range modifyHeader.RequestHeaderMods {
 							if !v.IsRequest {
 								continue
 							}
@@ -272,17 +261,19 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		if !ctx.UserData.(*State).IsCancelled {
 
 			// Modify response body
-			modResBodies, err := a.database.GetMany(MODIFY_RESPONSE_BODY)
+			modResBodies, err := a.database.GetManyRules(MODIFY_RESPONSE_BODY)
 			if err != nil {
 				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_RESPONSE_BODY, err))
 			} else {
-				for _, v := range modResBodies {
-					modResBody := v.(ModifyResponseBody)
-					if !modResBody.Enabled {
+				for _, modifyBody := range modResBodies {
+
+					if !modifyBody.Enabled {
 						continue
 					}
-					if matches(modResBody.Request, resp.Request) {
-						resp.Body = io.NopCloser(bytes.NewReader([]byte(modResBody.Body)))
+					// ToDo: Fix this
+					if true {
+						// if matches(modResBody.Request, resp.Request) {
+						resp.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.ResponseBody)))
 						a.httpRequests[ctx.UserData.(*State).requestId].ResponseBodyModified = true
 
 					}
@@ -291,16 +282,17 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		}
 
 		// Add delay
-		delays, err := a.database.GetMany("delay")
+		delays, err := a.database.GetManyRules(DELAY)
 		if err != nil {
 			a.logger.Error(fmt.Sprintf("Error getting %s: %s", DELAY, err))
 		} else {
-			for _, v := range delays {
-				delay := v.(Delay)
+			for _, delay := range delays {
 				if !delay.Enabled {
 					continue
 				}
-				if matches(delay.Request, resp.Request) {
+				// ToDo: Fix this
+				if true {
+					// if matches(delay.Request, resp.Request) {
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
 					a.httpRequests[ctx.UserData.(*State).requestId].Delayed = delay.DelaySec
 				}
@@ -308,17 +300,18 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		}
 
 		// Change response headers
-		modifyHeaders, err := a.database.GetMany(MODIFY_HEADERS)
+		modifyHeaders, err := a.database.GetManyRules(MODIFY_HEADERS)
 		if err != nil {
 			a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_HEADERS, err))
 		} else {
-			for _, v := range modifyHeaders {
-				modifyHeader := v.(ModifyHeader)
+			for _, modifyHeader := range modifyHeaders {
 				if !modifyHeader.Enabled {
 					continue
 				}
-				if matches(modifyHeader.Request, resp.Request) {
-					for _, v := range modifyHeader.Mods {
+				// ToDo: Fix this
+				if true {
+					// if matches(modifyHeader.Request, resp.Request) {
+					for _, v := range modifyHeader.ResponseHeaderMods {
 						if v.IsRequest {
 							continue
 						}
@@ -424,9 +417,9 @@ func (a *App) AddConfigPort(port string) {
 	saveConfig(a.config)
 }
 
-func (a *App) GetMany(recordType string) ReturnValue {
+func (a *App) GetManyRules(recordType string) ReturnValue {
 
-	res, err := a.database.GetMany(recordType)
+	res, err := a.database.GetManyRules(recordType)
 	if err != nil {
 		return ReturnValue{Error: err.Error()}
 	}
@@ -460,73 +453,39 @@ func (a *App) GetMany(recordType string) ReturnValue {
 // 		}
 // 	}
 
-	if recordType == MODIFY_REQUEST_BODY {
-		err := a.database.Save(recordType, recordId, input.ModifyRequestBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
+// 	if recordType == MODIFY_REQUEST_BODY {
+// 		err := a.database.Save(recordType, recordId, input.ModifyRequestBody)
+// 		if err != nil {
+// 			return ReturnValue{Error: err.Error()}
+// 		}
+// 	}
 
-	if recordType == MODIFY_RESPONSE_BODY {
-		err := a.database.Save(recordType, recordId, input.ModifyResponseBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
+// 	if recordType == MODIFY_RESPONSE_BODY {
+// 		err := a.database.Save(recordType, recordId, input.ModifyResponseBody)
+// 		if err != nil {
+// 			return ReturnValue{Error: err.Error()}
+// 		}
+// 	}
 
-	return ReturnValue{}
-}
+// 	return ReturnValue{}
+// }
 
-func (a *App) Remove(recordType string, recordId int) ReturnValue {
-	err := a.database.Remove(recordType, recordId)
+func (a *App) RemoveRule(recordId int) ReturnValue {
+	err := a.database.RemoveRule(recordId)
 	if err != nil {
 		return ReturnValue{Error: err.Error()}
 	}
 	return ReturnValue{}
 }
 
-func (a *App) Add(recordType string, records InValue) ReturnValue {
+func (a *App) AddRule(records InValue) ReturnValue {
 
-	if recordType == REDIRECT {
-		err := a.database.Add(recordType, records.Redirect)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
+	fmt.Println("Adding rule", records.Rule)
+	id, err := a.database.AddRule(records.Rule)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
 	}
-	if recordType == CANCEL {
-		err := a.database.Add(recordType, records.Cancel)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == DELAY {
-		err := a.database.Add(recordType, records.Delay)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-	if recordType == MODIFY_HEADERS {
-		err := a.database.Add(recordType, records.ModifyHeader)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	if recordType == MODIFY_REQUEST_BODY {
-		err := a.database.Add(recordType, records.ModifyRequestBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	if recordType == MODIFY_RESPONSE_BODY {
-		err := a.database.Add(recordType, records.ModifyResponseBody)
-		if err != nil {
-			return ReturnValue{Error: err.Error()}
-		}
-	}
-
-	return ReturnValue{}
+	return ReturnValue{InsertedId: id, Rules: []Rule{records.Rule}}
 }
 
 func (a *App) GenerateCert() {
@@ -537,4 +496,20 @@ func (a *App) GetLogs() ReturnValue {
 	return ReturnValue{
 		HttpRequests: a.httpRequests,
 	}
+}
+
+func (a *App) UpdateRule(ruleIn InValue) ReturnValue {
+	updatedRule, err := a.database.UpdateRule(ruleIn.Id, ruleIn.Rule)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{Rules: []Rule{updatedRule}}
+}
+
+func (a *App) GetOneRule(id int) ReturnValue {
+	rule, err := a.database.GetOneRule(id)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{Rules: []Rule{rule}}
 }
