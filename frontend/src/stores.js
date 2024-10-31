@@ -20,54 +20,6 @@ export const serverRunning = writable(false);
 export const currentPage = writable(HOME);
 
 
-// export async function refreshRedirects() {
-//     const result = await GetManyRules(RULE_REDIRECT);
-//     if (result.error != "") {
-//         return result.error;
-//     }
-//     redirects.set(result.rules);
-// }
-
-// export async function refreshCancels() {
-//     const result = await GetManyRules(RULE_CANCEL);
-//     if (result.error != "") {
-//         return result.error;
-//     }
-//     cancels.set(result.rules);
-// }
-
-// export async function refreshDelays() {
-//     const result = await GetManyRules(RULE_DELAY);
-//     if (result.error != "") {
-//         return result.error;
-//     }
-//     delays.set(result.rules);
-// }
-
-// export async function refreshModifyHeaders() {
-//     const result = await GetManyRules(RULE_MOD_HEADER);
-//     if (result.error != "") {
-//         return result.error;
-//     }
-//     modifyHeaders.set(result.rules);
-// }
-
-// export async function refreshModifyRequestBody() {
-//     const result = await GetManyRules(RULE_MODIFY_REQUEST_BODY);
-//     if (result.error != "") {
-//         return result.error;
-//     }
-//     modifyRequestBody.set(result.rules);
-// }
-
-// export async function refreshModifyResponseBody() {
-//     const result = await GetManyRules(RULE_MODIFY_RESPONSE_BODY);
-//     if (result.error != "") {
-//         return result.error;
-//     }
-//     modifyResponseBody.set(result.rules);
-// }
-
 export async function refreshList(type) {
     
     console.debug("Refreshing list", type);
