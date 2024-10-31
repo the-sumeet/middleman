@@ -8,7 +8,7 @@ type Header struct {
 }
 
 type Rule struct {
-	Id                 int      `json:"id"`
+	Id                 any      `json:"id"`
 	Type               string   `json:"type"`
 	Enabled            bool     `json:"enabled"`
 	Entity             string   `json:"entity"`             // Like url, path, header etc
