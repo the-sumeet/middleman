@@ -57,7 +57,7 @@ type App struct {
 
 type ReturnValue struct {
 	InsertedId   any              `json:"insertedId"`
-	Rules        []Rule           `json:"redirects"`
+	Rules        []Rule           `json:"rules"`
 	Logs         []string         `json:"logs"`
 	HttpRequests []HttpRequestLog `json:"httpRequests"`
 	Error        string           `json:"error"`
