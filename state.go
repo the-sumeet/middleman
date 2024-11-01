@@ -1,7 +1,7 @@
 package main
 
 type State struct {
-	requestId    int
+	requestId    any
 	IsCancelled  bool
 	IsRedirected bool
 }
