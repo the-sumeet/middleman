@@ -9,6 +9,7 @@ export const errorMessage = writable("");
 export const infoMessage = writable("");
 export const warningMessage = writable("");
 
+// Rules list
 export const currentRule = writable(RULE_REDIRECT);
 export const redirects = writable([]);
 export const cancels = writable([]);
@@ -16,9 +17,12 @@ export const delays = writable([]);
 export const modifyHeaders = writable([]);
 export const modifyRequestBody = writable([]);
 export const modifyResponseBody = writable([]);
+
+// Misc
 export const proxyServerRunning = writable(false);
 export const webServerRunning = writable(false);
 export const currentPage = writable(HOME);
+export const selectedRequest = writable(null);
 
 
 export async function refreshList(type) {
