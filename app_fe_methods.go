@@ -196,8 +196,9 @@ func (a *App) GenerateCert() {
 }
 
 func (a *App) GetLogs() ReturnValue {
+	requests, _ := a.database.GetManyRequests()
 	return ReturnValue{
-		HttpRequests: a.httpRequests,
+		HttpRequests: requests,
 	}
 }
 
