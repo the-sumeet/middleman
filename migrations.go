@@ -6,8 +6,8 @@ const (
     data JSONB NOT NULL
 );
 
-CREATE TABLE requests (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE request (
+	id TEXT PRIMARY KEY,
 	data JSONB NOT NULL
 );
 
