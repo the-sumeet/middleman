@@ -202,7 +202,10 @@ func (a *App) GenerateCert() ReturnValue {
 }
 
 func (a *App) GetLogs() ReturnValue {
-	requests, _ := a.database.GetManyRequests()
+	requests, err := a.database.GetManyRequests()
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
 	return ReturnValue{
 		HttpRequests: requests,
 	}
