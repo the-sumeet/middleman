@@ -95,8 +95,11 @@ func (a *App) StartProxy() ReturnValue {
 		}()
 
 		a.logger.Info("Proxy server goroutine started, waiting to stop")
+		a.proxyRunning = true
 		<-a.proxyStartStop
 		l.Close()
+		a.proxyRunning = false
+
 	}()
 
 	return ReturnValue{}
@@ -147,8 +150,10 @@ func (a *App) StartWebServer() ReturnValue {
 		}()
 
 		a.logger.Info("Web server goroutine started, waiting to stop")
+		a.webRunning = true
 		<-a.webStartStop
 		l.Close()
+		a.webRunning = false
 	}()
 
 	return ReturnValue{}
@@ -211,6 +216,14 @@ func (a *App) GetLogs() ReturnValue {
 	}
 }
 
+func (a *App) IsProxyRunning() bool {
+	return a.proxyRunning
+}
+
+func (a *App) IsWebServerRunning() bool {
+	return a.webRunning
+}
+
 // Rule CRUD
 
 func (a *App) UpdateRule(ruleIn InValue) ReturnValue {
@@ -249,7 +262,6 @@ func (a *App) RemoveRule(recordId int) ReturnValue {
 
 func (a *App) AddRule(records InValue) ReturnValue {
 
-	fmt.Println("Adding rule", records.Rule)
 	id, err := a.database.AddRule(records.Rule)
 	if err != nil {
 		return ReturnValue{Error: err.Error()}
