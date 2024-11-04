@@ -191,8 +191,14 @@ func (a *App) GetWebServerPath() string {
 	return a.webServerPath
 }
 
-func (a *App) GenerateCert() {
-	genCert()
+func (a *App) GenerateCert() ReturnValue {
+	err := genCert()
+	if err != nil {
+		a.logger.Error(fmt.Sprintf("Error generating cert: %s", err))
+		return ReturnValue{Error: fmt.Sprintf("Error generating cert: %s", err)}
+	}
+	return ReturnValue{}
+
 }
 
 func (a *App) GetLogs() ReturnValue {
