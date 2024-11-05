@@ -17,18 +17,6 @@ type Database interface {
 	GetOneRule(id any) (Rule, error)
 	// Requests CRUD
 	AddRequest(requestId any, request *HttpRequestLog) (any, error)
-	// UpdateRequest(id string, request HttpRequestLog) (HttpRequestLog, error)
-	// GetOneRequest(id string) (HttpRequestLog, error)
 	GetManyRequests() ([]HttpRequestLog, error)
 	RemoveRequest(id any) error
-	// SetHeaders(id any, headers http.Header, isRequest bool) error
-	// SetBody(id any, body string, isRequest bool) error
-	// SetStatus(id any, value int) error
-	// SetRequestCancelled(id any, value bool) error
-	// SetRequestDelayed(id any, value int) error
-	// SetRequestRedirected(id any, value bool) error
-	// SetRequestHeaderModified(id any, value bool) error
-	// SetResponseHeaderModified(id any, value bool) error
-	// SetRequestBodyModified(id any, value bool) error
-	// SetResponseBodyModified(id any, value bool) error
 }
