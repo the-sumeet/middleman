@@ -22,7 +22,9 @@ type App struct {
 	ctx            context.Context
 	proxy          *goproxy.ProxyHttpServer
 	proxyStartStop chan bool
+	proxyRunning   bool
 	webStartStop   chan bool
+	webRunning     bool
 	database       Database
 	config         Config
 	logger         *slog.Logger
