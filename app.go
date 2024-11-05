@@ -65,32 +65,57 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
-func (a *App) requestToLog(r *http.Request, logId int) {
+func (a *App) responseToLog(r *http.Response, state *State, logId any) {
 
-}
+	// Request body
+	// requestBytes, err := io.ReadAll(r.Request.Body)
+	// if err != nil {
+	// 	a.logger.Error(fmt.Sprintf("Error reading request body: %s", err))
+	// }
+	// r.Request.Body.Close() //  must close
+	// r.Request.Body = io.NopCloser(bytes.NewBuffer(requestBytes))
+	// r.Request.Body.Close()
 
-func (a *App) responseToLog(r *http.Response, logId int) {
+	// // Response body
+	// responseBytes, err := io.ReadAll(r.Body)
+	// if err != nil {
+	// 	a.logger.Error(fmt.Sprintf("Error reading response body: %s", err))
+	// }
+	// r.Body.Close() //  must close
+	// r.Body = io.NopCloser(bytes.NewBuffer(responseBytes))
+
+	requestLog := HttpRequestLog{
+		Timestamp:       time.Now(),
+		Scheme:          r.Request.URL.Scheme,
+		Method:          r.Request.Method,
+		Host:            r.Request.Host,
+		Path:            r.Request.URL.Path,
+		RequestHeaders:  r.Request.Header,
+		ResponseHeaders: r.Header,
+		Status:          r.StatusCode,
+		RequestBody:     string([]byte{}),
+		ResponseBody:    string([]byte{}),
+		// Rules info
+		Cancelled:    state.IsCancelled,
+		RedirectedTo: state.IsRedirected,
+	}
+
+	a.database.AddRequest(state.requestId, &requestLog)
 }
 
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 
-		// Add request to logs
-		requestId, err := a.database.AddRequest(HttpRequestLog{
-			Timestamp: time.Now(),
-			Scheme:    r.URL.Scheme,
-			Method:    r.Method,
-			Host:      r.Host,
-			Path:      r.URL.Path,
-		})
-		fmt.Println("Request ID: ", requestId)
-		if err != nil {
-			a.logger.Error(fmt.Sprintf("Error adding request to logs: %s", err))
-			log.Fatal("Error adding request to logs: ", err)
-		}
-
 		// State for this request
+		var requestId any
+		requestId, err := uuid.NewUUID()
+		if err != nil {
+			a.logger.Error(fmt.Sprintf("Error generating UUID: %s", err))
+			// If could not generate UUID, use timestamp.
+			requestId = string(time.Now().UnixMilli())
+		}
 		ctx.UserData = &State{requestId: requestId}
+		state := ctx.UserData.(*State)
 
 		// Cancels
 		cancels, err := a.database.GetManyRules(CANCEL)
@@ -106,7 +131,6 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 				if matches(cancel, r) {
 					a.logger.Info("Cancel rule matched", getRequestLogValues(r, "rule", CANCEL)...)
 					ctx.UserData.(*State).IsCancelled = true
-					a.database.SetRequestCancelled(requestId, true)
 					resp := &http.Response{
 						Request:    r,
 						StatusCode: 418,
@@ -114,8 +138,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						Header:     make(http.Header),
 					}
 
-					// a.requestToLog(r, requestId)
-					// a.responseToLog(resp, requestId)
+					a.responseToLog(resp, state, requestId)
 
 					return nil, resp
 				}
@@ -137,7 +160,6 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					}
 					if matches(redirect, r) {
 						ctx.UserData.(*State).IsRedirected = true
-						a.database.SetRequestRedirected(requestId, true)
 						resp := &http.Response{
 							Request:    r,
 							StatusCode: 307,
@@ -147,9 +169,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 							},
 						}
 
-						// a.requestToLog(r, requestId)
-						// a.responseToLog(resp, requestId)
-
+						a.responseToLog(resp, state, requestId)
 						return nil, resp
 					}
 				}
@@ -166,7 +186,6 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						continue
 					}
 					if matches(modifyBody, r) {
-						a.database.SetRequestBodyModified(requestId, true)
 						a.logger.Info("ModifyRequestBody  rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
 						r.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.RequestBody)))
 					}
@@ -191,25 +210,18 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 							if v.Action == "add" {
 								a.logger.Info("Adding request header", "name", v.Name, "value", v.Value, "action", v.Action)
 								r.Header.Add(v.Name, v.Value)
-								a.database.SetRequestHeaderModified(requestId, true)
 							} else if v.Action == "remove" {
 								a.logger.Info("Removing request header: ", "name", v.Name, "value", v.Value)
 								r.Header.Del(v.Name)
-								a.database.SetRequestHeaderModified(requestId, true)
 							} else if v.Action == "override" {
 								a.logger.Info("Overriding request header: ", "name", v.Name, "value", v.Value)
 								r.Header.Set(v.Name, v.Value)
-								a.database.SetRequestHeaderModified(requestId, true)
 							}
 						}
 					}
 				}
 			}
 		}
-
-		// ToDo: Save request body to log
-		// a.requestToLog(r, requestId)
-
 		return r, nil
 	}
 }
@@ -217,7 +229,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 	return func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 
-		if !ctx.UserData.(*State).IsCancelled {
+		state := ctx.UserData.(*State)
+
+		if !state.IsCancelled {
 
 			// Modify response body
 			modResBodies, err := a.database.GetManyRules(MODIFY_RESPONSE_BODY)
@@ -231,7 +245,6 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					}
 					if matches(modifyBody, resp.Request) {
 						resp.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.ResponseBody)))
-						a.database.SetResponseBodyModified(ctx.UserData.(*State).requestId, true)
 
 					}
 				}
@@ -249,7 +262,6 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				}
 				if matches(delay, resp.Request) {
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
-					a.database.SetRequestDelayed(ctx.UserData.(*State).requestId, delay.DelaySec)
 				}
 			}
 		}
@@ -271,21 +283,18 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 						if v.Action == "add" {
 							a.logger.Info("Adding response header", "name", v.Name, "value", v.Value)
 							resp.Header.Add(v.Name, v.Value)
-							a.database.SetResponseHeaderModified(ctx.UserData.(*State).requestId, true)
 						} else if v.Action == "remove" {
 							a.logger.Info("Removing response header: ", "name", v.Name, "value", v.Value)
 							resp.Header.Del(v.Name)
-							a.database.SetResponseHeaderModified(ctx.UserData.(*State).requestId, true)
 						} else if v.Action == "override" {
 							a.logger.Info("Overriding response header: ", "name", v.Name, "value", v.Value)
 							resp.Header.Set(v.Name, v.Value)
-							a.database.SetResponseHeaderModified(ctx.UserData.(*State).requestId, true)
 						}
 					}
 				}
 			}
 		}
-		// a.responseToLog(resp, ctx.UserData.(*State).requestId)
+		a.responseToLog(resp, state, state.requestId)
 		return resp
 	}
 }
