@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import { AddProxyPort, AddWebPort } from "../../../wailsjs/go/main/App";
     import PortSetting from "./PortSetting.svelte";
+    import { errorMessage } from "../../../src/stores";
 
     let certPath;
     let generatingCert = false;
@@ -16,7 +17,10 @@
         }
 
         generatingCert = true;
-        GenerateCert().then(() => {
+        GenerateCert().then((result) => {
+            if (result.error != "") {
+                errorMessage.set(result.error);
+            }
             generatingCert = false;
         });
     }
