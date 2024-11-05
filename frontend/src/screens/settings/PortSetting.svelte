@@ -26,7 +26,7 @@
     }
 </script>
 
-<div class="p-4 w-full">
+<div class="w-full">
 
     <h1 class="text-white font-bold text-xl">{title}</h1>
 
