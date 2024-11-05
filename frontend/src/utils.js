@@ -76,7 +76,7 @@ export const getMethodColor = (method) => {
   if (method.toLowerCase() === "get") {
     return "green";
   } else if (method.toLowerCase() === "post" || method.toLowerCase() === "put" || method.toLowerCase() === "patch") {
-    return "blue";
+    return "yellow";
   } else if (method.toLowerCase() === "delete") {
     return "red";
   }
