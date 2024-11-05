@@ -2,17 +2,17 @@
     export let bsIcon;
     export let page;
     export let descriptipn;
+    export let descriptipn2;
     export let indicatorStore;
     export let onClick;
 
-    import { currentPage } from "../../../src/stores";
+    import { currentPage, errorMessage } from "../../../src/stores";
     import { onDestroy } from "svelte";
     import { activePageCss, inactivePageCss } from "./constants";
 
     let on = null;
 
     let currPage;
-    let error = null;
     let showTooltip = false;
 
     const indicatorCssConst =
@@ -27,7 +27,6 @@
     } else {
         indicatorCss = indicatorCssConst;
     }
-    console.log(indicatorCss);
 
     const unCurrentPage = currentPage.subscribe((value) => {
         currPage = value;
@@ -43,7 +42,7 @@
     async function onClickHandler() {
         const res = await onClick();
         if (res && res != "") {
-            error = res;
+            errorMessage.set(res);
         }
     }
 
@@ -75,11 +74,7 @@
     </button>
 
     <!-- Indicator -->
-    {#if error}
-        <i
-            class="absolute inline-flex items-center justify-center w-4 h-4 text-lg font-bold text-red-400 border-2 -top-2 -end-2 border-gray-900 bi bi-exclamation-triangle-fill"
-        ></i>
-    {:else if on !== null}
+    {#if on !== null}
         <div title="Web server" class={indicatorCss}></div>
     {/if}
 
@@ -89,8 +84,8 @@
         >
             <div class="flex flex-col items-start">
                 <span class="">{descriptipn}</span>
-                {#if error}
-                    <span class="text-xs text-red-400">{error}</span>
+                {#if descriptipn2}
+                    <span class="text-xs text-gray-400">{descriptipn2}</span>
                 {/if}
             </div>
 

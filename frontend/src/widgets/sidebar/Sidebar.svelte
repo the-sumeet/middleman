@@ -1,7 +1,6 @@
 <script>
   import "bootstrap-icons/font/bootstrap-icons.css";
   import {
-    currentRule,
     webServerRunning,
     proxyServerRunning,
   } from "../../stores";
@@ -15,12 +14,14 @@
   import { currentPage } from "../../stores";
   import { HOME, LOGS, SERVER, SETTINGS } from "../../constants";
   import Button from "./Button.svelte";
+  import { GetWebServerPath } from "../../../wailsjs/go/main/App";
 
   let currPage;
   let isProxyRunning;
   let isWebRunning;
   let proxyServerDesc = null;
   let webServerDesc = null;
+  let webServerPath;
 
   $: if (isProxyRunning) {
     proxyServerDesc = "Stop Proxy Server";
@@ -33,6 +34,10 @@
   } else {
     webServerDesc = "Start Web Server";
   }
+
+  (isWebRunning) ? `Web server running on ${webServerPath}` : null
+
+  $: webServerDescription2 = (webServerPath != null && isWebRunning === true) ? `Web server running run on ${webServerPath}` : null;
 
   const unCurrentPage = currentPage.subscribe((value) => {
     currPage = value;
@@ -92,6 +97,10 @@
     return null;
   }
 
+  GetWebServerPath().then((res) => {
+    webServerPath = res;
+  });
+
   onDestroy(() => {
     unCurrentPage();
     unsubProxyServerRunning();
@@ -109,6 +118,7 @@
     page={HOME}
     descriptipn={null}
     onClick={() => setPage(HOME)}
+    descriptipn2={null}
   />
 
   <Button
@@ -117,6 +127,7 @@
     bsIcon={"bi bi-arrow-down-up"}
     page={LOGS}
     descriptipn={null}
+    descriptipn2={null}
   />
 
   <Button
@@ -125,10 +136,11 @@
     bsIcon={"bi bi-gear"}
     page={SETTINGS}
     descriptipn={null}
+    descriptipn2={null}
   />
 
   <div class="w-full px-2">
-    <hr class="border border-gray-900 w-full" />
+    <hr class="border border-gray-500 w-full" />
   </div>
 
   <Button
@@ -137,13 +149,15 @@
     bsIcon={"bi bi-hdd-network"}
     page={null}
     descriptipn={proxyServerDesc}
+    descriptipn2={null}
   />
 
   <Button
     onClick={toggleWebServer}
     indicatorStore={webServerRunning}
-    bsIcon={"bi bi-hdd-network"}
+    bsIcon={"bi bi-globe2"}
     page={null}
     descriptipn={webServerDesc}
+    descriptipn2={webServerDescription2}
   />
 </div>
