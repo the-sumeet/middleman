@@ -60,15 +60,22 @@ func getLogFilePath() string {
 	return logFilePath
 }
 
-func getDatabasePath() string {
+func getDatabasePaths() (string, string) {
 	appConfigDir := getAppConfigDir()
-	databasePath := filepath.Join(appConfigDir, "middleman.db")
-	err := os.MkdirAll(filepath.Dir(databasePath), os.ModePerm)
+	rulesPath := filepath.Join(appConfigDir, "rules.db")
+	requestsPath := filepath.Join(appConfigDir, "requests.db")
+
+	err := os.MkdirAll(filepath.Dir(rulesPath), os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
 
-	return databasePath
+	err = os.MkdirAll(filepath.Dir(requestsPath), os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+
+	return rulesPath, requestsPath
 
 }
 
