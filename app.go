@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/elazarl/goproxy"
+	"github.com/google/uuid"
 )
 
 const WebServerPath = "/middleman"
