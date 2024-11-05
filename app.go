@@ -44,7 +44,7 @@ func NewApp() *App {
 
 	app := &App{
 		proxy:          proxy,
-		database:       NewSqliteDatabase(getDatabasePath()),
+		database:       NewSqliteDatabase(config.RuleDbPath, config.RequestDbPath),
 		proxyStartStop: make(chan bool),
 		webStartStop:   make(chan bool),
 		config:         config,
