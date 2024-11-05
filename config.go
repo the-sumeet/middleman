@@ -16,17 +16,20 @@ type Config struct {
 	WebServerPort   string `json:"webServerPort"`
 	CertPath        string `json:"certPath"`
 	KeyPath         string `json:"keyPath"`
-	DatabasePath    string `json:"databasePath"`
+	RuleDbPath      string `json:"ruleDbPath"`
+	RequestDbPath   string `json:"requestDbPath"`
 	WebServerPath   string `json:"webServerPath"`
 }
 
 func getConfig() Config {
 
 	certPath, keyPath := getCertKeyPath()
+	ruleDbPath, requestDbPath := getDatabasePaths()
 	config := Config{
 		ProxyServerPort: DefaultProxyServerPort,
 		WebServerPort:   DefaultWebServerPort,
-		DatabasePath:    getDatabasePath(),
+		RuleDbPath:      ruleDbPath,
+		RequestDbPath:   requestDbPath,
 		CertPath:        certPath,
 		KeyPath:         keyPath,
 	}
