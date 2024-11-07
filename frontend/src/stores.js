@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 import { RULE_MODIFY_REQUEST_BODY, RULE_MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_DELAY, RULE_MOD_HEADER, RULE_REDIRECT } from "./constants";
 import { GetManyRules } from "../wailsjs/go/main/App";
 import { HOME } from "./constants";
+import { IsProxyRunning, IsWebServerRunning } from "../wailsjs/go/main/App";
 
 // Messages
 export const successMessage = writable("");
@@ -66,3 +67,11 @@ async function refreshAllLists() {
     await refreshList(RULE_MODIFY_REQUEST_BODY);
     await refreshList(RULE_MODIFY_RESPONSE_BODY);
 }
+
+IsProxyRunning().then((result) => {
+    proxyServerRunning.set(result);
+})
+
+IsWebServerRunning().then((result) => {
+    webServerRunning.set(result);
+})
