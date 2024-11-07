@@ -260,7 +260,7 @@ func (s *SqliteDatabase) GetOneRequest(id string) (HttpRequestLog, error) {
 	return request, err
 }
 
-func (s *SqliteDatabase) GetManyRequests() ([]HttpRequestLog, error) {
+func (s *SqliteDatabase) GetManyRequests(skip int) ([]HttpRequestLog, error) {
 	requests := []HttpRequestLog{}
 
 	// rows, err := s.requestDb.Query(fmt.Sprintf("SELECT id, data FROM %s", REQUEST))
