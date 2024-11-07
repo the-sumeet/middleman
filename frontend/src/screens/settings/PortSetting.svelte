@@ -33,7 +33,7 @@
         <div class="mt-4">
             <label
                 for="username"
-                class="block text-sm text-gray-500 dark:text-gray-300"
+                class="block text-sm text-gray-500 text-gray-300"
                 >{description}</label
             >
 

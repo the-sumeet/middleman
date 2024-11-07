@@ -91,7 +91,7 @@
 
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="absolute w-6 h-6 text-white transform rotate-45 -translate-y-1/2 fill-current -left-3 top-1/2 dark:text-gray-800"
+                class="absolute w-6 h-6  transform rotate-45 -translate-y-1/2 fill-current -left-3 top-1/2 text-gray-800"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
             >
