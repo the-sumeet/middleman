@@ -64,9 +64,9 @@ export const getStatusColor = (status) => {
   if (status >= 400) {
     return "red";
   } else if (status >= 300) {
-    return "gray";
-  } else if (status >= 200) {
     return "yellow";
+  } else if (status >= 200) {
+    return "green";
   } else {
     return "blue";
   }
