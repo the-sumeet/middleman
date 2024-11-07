@@ -268,3 +268,13 @@ func (a *App) AddRule(records InValue) ReturnValue {
 	}
 	return ReturnValue{InsertedId: id, Rules: []Rule{records.Rule}}
 }
+
+// Requests CRUD
+
+func (a *App) GetOneRequest(id string) ReturnValue {
+	request, err := a.database.GetOneRequest(id)
+	if err != nil {
+		return ReturnValue{Error: err.Error()}
+	}
+	return ReturnValue{HttpRequests: []HttpRequestLog{request}}
+}
