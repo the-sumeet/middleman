@@ -7,20 +7,12 @@
 
     import "bootstrap-icons/font/bootstrap-icons.css";
     import { onDestroy, onMount } from "svelte";
-    import { GetConfig } from "../../../wailsjs/go/main/App";
-    import { GetWebServerPath } from "../../../wailsjs/go/main/App";
     import { validatePort } from "./utils";
 
     let isServerRunning;
     const startButtonCss = "bg-blue-600 hover:bg-blue-500 focus:ring-blue-300";
     const stopButtonCss = "bg-red-600 hover:bg-red-500 focus:ring-red-300";
     let error = "";
-    let webServerPath;
-
-    GetWebServerPath().then((path) => {
-        webServerPath = path;
-    });
-
     const unsubSubServerRunning = serverRunning.subscribe((value) => {
         isServerRunning = value;
     });
