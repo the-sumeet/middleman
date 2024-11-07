@@ -264,7 +264,7 @@ func (s *SqliteDatabase) GetManyRequests() ([]HttpRequestLog, error) {
 	requests := []HttpRequestLog{}
 
 	// rows, err := s.requestDb.Query(fmt.Sprintf("SELECT id, data FROM %s", REQUEST))
-	rows, err := s.requestDb.Query(fmt.Sprintf("SELECT id, data FROM %s", REQUEST))
+	rows, err := s.requestDb.Query(fmt.Sprintf("SELECT id, json_remove(data, '$.requestHeaders', '$.responseHeaders', '$.requestBody', '$.responseBody') AS data FROM %s ORDER BY id ASC LIMIT -1 OFFSET %d", REQUEST, skip))
 	if err != nil {
 		return nil, err
 	}
