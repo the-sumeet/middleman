@@ -22,12 +22,16 @@ export function GetConfig() {
   return window['go']['main']['App']['GetConfig']();
 }
 
-export function GetLogs() {
-  return window['go']['main']['App']['GetLogs']();
+export function GetLogs(arg1) {
+  return window['go']['main']['App']['GetLogs'](arg1);
 }
 
 export function GetManyRules(arg1) {
   return window['go']['main']['App']['GetManyRules'](arg1);
+}
+
+export function GetOneRequest(arg1) {
+  return window['go']['main']['App']['GetOneRequest'](arg1);
 }
 
 export function GetOneRule(arg1) {
@@ -36,6 +40,14 @@ export function GetOneRule(arg1) {
 
 export function GetWebServerPath() {
   return window['go']['main']['App']['GetWebServerPath']();
+}
+
+export function IsProxyRunning() {
+  return window['go']['main']['App']['IsProxyRunning']();
+}
+
+export function IsWebServerRunning() {
+  return window['go']['main']['App']['IsWebServerRunning']();
 }
 
 export function RemoveRule(arg1) {

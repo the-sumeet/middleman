@@ -8,17 +8,23 @@ export function AddRule(arg1:main.InValue):Promise<main.ReturnValue>;
 
 export function AddWebPort(arg1:string):Promise<main.ReturnValue>;
 
-export function GenerateCert():Promise<void>;
+export function GenerateCert():Promise<main.ReturnValue>;
 
 export function GetConfig():Promise<main.Config>;
 
-export function GetLogs():Promise<main.ReturnValue>;
+export function GetLogs(arg1:number):Promise<main.ReturnValue>;
 
 export function GetManyRules(arg1:string):Promise<main.ReturnValue>;
+
+export function GetOneRequest(arg1:string):Promise<main.ReturnValue>;
 
 export function GetOneRule(arg1:number):Promise<main.ReturnValue>;
 
 export function GetWebServerPath():Promise<string>;
+
+export function IsProxyRunning():Promise<boolean>;
+
+export function IsWebServerRunning():Promise<boolean>;
 
 export function RemoveRule(arg1:number):Promise<main.ReturnValue>;
 

@@ -5,7 +5,8 @@ export namespace main {
 	    webServerPort: string;
 	    certPath: string;
 	    keyPath: string;
-	    databasePath: string;
+	    ruleDbPath: string;
+	    requestDbPath: string;
 	    webServerPath: string;
 	
 	    static createFrom(source: any = {}) {
@@ -18,7 +19,8 @@ export namespace main {
 	        this.webServerPort = source["webServerPort"];
 	        this.certPath = source["certPath"];
 	        this.keyPath = source["keyPath"];
-	        this.databasePath = source["databasePath"];
+	        this.ruleDbPath = source["ruleDbPath"];
+	        this.requestDbPath = source["requestDbPath"];
 	        this.webServerPath = source["webServerPath"];
 	    }
 	}
@@ -41,6 +43,7 @@ export namespace main {
 	    }
 	}
 	export class HttpRequestLog {
+	    id: string;
 	    // Go type: time
 	    timestamp: any;
 	    scheme: string;
@@ -51,13 +54,9 @@ export namespace main {
 	    responseHeaders: {[key: string]: string[]};
 	    requestBody: string;
 	    responseBody: string;
+	    status: number;
 	    cancelled: boolean;
 	    redirected: boolean;
-	    requestHeaderModified: boolean;
-	    responseHeaderModified: boolean;
-	    requestBodyModified: boolean;
-	    responseBodyModified: boolean;
-	    delayed: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new HttpRequestLog(source);
@@ -65,6 +64,7 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
 	        this.timestamp = this.convertValues(source["timestamp"], null);
 	        this.scheme = source["scheme"];
 	        this.method = source["method"];
@@ -74,13 +74,9 @@ export namespace main {
 	        this.responseHeaders = source["responseHeaders"];
 	        this.requestBody = source["requestBody"];
 	        this.responseBody = source["responseBody"];
+	        this.status = source["status"];
 	        this.cancelled = source["cancelled"];
 	        this.redirected = source["redirected"];
-	        this.requestHeaderModified = source["requestHeaderModified"];
-	        this.responseHeaderModified = source["responseHeaderModified"];
-	        this.requestBodyModified = source["requestBodyModified"];
-	        this.responseBodyModified = source["responseBodyModified"];
-	        this.delayed = source["delayed"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
