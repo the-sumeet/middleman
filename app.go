@@ -68,22 +68,23 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) responseToLog(r *http.Response, state *State, logId any) {
 
-	// Request body
+	// // Request body
 	// requestBytes, err := io.ReadAll(r.Request.Body)
 	// if err != nil {
 	// 	a.logger.Error(fmt.Sprintf("Error reading request body: %s", err))
 	// }
 	// r.Request.Body.Close() //  must close
-	// r.Request.Body = io.NopCloser(bytes.NewBuffer(requestBytes))
-	// r.Request.Body.Close()
+	// fmt.Println(r.Request.URL)
+	// fmt.Println("Request body: ", string(requestBytes))
+	// fmt.Println("--")
 
-	// // Response body
-	// responseBytes, err := io.ReadAll(r.Body)
-	// if err != nil {
-	// 	a.logger.Error(fmt.Sprintf("Error reading response body: %s", err))
-	// }
-	// r.Body.Close() //  must close
-	// r.Body = io.NopCloser(bytes.NewBuffer(responseBytes))
+	// Response body
+	responseBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		a.logger.Error(fmt.Sprintf("Error reading response body: %s", err))
+	}
+	r.Body.Close() //  must close
+	r.Body = io.NopCloser(bytes.NewBuffer(responseBytes))
 
 	requestLog := HttpRequestLog{
 		Timestamp:       time.Now(),
@@ -94,8 +95,8 @@ func (a *App) responseToLog(r *http.Response, state *State, logId any) {
 		RequestHeaders:  r.Request.Header,
 		ResponseHeaders: r.Header,
 		Status:          r.StatusCode,
-		RequestBody:     string([]byte{}),
-		ResponseBody:    string([]byte{}),
+		RequestBody:     state.RequestBody,
+		ResponseBody:    string(responseBytes),
 		// Rules info
 		Cancelled:    state.IsCancelled,
 		RedirectedTo: state.IsRedirected,
@@ -105,6 +106,7 @@ func (a *App) responseToLog(r *http.Response, state *State, logId any) {
 }
 
 func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 
 		// State for this request
@@ -117,6 +119,15 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		}
 		ctx.UserData = &State{requestId: requestId}
 		state := ctx.UserData.(*State)
+
+		// Store request body in state
+		responseBytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			a.logger.Error(fmt.Sprintf("Error reading request body: %s", err))
+		}
+		r.Body.Close() //  must close
+		r.Body = io.NopCloser(bytes.NewBuffer(responseBytes))
+		state.RequestBody = string(responseBytes)
 
 		// Cancels
 		cancels, err := a.database.GetManyRules(CANCEL)
