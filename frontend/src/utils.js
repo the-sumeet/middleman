@@ -84,3 +84,38 @@ export const getMethodColor = (method) => {
   return "blue";
 }
 
+
+export function formatDate(isoDate) {
+  const inputDate = new Date(isoDate);
+  const now = new Date();
+
+  // Helper functions to format dates
+  const formatTime = (date) =>
+    date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const formatDateOnly = (date) =>
+    date.toLocaleDateString([], {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
+  // Check if the input date is today
+  const isToday = inputDate.toDateString() === now.toDateString();
+
+  // Check if the input date is within the same month and year
+  const isSameMonth =
+    inputDate.getFullYear() === now.getFullYear() &&
+    inputDate.getMonth() === now.getMonth();
+
+  // Formatting logic
+  if (isToday) {
+    // Only show time if today
+    return formatTime(inputDate);
+  } else if (isSameMonth) {
+    // Show time and date if this month
+    return `${formatDateOnly(inputDate)} ${formatTime(inputDate)}`;
+  } else {
+    // Show full date and year if in a different month or year
+    return `${formatDateOnly(inputDate)} ${formatTime(inputDate)}`;
+  }
+}
