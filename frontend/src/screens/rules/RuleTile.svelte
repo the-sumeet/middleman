@@ -27,6 +27,6 @@
             {title}
         </h1>
 
-        <!-- <p class="text-xs text-gray-500 dark:text-gray-400">11.2 Followers</p> -->
+        <!-- <p class="text-xs  text-gray-400">11.2 Followers</p> -->
     </div>
 </button>

@@ -106,7 +106,7 @@
     
     <!-- Tabs -->
     <div
-        class="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700"
+        class="flex overflow-x-auto overflow-y-hidden border-b whitespace-nowrap border-gray-700"
     >
         <button
             on:click={() => (tab = "headers")}
