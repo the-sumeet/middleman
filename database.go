@@ -17,6 +17,7 @@ type Database interface {
 	GetOneRule(id any) (Rule, error)
 	// Requests CRUD
 	AddRequest(requestId any, request *HttpRequestLog) (any, error)
-	GetManyRequests() ([]HttpRequestLog, error)
+	GetManyRequests(int) ([]HttpRequestLog, error)
+	GetOneRequest(id string) (HttpRequestLog, error)
 	RemoveRequest(id any) error
 }
