@@ -64,7 +64,7 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-gray-900">
+                        <tbody class="divide-y divide-gray-700 bg-gray-900">
                             <tr>
                                 <td class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                     <div class="inline-flex items-center gap-x-3">
