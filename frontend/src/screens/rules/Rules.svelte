@@ -13,7 +13,7 @@
 <div
   class="h-screen overflow-y-auto border-l border-r sm:w-64 w-60 min-w-60 bg-gray-900 border-gray-700"
 >
-  <!-- <h2 class="px-5 text-lg font-medium text-gray-800 dark:text-white">Accounts</h2> -->
+  <!-- <h2 class="px-5 text-lg font-medium text-white">Accounts</h2> -->
 
   <div class="space-y-4">
     <RuleTile icon={"bi bi-shuffle"} title={"Redirect"} rule={RULE_REDIRECT} />

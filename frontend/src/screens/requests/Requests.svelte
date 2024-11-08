@@ -78,7 +78,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">Tech requirements.pdf</h2>
+                                                <h2 class="font-normal text-white ">Tech requirements.pdf</h2>
                                                 <p class="text-xs font-normal  text-gray-400">200 KB</p>
                                             </div>
                                         </div>
@@ -87,11 +87,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     200 KB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Lana Steiner</td>
+                                <td class="px-4 py-4 text-sm  text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
+                                <td class="px-4 py-4 text-sm  text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
+                                <td class="px-4 py-4 text-sm  text-gray-300 whitespace-nowrap">Lana Steiner</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -112,7 +112,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">Dashboard screenshot.jpg</h2>
+                                                <h2 class="font-normal text-white ">Dashboard screenshot.jpg</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 KB</p>
                                             </div>
                                         </div>
@@ -121,11 +121,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 KB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 4, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -146,7 +146,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">Dashboard prototype FINAL.gif</h2>
+                                                <h2 class="font-normal text-white ">Dashboard prototype FINAL.gif</h2>
                                                 <p class="text-xs font-normal  text-gray-400">21 KB</p>
                                             </div>
                                         </div>
@@ -155,11 +155,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     21 KB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 2, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 2, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Lana Steiner</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 2, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 2, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Lana Steiner</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -180,7 +180,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">App inspiration.png</h2>
+                                                <h2 class="font-normal text-white ">App inspiration.png</h2>
                                                 <p class="text-xs font-normal  text-gray-400">2 MB</p>
                                             </div>
                                         </div>
@@ -189,11 +189,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     2 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -214,7 +214,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -223,11 +223,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -247,7 +247,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -256,11 +256,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -280,7 +280,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -289,11 +289,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -313,7 +313,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -322,11 +322,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -346,7 +346,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -355,11 +355,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -379,7 +379,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -388,11 +388,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -412,7 +412,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -421,11 +421,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -445,7 +445,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -454,11 +454,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -478,7 +478,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -487,11 +487,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -511,7 +511,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -520,11 +520,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -544,7 +544,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -553,11 +553,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -577,7 +577,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -586,11 +586,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -610,7 +610,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -619,11 +619,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -643,7 +643,7 @@
                                             </div>
                                             
                                             <div>
-                                                <h2 class="font-normal text-gray-800 dark:text-white ">The Absolute Basics.mp4</h2>
+                                                <h2 class="font-normal text-white ">The Absolute Basics.mp4</h2>
                                                 <p class="text-xs font-normal  text-gray-400">720 MB</p>
                                             </div>
                                         </div>
@@ -652,11 +652,11 @@
                                 <td class="px-12 py-4 text-sm font-normal text-gray-700 whitespace-nowrap">
                                     720 MB
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Jan 8, 2022</td>
+                                <td class="px-4 py-4 text-sm text-gray-300 whitespace-nowrap">Demi Wilkinson</td>
                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                    <button class="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
+                                    <button class="px-1 py-1  transition-colors duration-200 rounded-lg text-gray-300 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                         </svg>
@@ -671,7 +671,7 @@
     </div>
 
     <div class="flex items-center justify-between mt-6">
-        <a href="#!" class="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 border rounded-md gap-x-2 hover:bg-gray-100 bg-gray-900 dark:text-gray-200 border-gray-700 dark:hover:bg-gray-800">
+        <a href="#!" class="flex items-center px-5 py-2 text-sm  capitalize transition-colors duration-200 border rounded-md gap-x-2hover:bg-gray-100 bg-gray-900 text-gray-200 border-gray-700 hover:bg-gray-800">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 rtl:-scale-x-100">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
             </svg>
@@ -683,15 +683,15 @@
 
         <div class="items-center hidden md:flex gap-x-3">
             <a href="#!" class="px-2 py-1 text-sm text-blue-500 rounded-md bg-gray-800 /60">1</a>
-            <a href="#!" class="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 text-gray-300 hover:bg-gray-100">2</a>
-            <a href="#!" class="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 text-gray-300 hover:bg-gray-100">3</a>
-            <a href="#!" class="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 text-gray-300 hover:bg-gray-100">...</a>
-            <a href="#!" class="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 text-gray-300 hover:bg-gray-100">12</a>
-            <a href="#!" class="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 text-gray-300 hover:bg-gray-100">13</a>
-            <a href="#!" class="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 text-gray-300 hover:bg-gray-100">14</a>
+            <a href="#!" class="px-2 py-1 text-sm  rounded-md hover:bg-gray-800 text-gray-300 ">2</a>
+            <a href="#!" class="px-2 py-1 text-sm  rounded-md hover:bg-gray-800 text-gray-300 ">3</a>
+            <a href="#!" class="px-2 py-1 text-sm  rounded-md hover:bg-gray-800 text-gray-300 ">...</a>
+            <a href="#!" class="px-2 py-1 text-sm  rounded-md hover:bg-gray-800 text-gray-300 ">12</a>
+            <a href="#!" class="px-2 py-1 text-sm  rounded-md hover:bg-gray-800 text-gray-300 ">13</a>
+            <a href="#!" class="px-2 py-1 text-sm  rounded-md hover:bg-gray-800 text-gray-300 ">14</a>
         </div>
 
-        <a href="#!" class="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 border rounded-md gap-x-2 hover:bg-gray-100 bg-gray-900 dark:text-gray-200 border-gray-700 dark:hover:bg-gray-800">
+        <a href="#!" class="flex items-center px-5 py-2 text-sm  capitalize transition-colors duration-200 border rounded-md gap-x-2  bg-gray-900 text-gray-200 border-gray-700 hover:bg-gray-800">
             <span>
                 Next
             </span>

@@ -64,7 +64,7 @@
         on:mouseover={() => (showTooltip = true)}
         on:mouseleave={() => (showTooltip = false)}
         on:click={onClickHandler}
-        class="text-gray-600 transition-colors duration-200 focus:outline-none dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500"
+        class="text-gray-600 transition-colors duration-200 focus:outline-none text-gray-200 hover:text-blue-400 hover:text-blue-500"
     >
         <i
             class="{currPage == page
@@ -80,7 +80,7 @@
 
     {#if descriptipn && showTooltip}
         <div
-            class="z-10 absolute flex items-center justify-start w-48 p-3 rounded-lg shadow-lg left-12 -top-4 dark:shadow-none shadow-gray-200 bg-gray-800 text-white"
+            class="z-10 absolute flex items-center justify-start w-48 p-3 rounded-lg shadow-lg left-12 -top-4 shadow-none shadow-gray-200 bg-gray-800 text-white"
         >
             <div class="flex flex-col items-start">
                 <span class="">{descriptipn}</span>

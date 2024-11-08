@@ -35,14 +35,14 @@
 <div class="p-4 w-full">
     <!-- Certificates -->
     <div>
-        <h2 class="text-2xl font-medium text-gray-800 dark:text-white">
+        <h2 class="text-2xl font-medium text-white">
             Certificates
         </h2>
 
         <div class="mt-4">
             <label
                 for="username"
-                class="block text-sm text-gray-500 text-gray-300"
+                class="block text-sm text-gray-300"
                 >Certificate Path</label
             >
 
@@ -51,7 +51,7 @@
                 readonly
                 type="text"
                 placeholder="Certificate Path"
-                class="block mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 px-5 py-2.5 focus:outline-none focus:ring-opacity-40 dark:border-gray-600 bg-gray-900 text-gray-300 focus:border-1"
+                class="block mt-2 w-full placeholder-gray-400/70 placeholder-gray-500 rounded-lg border border-gray-200 px-5 py-2.5 focus:outline-none focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-1"
             />
         </div>
 
