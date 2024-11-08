@@ -51,7 +51,7 @@
                 readonly
                 type="text"
                 placeholder="Certificate Path"
-                class="block mt-2 w-full placeholder-gray-400/70 placeholder-gray-500 rounded-lg border border-gray-200 px-5 py-2.5 focus:outline-none focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-1"
+                class="block mt-2 w-full placeholder-gray-400/70 placeholder-gray-500 rounded-lg border  px-5 py-2.5 focus:outline-none focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-1"
             />
         </div>
 
