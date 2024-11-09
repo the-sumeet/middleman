@@ -4,7 +4,7 @@
     webServerRunning,
     proxyServerRunning,
   } from "../../stores";
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import {
     StartProxy,
     StartWebServer,
@@ -14,15 +14,20 @@
   import { currentPage } from "../../stores";
   import { HOME, LOGS, SERVER, SETTINGS } from "../../constants";
   import Button from "./Button.svelte";
-  import { GetWebServerPath } from "../../../wailsjs/go/main/App";
+  import { config } from "../../stores";
+  import { GetOutboundIP } from "../../../wailsjs/go/main/App";
 
   let currPage;
   let isProxyRunning;
   let isWebRunning;
   let proxyServerDesc = null;
   let webServerDesc = null;
-  let webServerPath;
+  let configValue;
+  let localId;
 
+  $: webServerPath = configValue ? `${localId}:${configValue.webServerPort}${configValue.webServerPath}` : null;
+  $: console.log('config', configValue);
+  $: console.log('path', webServerPath);
   $: if (isProxyRunning) {
     proxyServerDesc = "Stop Proxy Server";
   } else {
@@ -39,6 +44,10 @@
 
   $: webServerDescription2 = (webServerPath != null && isWebRunning === true) ? `Web server running run on ${webServerPath}` : null;
 
+  GetOutboundIP().then((value) => {
+    localId = value;
+  });
+
   const unCurrentPage = currentPage.subscribe((value) => {
     currPage = value;
   });
@@ -49,6 +58,11 @@
 
   const unsubWebServerRunning = webServerRunning.subscribe((value) => {
     isWebRunning = value;
+  });
+
+  const unSubConfig = config.subscribe((value) => {
+    configValue = value;
+    console.log('config', configValue);
   });
 
   function setPage(page) {
@@ -97,14 +111,12 @@
     return null;
   }
 
-  GetWebServerPath().then((res) => {
-    webServerPath = res;
-  });
 
   onDestroy(() => {
     unCurrentPage();
     unsubProxyServerRunning();
     unsubWebServerRunning();
+    unSubConfig();
   });
 </script>
 
