@@ -38,8 +38,8 @@ export function GetOneRule(arg1) {
   return window['go']['main']['App']['GetOneRule'](arg1);
 }
 
-export function GetWebServerPath() {
-  return window['go']['main']['App']['GetWebServerPath']();
+export function GetOutboundIP() {
+  return window['go']['main']['App']['GetOutboundIP']();
 }
 
 export function IsProxyRunning() {

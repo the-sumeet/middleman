@@ -20,7 +20,7 @@ export function GetOneRequest(arg1:string):Promise<main.ReturnValue>;
 
 export function GetOneRule(arg1:number):Promise<main.ReturnValue>;
 
-export function GetWebServerPath():Promise<string>;
+export function GetOutboundIP():Promise<string>;
 
 export function IsProxyRunning():Promise<boolean>;
 
