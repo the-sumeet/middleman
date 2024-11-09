@@ -15,9 +15,12 @@ export const isAtBottom = async (el) => {
 }
 
 export const scrollToBottomIfAtBottom = async (el) => {
-  if (await isAtBottom(el)) {
-    scrollToBottom(el);
+  if (el) {
+    if (await isAtBottom(el)) {
+      scrollToBottom(el);
+    }
   }
+ 
 }
 
 
