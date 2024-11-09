@@ -17,8 +17,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const WebServerPath = "/middleman"
-
 type App struct {
 	ctx            context.Context
 	proxy          *goproxy.ProxyHttpServer
@@ -29,11 +27,11 @@ type App struct {
 	database       Database
 	config         Config
 	logger         *slog.Logger
-	webServerPath  string
 }
 
 func NewApp() *App {
 	config := getConfig()
+	fmt.Println("Config: ", config)
 	logFile := getLogFilePath()
 	logWriter, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	multiWriter := io.MultiWriter(os.Stdout, logWriter)
@@ -50,7 +48,6 @@ func NewApp() *App {
 		webStartStop:   make(chan bool),
 		config:         config,
 		logger:         slog.New(slog.NewJSONHandler(multiWriter, nil)),
-		webServerPath:  WebServerPath,
 	}
 
 	return app
@@ -316,7 +313,7 @@ func (a *App) middlemanWeb(w http.ResponseWriter, r *http.Request) {
 
 	var tmplFile = "/Users/sumeetmathpati/Projects/sumeet/middleman/webserver/index.html"
 	tmpl := template.Must(template.ParseFiles(tmplFile))
-	tmpl.Execute(w, struct{ WebServerPath string }{WebServerPath: a.webServerPath})
+	tmpl.Execute(w, struct{ WebServerPath string }{WebServerPath: a.config.WebServerPath})
 }
 
 func (a *App) downloadCert(w http.ResponseWriter, r *http.Request) {
