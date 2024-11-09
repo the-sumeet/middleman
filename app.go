@@ -31,7 +31,6 @@ type App struct {
 
 func NewApp() *App {
 	config := getConfig()
-	fmt.Println("Config: ", config)
 	logFile := getLogFilePath()
 	logWriter, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	multiWriter := io.MultiWriter(os.Stdout, logWriter)
