@@ -9,6 +9,7 @@ import (
 const (
 	DefaultProxyServerPort = "8888"
 	DefaultWebServerPort   = "8080"
+	WebServerPath          = "/localmiddleman"
 )
 
 type Config struct {
@@ -48,6 +49,10 @@ func getConfig() Config {
 		jsonParser := json.NewDecoder(configFile)
 		jsonParser.Decode(&config)
 	}
+
+	// Setting it here because actual config file might not contain it.
+	config.WebServerPath = WebServerPath
+
 	return config
 }
 

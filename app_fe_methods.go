@@ -129,8 +129,8 @@ func (a *App) StartWebServer() ReturnValue {
 		go func() {
 
 			mux := http.NewServeMux()
-			mux.HandleFunc(a.webServerPath, a.middlemanWeb)
-			mux.HandleFunc(fmt.Sprintf("%s/cert", a.webServerPath), a.downloadCert)
+			mux.HandleFunc(a.config.WebServerPath, a.middlemanWeb)
+			mux.HandleFunc(fmt.Sprintf("%s/cert", a.config.WebServerPath), a.downloadCert)
 
 			err = http.Serve(l, mux)
 			if err != nil {
