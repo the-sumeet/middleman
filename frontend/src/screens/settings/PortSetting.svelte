@@ -3,8 +3,6 @@
     export let description;
     export let port;
     export let addPortFunc;
-    import { GetConfig, GenerateCert } from "../../../wailsjs/go/main/App";
-    import { onMount } from "svelte";
 
     // Port
     let portChanged = false;
@@ -26,7 +24,7 @@
     }
 </script>
 
-<div class="w-full">
+<div class="w-full mt-8">
 
     <h1 class="text-white font-bold text-xl">{title}</h1>
 

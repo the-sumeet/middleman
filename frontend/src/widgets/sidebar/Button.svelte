@@ -57,14 +57,14 @@
 <div
     class="{currPage == page
         ? activePageCss
-        : inactivePageCss} p-1.5 transition-colors duration-200 rounded-lg text-blue-400 relative inline-block"
+        : inactivePageCss}  p-1.5 transition-colors duration-200 rounded-lg text-blue-400 relative inline-block"
 >
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
     <button
         on:mouseover={() => (showTooltip = true)}
         on:mouseleave={() => (showTooltip = false)}
         on:click={onClickHandler}
-        class=" transition-colors duration-200 focus:outline-none text-gray-200  hover:text-blue-500"
+        class="transition-colors duration-200 focus:outline-none text-gray-200 "
     >
         <i
             class="{currPage == page
@@ -80,7 +80,7 @@
 
     {#if descriptipn && showTooltip}
         <div
-            class="z-10 absolute flex items-center justify-start w-48 p-3 rounded-lg left-12 -top-4 shadow-none shadow-gray-200 bg-gray-800 text-white"
+            class="z-10 absolute flex items-center justify-start min-w-48 w-min p-3 rounded-lg left-12 -top-4 shadow-none shadow-gray-200 bg-gray-700 text-white"
         >
             <div class="flex flex-col items-start">
                 <span class="">{descriptipn}</span>
@@ -91,7 +91,7 @@
 
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="absolute w-6 h-6  transform rotate-45 -translate-y-1/2 fill-current -left-3 top-1/2 text-gray-800"
+                class="absolute w-6 h-6  transform rotate-45 -translate-y-1/2 fill-current -left-3 top-1/2 text-gray-700"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
             >
