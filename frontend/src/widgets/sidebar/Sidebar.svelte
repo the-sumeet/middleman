@@ -26,8 +26,6 @@
   let localId;
 
   $: webServerPath = configValue ? `${localId}:${configValue.webServerPort}${configValue.webServerPath}` : null;
-  $: console.log('config', configValue);
-  $: console.log('path', webServerPath);
   $: if (isProxyRunning) {
     proxyServerDesc = "Stop Proxy Server";
   } else {
