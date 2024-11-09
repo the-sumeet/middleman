@@ -220,6 +220,17 @@ func (a *App) IsWebServerRunning() bool {
 	return a.webRunning
 }
 
+func (a *App) GetOutboundIP() string {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	return localAddr.IP.String()
+}
+
 // Rule CRUD
 
 func (a *App) UpdateRule(ruleIn InValue) ReturnValue {
