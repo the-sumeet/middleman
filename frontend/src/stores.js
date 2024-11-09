@@ -3,6 +3,8 @@ import { RULE_MODIFY_REQUEST_BODY, RULE_MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_
 import { GetManyRules } from "../wailsjs/go/main/App";
 import { HOME } from "./constants";
 import { IsProxyRunning, IsWebServerRunning } from "../wailsjs/go/main/App";
+import { main } from "../wailsjs/go/models";
+import { GetConfig } from "../wailsjs/go/main/App";
 
 // Messages
 export const successMessage = writable("");
@@ -24,6 +26,7 @@ export const proxyServerRunning = writable(false);
 export const webServerRunning = writable(false);
 export const currentPage = writable(HOME);
 export const selectedRequest = writable(null);
+export const config = writable(new main.Config());
 
 
 export async function refreshList(type) {
@@ -68,6 +71,11 @@ async function refreshAllLists() {
     await refreshList(RULE_MODIFY_RESPONSE_BODY);
 }
 
+export async function refreshConfig() {
+    const result = await GetConfig();
+    config.set(result);
+}
+
 IsProxyRunning().then((result) => {
     proxyServerRunning.set(result);
 })
@@ -75,3 +83,6 @@ IsProxyRunning().then((result) => {
 IsWebServerRunning().then((result) => {
     webServerRunning.set(result);
 })
+
+refreshConfig();
+

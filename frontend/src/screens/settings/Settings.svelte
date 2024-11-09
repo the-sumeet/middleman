@@ -1,13 +1,15 @@
 <script>
     import { GetConfig, GenerateCert } from "../../../wailsjs/go/main/App";
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import { AddProxyPort, AddWebPort } from "../../../wailsjs/go/main/App";
     import PortSetting from "./PortSetting.svelte";
     import { errorMessage } from "../../../src/stores";
+    import { config } from "../../../src/stores";
+    import { refreshConfig } from "../../../src/stores";
 
     let certPath;
     let generatingCert = false;
-
+    let configValue;
     let proxyServerPort;
     let webServerPort;
 
@@ -24,25 +26,41 @@
             generatingCert = false;
         });
     }
+
+    const unSubConfig = config.subscribe((value) => {
+        configValue = value;
+    });
+
+    const addProxyPort = async (newPort) => {
+        const result = await AddProxyPort(newPort);
+        refreshConfig();
+        return result;
+    };
+
+    const addWebPort = async (newPort) => {
+        const result = await AddWebPort(newPort);
+        refreshConfig();
+        return result;
+    };
+
     onMount(async () => {
-        const config = await GetConfig();
-        certPath = config.certPath;
-        proxyServerPort = config.proxyServerPort;
-        webServerPort = config.webServerPort;
+        certPath = configValue.certPath;
+        proxyServerPort = configValue.proxyServerPort;
+        webServerPort = configValue.webServerPort;
+    });
+
+    onDestroy(() => {
+        unSubConfig();
     });
 </script>
 
 <div class="p-4 w-full">
     <!-- Certificates -->
     <div>
-        <h2 class="text-2xl font-medium text-white">
-            Certificates
-        </h2>
+        <h2 class="text-2xl font-medium text-white">Certificates</h2>
 
         <div class="mt-4">
-            <label
-                for="username"
-                class="block text-sm text-gray-300"
+            <label for="username" class="block text-sm text-gray-300"
                 >Certificate Path</label
             >
 
@@ -51,7 +69,7 @@
                 readonly
                 type="text"
                 placeholder="Certificate Path"
-                class="block mt-2 w-full placeholder-gray-400/70 placeholder-gray-500 rounded-lg border  px-5 py-2.5 focus:outline-none focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-1"
+                class="block mt-2 w-full placeholder-gray-400/70 placeholder-gray-500 rounded-lg border px-5 py-2.5 focus:outline-none focus:ring-opacity-40 border-gray-600 bg-gray-900 text-gray-300 focus:border-1"
             />
         </div>
 
@@ -69,19 +87,17 @@
         </button>
     </div>
 
-    <div class="mt-8">
-        <PortSetting
+    <PortSetting
         title="Proxy Server Port"
-        description="Default port for proxy server to run on"
+        description="Port for proxy server to run on"
         port={proxyServerPort}
-        addPortFunc={AddProxyPort}
+        addPortFunc={addProxyPort}
     />
 
     <PortSetting
         title="Web Server Port"
-        description="Default port for web server to run on"
+        description="Port for web server to run on"
         port={webServerPort}
-        addPortFunc={AddWebPort}
+        addPortFunc={addWebPort}
     />
-    </div>
 </div>

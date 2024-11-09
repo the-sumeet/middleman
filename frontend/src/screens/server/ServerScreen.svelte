@@ -1,9 +1,8 @@
 <script>
     import "bootstrap-icons/font/bootstrap-icons.css";
     import { proxyServerRunning, webServerRunning } from "../../../src/stores";
-    import { onMount } from "svelte";
-    import { GetConfig } from "../../../wailsjs/go/main/App";
-    import { GetWebServerPath } from "../../../wailsjs/go/main/App";
+    import { onDestroy, onMount } from "svelte";
+    import { config } from "../../../src/stores";
     import ServerInput from "./ServerInput.svelte";
     import {
         StartProxy,
@@ -12,23 +11,20 @@
         StopWebServer,
     } from "../../../wailsjs/go/main/App";
 
-    let isServerRunning;
-    const startButtonCss = "bg-blue-600 hover:bg-blue-500 focus:ring-blue-300";
-    const stopButtonCss = "bg-red-600 hover:bg-red-500 focus:ring-red-300";
-    let error = "";
     let port;
     let proxyServerPort;
     let webServerPort;
     let webServerPath;
+    let configValue;
 
-    GetWebServerPath().then((path) => {
-        webServerPath = path;
+    const unSubConfig = config.subscribe((value) => {
+        configValue = value;
+        proxyServerPort = configValue.proxyServerPort;
+        webServerPort = configValue.webServerPort;
     });
 
-    onMount(async () => {
-        const config = await GetConfig();
-        proxyServerPort = config.proxyServerPort;
-        webServerPort = config.webServerPort;
+    onDestroy(() => {
+        unSubConfig();
     });
 </script>
 
