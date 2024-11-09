@@ -192,10 +192,6 @@ func (a *App) AddWebPort(webPort string) ReturnValue {
 	return ReturnValue{}
 }
 
-func (a *App) GetWebServerPath() string {
-	return a.webServerPath
-}
-
 func (a *App) GenerateCert() ReturnValue {
 	err := genCert()
 	if err != nil {
