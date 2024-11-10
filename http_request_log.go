@@ -18,12 +18,11 @@ type HttpRequestLog struct {
 	ResponseBody    string      `json:"responseBody"`
 	Status          int         `json:"status"`
 	// Rules related information
-	Cancelled    bool `json:"cancelled"`
-	RedirectedTo bool `json:"redirected"`
-	// How to use this, is to be decided.
-	// RequestHeaderModified  bool `json:"requestHeaderModified"`
-	// ResponseHeaderModified bool `json:"responseHeaderModified"`
-	// RequestBodyModified    bool `json:"requestBodyModified"`
-	// ResponseBodyModified   bool `json:"responseBodyModified"`
-	// Delayed                int  `json:"delayed"`
+	Cancelled              bool `json:"cancelled"`
+	Redirected             bool `json:"redirected"`
+	RequestHeaderModified  bool `json:"requestHeaderModified"`
+	ResponseHeaderModified bool `json:"responseHeaderModified"`
+	RequestBodyModified    bool `json:"requestBodyModified"`
+	ResponseBodyModified   bool `json:"responseBodyModified"`
+	Delayed                int  `json:"delayed"`
 }
