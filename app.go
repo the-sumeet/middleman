@@ -64,16 +64,6 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) responseToLog(r *http.Response, state *State, logId any) {
 
-	// // Request body
-	// requestBytes, err := io.ReadAll(r.Request.Body)
-	// if err != nil {
-	// 	a.logger.Error(fmt.Sprintf("Error reading request body: %s", err))
-	// }
-	// r.Request.Body.Close() //  must close
-	// fmt.Println(r.Request.URL)
-	// fmt.Println("Request body: ", string(requestBytes))
-	// fmt.Println("--")
-
 	// Response body
 	responseBytes, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -94,8 +84,13 @@ func (a *App) responseToLog(r *http.Response, state *State, logId any) {
 		RequestBody:     state.RequestBody,
 		ResponseBody:    string(responseBytes),
 		// Rules info
-		Cancelled:    state.IsCancelled,
-		RedirectedTo: state.IsRedirected,
+		Cancelled:              state.IsCancelled,
+		Redirected:             state.IsRedirected,
+		RequestHeaderModified:  state.IsRequestHeaderModified,
+		ResponseHeaderModified: state.IsResponseHeaderModified,
+		RequestBodyModified:    state.IsRequestBodyModified,
+		ResponseBodyModified:   state.IsResponseBodyModified,
+		Delayed:                state.DelayedBy,
 	}
 
 	a.database.AddRequest(state.requestId, &requestLog)
@@ -167,6 +162,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						continue
 					}
 					if matches(redirect, r) {
+						a.logger.Info("Redirect rule matched", getRequestLogValues(r, "rule", REDIRECT)...)
 						ctx.UserData.(*State).IsRedirected = true
 						resp := &http.Response{
 							Request:    r,
@@ -194,7 +190,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						continue
 					}
 					if matches(modifyBody, r) {
-						a.logger.Info("ModifyRequestBody  rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
+						a.logger.Info("ModifyRequestBody rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_BODY)...)
+						ctx.UserData.(*State).IsRequestBodyModified = true
+
 						r.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.RequestBody)))
 					}
 				}
@@ -211,6 +209,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						continue
 					}
 					if matches(modifyHeader, r) {
+						a.logger.Info("ModifyRequestHeader rule matched", getRequestLogValues(r, "rule", MODIFY_HEADERS)...)
+						ctx.UserData.(*State).IsRequestHeaderModified = true
+
 						for _, v := range modifyHeader.RequestHeaderMods {
 							if !v.IsRequest {
 								continue
@@ -252,6 +253,9 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 						continue
 					}
 					if matches(modifyBody, resp.Request) {
+						a.logger.Info("ModifyResponseBody rule matched", getRequestLogValues(resp.Request, "rule", MODIFY_RESPONSE_BODY)...)
+						ctx.UserData.(*State).IsResponseBodyModified = true
+
 						resp.Body = io.NopCloser(bytes.NewReader([]byte(modifyBody.ResponseBody)))
 
 					}
@@ -269,6 +273,9 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					continue
 				}
 				if matches(delay, resp.Request) {
+					a.logger.Info("Delay rule matched", getRequestLogValues(resp.Request, "rule", DELAY)...)
+					ctx.UserData.(*State).DelayedBy = delay.DelaySec
+
 					time.Sleep(time.Duration(delay.DelaySec) * time.Second)
 				}
 			}
@@ -284,6 +291,9 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 					continue
 				}
 				if matches(modifyHeader, resp.Request) {
+					a.logger.Info("ModifyResponseHeader rule matched", getRequestLogValues(resp.Request, "rule", MODIFY_HEADERS)...)
+					ctx.UserData.(*State).IsResponseHeaderModified = true
+
 					for _, v := range modifyHeader.ResponseHeaderMods {
 						if v.IsRequest {
 							continue
