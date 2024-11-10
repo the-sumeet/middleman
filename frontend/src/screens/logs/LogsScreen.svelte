@@ -14,7 +14,6 @@
   let logs = [];
   let clear;
 
-
   fetchLogs();
 
   function selectRequest(log) {
@@ -30,7 +29,6 @@
   function getUrl(log) {
     return `${log.scheme}://${log.host}${log.path}`;
   }
-
 
   function fetchLogs() {
     GetLogs(logs.length).then((res) => {
@@ -75,18 +73,65 @@
             on:click={() => selectRequest(log)}
             class=" odd:bg-gray-800/50 hover:bg-blue-500/30"
           >
-            <td title="{log.timestamp}" class="text-sm w-1/12 truncate border-r border-gray-700 px-1"
+            <td
+              title={log.timestamp}
+              class="text-sm w-1/12 truncate border-r border-gray-700 px-1"
               >{formatDate(log.timestamp)}</td
             >
             <MethodTableCol method={log.method} />
+
             <td class="text-sm w-1/12 truncate border-r border-gray-700 px-1"
               >{"application/json"}</td
             >
-            <td class="text-sm w-7/12 truncate border-r border-gray-700 px-1"
+            <td class="text-sm flex truncate border-r border-gray-700 px-1"
               >{getUrl(log)}</td
             >
             <StatusTableCol status={log.status} />
-            <td class="text-sm w-1/12 truncate">RULES</td>
+
+            <td class="text-sm w-36 truncate">
+              <div class="flex justify-between">
+
+                <!-- Delay, Cancelled -->
+                {#if log.delayed > 0 || log.cancelled || log.redirected}
+                <div class="flex gap-2">
+                  {#if log.delayed > 0}
+                  <i class="bi bi-clock" title="Request Delayed by {log.delayed}s"></i>
+                  {/if}
+                  {#if log.cancelled}
+                  <i class="bi bi-x-square" title="Request Cancelled"></i>
+                  {/if}
+                  {#if log.redirected}
+                  <i class="bi bi-shuffle" title="Request Redirected"></i>
+                  {/if}
+                </div>
+                {/if}
+
+                <!-- Request header, body -->
+                {#if log.requestHeaderModified || log.requestBodyModified}
+                <div class="flex gap-2 text-green-400">
+                  {#if log.requestBodyModified}
+                  <i class="bi bi-body-text" title="Request Body Modified"></i>
+                  {/if}
+                  {#if log.requestHeaderModified}
+                  <i class="bi bi-h-square" title="Request Headers Modified"></i>
+                  {/if}
+                </div>
+                {/if}
+
+                <!-- Response header, body -->
+                {#if log.responseHeaderModified || log.responseBodyModified}
+                <div class="flex gap-2 text-yellow-400">
+                  {#if log.responseBodyModified}
+                  <i class="bi bi-body-text" title="Response Body Modified"></i>
+                  {/if}
+                  {#if log.responseHeaderModified}
+                  <i class="bi bi-h-square" title="Response Headers Modified"></i>
+                  {/if}
+                </div>
+                {/if}
+
+              </div>
+            </td>
           </tr>
         {/each}
       </tbody>
