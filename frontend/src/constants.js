@@ -4,7 +4,8 @@ export const REDIRECT_TYPE = "redirect";
 
 // Rules
 export const RULE_REDIRECT = "redirect";
-export const RULE_MOD_HEADER = "modifyHeader";
+export const RULE_MOD_REQUEST_HEADER = "modifyRequestHeader";
+export const RULE_MOD_RESPONSE_HEADER = "modifyResponseHeader";
 export const RULE_CANCEL = "cancel";
 export const RULE_DELAY= "delay";
 export const RULE_MODIFY_REQUEST_BODY= "modifyRequestBody";
@@ -28,7 +29,8 @@ export const RULE_INFO = {
     'redirect': "Redirects the request to the given URL. Status 307, and 'Location' header is added with value of given URL.",
     'cancel': "Request will be cancelled with status 418.",
     'delay': "Adds extra delay of given seconds on top of the original response time.",
-    'modifyHeader': "Modifies the request header. You can add, remove or modify the header.",
+    'modifyRequestHeader': "Modifies the request header. You can add, remove or modify the header.",
+    'modifyResponseHeader': "Modifies the Response header. You can add, remove or modify the header.",
     'modifyRequestBody': "Replace the request body",
     'modifyResponseBody': "Replace the response body"
 };
