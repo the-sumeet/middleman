@@ -12,7 +12,7 @@ export function GenerateCert():Promise<main.ReturnValue>;
 
 export function GetConfig():Promise<main.Config>;
 
-export function GetLogs(arg1:number):Promise<main.ReturnValue>;
+export function GetLogs(arg1:string,arg2:Array<string>,arg3:Array<string>,arg4:Array<string>,arg5:Array<string>,arg6:number):Promise<main.ReturnValue>;
 
 export function GetManyRules(arg1:string):Promise<main.ReturnValue>;
 

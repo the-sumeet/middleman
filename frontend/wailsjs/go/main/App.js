@@ -22,8 +22,8 @@ export function GetConfig() {
   return window['go']['main']['App']['GetConfig']();
 }
 
-export function GetLogs(arg1) {
-  return window['go']['main']['App']['GetLogs'](arg1);
+export function GetLogs(arg1, arg2, arg3, arg4, arg5, arg6) {
+  return window['go']['main']['App']['GetLogs'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
 export function GetManyRules(arg1) {

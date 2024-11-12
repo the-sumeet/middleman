@@ -57,6 +57,11 @@ export namespace main {
 	    status: number;
 	    cancelled: boolean;
 	    redirected: boolean;
+	    requestHeaderModified: boolean;
+	    responseHeaderModified: boolean;
+	    requestBodyModified: boolean;
+	    responseBodyModified: boolean;
+	    delayed: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new HttpRequestLog(source);
@@ -77,6 +82,11 @@ export namespace main {
 	        this.status = source["status"];
 	        this.cancelled = source["cancelled"];
 	        this.redirected = source["redirected"];
+	        this.requestHeaderModified = source["requestHeaderModified"];
+	        this.responseHeaderModified = source["responseHeaderModified"];
+	        this.requestBodyModified = source["requestBodyModified"];
+	        this.responseBodyModified = source["responseBodyModified"];
+	        this.delayed = source["delayed"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -110,6 +120,7 @@ export namespace main {
 	    responseBody: string;
 	    requestHeaderMods: Header[];
 	    responseHeaderMods: Header[];
+	    headerMods: Header[];
 	
 	    static createFrom(source: any = {}) {
 	        return new Rule(source);
@@ -129,6 +140,7 @@ export namespace main {
 	        this.responseBody = source["responseBody"];
 	        this.requestHeaderMods = this.convertValues(source["requestHeaderMods"], Header);
 	        this.responseHeaderMods = this.convertValues(source["responseHeaderMods"], Header);
+	        this.headerMods = this.convertValues(source["headerMods"], Header);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
