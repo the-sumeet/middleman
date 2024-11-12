@@ -20,5 +20,6 @@ type Rule struct {
 	ResponseBody       string   `json:"responseBody"`       // For modify response body rule
 	RequestHeaderMods  []Header `json:"requestHeaderMods"`  // For modify header rule
 	ResponseHeaderMods []Header `json:"responseHeaderMods"` // For modify header rule
+	HeaderMods         []Header `json:"headerMods"`         // For modify header rule
 
 }
