@@ -3,7 +3,6 @@
 
 import { RemoveRule, GetManyRules, UpdateRule } from "../wailsjs/go/main/App";
 import { errorMessage, modifyResponseBody, refreshList } from "./stores";
-import { RULE_DELAY, RULE_MODIFY_REQUEST_BODY, RULE_CANCEL, RULE_MOD_HEADER, RULE_REDIRECT, RULE_MODIFY_RESPONSE_BODY } from "./constants";
 import { main } from "../wailsjs/go/models";
 
 export const scrollToBottom = async (el) => {

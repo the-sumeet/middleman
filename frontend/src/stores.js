@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { RULE_MODIFY_REQUEST_BODY, RULE_MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_DELAY, RULE_MOD_HEADER, RULE_REDIRECT } from "./constants";
+import { RULE_MODIFY_REQUEST_BODY, RULE_MODIFY_RESPONSE_BODY, RULE_CANCEL, RULE_DELAY, RULE_MOD_REQUEST_HEADER, RULE_MOD_RESPONSE_HEADER, RULE_REDIRECT } from "./constants";
 import { GetManyRules } from "../wailsjs/go/main/App";
 import { HOME } from "./constants";
 import { IsProxyRunning, IsWebServerRunning } from "../wailsjs/go/main/App";
@@ -17,7 +17,8 @@ export const currentRule = writable(RULE_REDIRECT);
 export const redirects = writable([]);
 export const cancels = writable([]);
 export const delays = writable([]);
-export const modifyHeaders = writable([]);
+export const modifyRequestHeaders = writable([]);
+export const modifyResponseHeaders = writable([]);
 export const modifyRequestBody = writable([]);
 export const modifyResponseBody = writable([]);
 
@@ -51,8 +52,11 @@ export async function refreshList(type) {
         case RULE_MODIFY_RESPONSE_BODY:
             modifyResponseBody.set(result.rules);
             break;
-        case RULE_MOD_HEADER:
-            modifyHeaders.set(result.rules);
+        case RULE_MOD_REQUEST_HEADER:
+            modifyRequestHeaders.set(result.rules);
+            break;
+        case RULE_MOD_RESPONSE_HEADER:
+            modifyResponseHeaders.set(result.rules);
             break;
         case RULE_REDIRECT:
             redirects.set(result.rules);
@@ -66,7 +70,8 @@ async function refreshAllLists() {
     await refreshList(RULE_REDIRECT);
     await refreshList(RULE_CANCEL);
     await refreshList(RULE_DELAY);
-    await refreshList(RULE_MOD_HEADER);
+    await refreshList(RULE_MOD_REQUEST_HEADER);
+    await refreshList(RULE_MOD_RESPONSE_HEADER);
     await refreshList(RULE_MODIFY_REQUEST_BODY);
     await refreshList(RULE_MODIFY_RESPONSE_BODY);
 }
