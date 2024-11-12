@@ -75,7 +75,14 @@
       statuses = [];
     }
 
-    GetLogs(filterUrl, filterMethods, statuses, filterResponseTypes, filterAppliedRules, logs.length).then((res) => {
+    GetLogs(
+      filterUrl,
+      filterMethods,
+      statuses,
+      filterResponseTypes,
+      filterAppliedRules,
+      logs.length,
+    ).then((res) => {
       if (res.error != "") {
         errorMessage.set(res.error);
       } else if (res.httpRequests) {
@@ -127,7 +134,6 @@
             if (!validateStatusFilter(statuses)) {
               return;
             }
-
             logs = [];
             fetchLogs();
           }}
@@ -196,7 +202,7 @@
   >
     <table class="table-fixed w-full">
       <tbody>
-        {#each logs as log, i (log.id )}
+        {#each logs as log, i (log.id)}
           <tr
             on:click={() => selectRequest(log)}
             class=" odd:bg-gray-800/50 hover:bg-blue-500/30"
