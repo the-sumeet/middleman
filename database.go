@@ -1,12 +1,13 @@
 package main
 
 const (
-	REDIRECT             = "redirect"
-	CANCEL               = "cancel"
-	DELAY                = "delay"
-	MODIFY_HEADERS       = "modifyHeader"
-	MODIFY_REQUEST_BODY  = "modifyRequestBody"
-	MODIFY_RESPONSE_BODY = "modifyResponseBody"
+	REDIRECT                = "redirect"
+	CANCEL                  = "cancel"
+	DELAY                   = "delay"
+	MODIFY_REQUEST_HEADERS  = "modifyRequestHeader"
+	MODIFY_RESPONSE_HEADERS = "modifyResponseHeader"
+	MODIFY_REQUEST_BODY     = "modifyRequestBody"
+	MODIFY_RESPONSE_BODY    = "modifyResponseBody"
 )
 
 type Database interface {
