@@ -158,6 +158,7 @@ func (s *SqliteDatabase) GetOneRule(id any) (Rule, error) {
 }
 
 func (s *SqliteDatabase) GetManyRules(recordType string) ([]Rule, error) {
+
 	rules := []Rule{}
 
 	rows, err := s.ruleDb.Query(fmt.Sprintf("SELECT id, data FROM %s WHERE json_extract(data, '$.type') = ?", RULE), recordType)
@@ -260,11 +261,106 @@ func (s *SqliteDatabase) GetOneRequest(id string) (HttpRequestLog, error) {
 	return request, err
 }
 
-func (s *SqliteDatabase) GetManyRequests(skip int) ([]HttpRequestLog, error) {
-	requests := []HttpRequestLog{}
+func andOrWhere(query string, whereAdded bool) (string, bool) {
+	if whereAdded {
+		query += " AND "
+	} else {
+		query += " WHERE "
+		whereAdded = true
+	}
 
+	return query, whereAdded
+}
+
+func (s *SqliteDatabase) GetManyRequests(filterUrl string, methods, statuses, resposneTypes, rules []string, skip int) ([]HttpRequestLog, error) {
+	requests := []HttpRequestLog{}
+	whereAdded := false
 	// rows, err := s.requestDb.Query(fmt.Sprintf("SELECT id, data FROM %s", REQUEST))
-	rows, err := s.requestDb.Query(fmt.Sprintf("SELECT id, json_remove(data, '$.requestHeaders', '$.responseHeaders', '$.requestBody', '$.responseBody') AS data FROM %s ORDER BY id ASC LIMIT -1 OFFSET %d", REQUEST, skip))
+	query := fmt.Sprintf("SELECT id, json_remove(data, '$.requestHeaders', '$.responseHeaders', '$.requestBody', '$.responseBody') AS data FROM %s", REQUEST)
+
+	// Url filter
+	if filterUrl != "" {
+		filterUrl = strings.ToLower(filterUrl)
+		query += fmt.Sprintf(" WHERE LOWER(json_extract(data, '$.host') || json_extract(data, '$.path')) LIKE '%%%s%%'", filterUrl)
+		whereAdded = true
+	}
+
+	// Statuses filter
+	if len(statuses) > 0 {
+		query, whereAdded = andOrWhere(query, whereAdded)
+		for i, status := range statuses {
+			if i != 0 {
+				query += " OR "
+			}
+			query += fmt.Sprintf(" CAST(json_extract(data, '$.status') as TEXT) LIKE '%s%%'", status)
+
+		}
+	}
+
+	// Methods filter
+	if len(methods) > 0 {
+		query, whereAdded = andOrWhere(query, whereAdded)
+		query += " LOWER(json_extract(data, '$.method')) IN ("
+		for i, method := range methods {
+			if i != 0 {
+				query += ", "
+			}
+			query += fmt.Sprintf("'%s'", strings.ToLower(method))
+		}
+		query += ")"
+	}
+
+	// Response types filter
+	if len(resposneTypes) > 0 {
+		query, whereAdded = andOrWhere(query, whereAdded)
+
+		query += "( "
+
+		for i, responseType := range resposneTypes {
+			if i != 0 {
+				query += " OR "
+			}
+			query += fmt.Sprintf(" LOWER(json_extract(data, '$.responseHeaders.Content-Type')) LIKE '%%%s%%'", responseType)
+
+		}
+
+		query += " )"
+	}
+
+	// Rules filter
+	if len(rules) > 0 {
+		for _, rule := range rules {
+
+			switch rule {
+			case REDIRECT:
+				query, whereAdded = andOrWhere(query, whereAdded)
+				query += " json_extract(data, '$.redirected') = true "
+			case CANCEL:
+				query, whereAdded = andOrWhere(query, whereAdded)
+				query += " json_extract(data, '$.cancelled') = true "
+			case DELAY:
+				query, whereAdded = andOrWhere(query, whereAdded)
+				query += " json_extract(data, '$.delayed') > 0 "
+			case MODIFY_REQUEST_HEADERS:
+				query, whereAdded = andOrWhere(query, whereAdded)
+				query += " json_extract(data, '$.requestHeaderModified') = true "
+			case MODIFY_RESPONSE_HEADERS:
+				query, whereAdded = andOrWhere(query, whereAdded)
+				query += " json_extract(data, '$.responseHeaderModified') = true "
+			case MODIFY_REQUEST_BODY:
+				query, whereAdded = andOrWhere(query, whereAdded)
+				query += " json_extract(data, '$.requestBodyModified') = true "
+			case MODIFY_RESPONSE_BODY:
+				query, whereAdded = andOrWhere(query, whereAdded)
+				query += " json_extract(data, '$.responseBodyModified') = true "
+			}
+		}
+	}
+
+	// Offset and limit
+	query += fmt.Sprintf(" ORDER BY id ASC LIMIT -1 OFFSET %d ", skip)
+
+	rows, err := s.requestDb.Query(query)
 	if err != nil {
 		return nil, err
 	}

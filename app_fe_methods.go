@@ -202,8 +202,8 @@ func (a *App) GenerateCert() ReturnValue {
 
 }
 
-func (a *App) GetLogs(skip int) ReturnValue {
-	requests, err := a.database.GetManyRequests(skip)
+func (a *App) GetLogs(filterUrl string, methods, statuses, resposneTypes, rules []string, skip int) ReturnValue {
+	requests, err := a.database.GetManyRequests(filterUrl, methods, statuses, resposneTypes, rules, skip)
 	if err != nil {
 		return ReturnValue{Error: err.Error()}
 	}
