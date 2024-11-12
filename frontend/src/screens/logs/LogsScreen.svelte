@@ -11,10 +11,49 @@
   import MethodTableCol from "./MethodTableCol.svelte";
   import StatusTableCol from "./StatusTableCol.svelte";
   import { GetOneRequest } from "../../../wailsjs/go/main/App";
+  import Dropdown from "./Dropdown.svelte";
+
   let logs = [];
   let clear;
 
+  let filterUrl = "";
+  let filterStatus = "";
+  let filterStatusError;
+  let filterMethods = [];
+  let filterResponseTypes = [];
+  let filterAppliedRules = [];
+
   fetchLogs();
+
+  function statusesNumbers() {
+    if (filterStatus == "") {
+      return [];
+    }
+    return filterStatus.split(",");
+  }
+
+  function validateStatusFilter(statuses) {
+    for (const status of statuses) {
+      // Check if status is a number
+      if (isNaN(Number(status))) {
+        if (statuses.length > 1) {
+          filterStatusError =
+            "Input should be a comma separated list of numbers.";
+        } else {
+          filterStatusError = "Input should be a number";
+        }
+        return false;
+      }
+
+      if (status < 1 || status > 1000) {
+        filterStatusError =
+          "Status code length must be more than 0 and less than 4";
+        return false;
+      }
+    }
+    filterStatusError = "";
+    return true;
+  }
 
   function selectRequest(log) {
     GetOneRequest(log.id).then((res) => {
@@ -31,7 +70,12 @@
   }
 
   function fetchLogs() {
-    GetLogs(logs.length).then((res) => {
+    let statuses = statusesNumbers();
+    if (!validateStatusFilter(statuses)) {
+      statuses = [];
+    }
+
+    GetLogs(filterUrl, filterMethods, statuses, filterResponseTypes, filterAppliedRules, logs.length).then((res) => {
       if (res.error != "") {
         errorMessage.set(res.error);
       } else if (res.httpRequests) {
@@ -50,17 +94,101 @@
 <div class="flex flex-col h-screen p-4 w-full">
   <h2 class="text-2xl font-medium text-white">HTTP(S) Requests</h2>
 
-  <!-- <div id="logs" class="flex flex-col overflow-y-auto border-gray-700">
-    {#each logs as log}
-      <Log {log} />
-    {/each}
-  </div> -->
+  <!-- Filters -->
+  <div class="flex gap-2 mt-4">
+    <!-- URL Search -->
+    <div class="w-4/12">
+      <div class="relative flex items-center">
+        <span class="absolute">
+          <i class="w-6 h-6 mx-3 text-gray-500 bi bi-search"></i>
+        </span>
 
-  <!--
-  Heads up! 👋
+        <input
+          bind:value={filterUrl}
+          on:input={() => {
+            logs = [];
+            fetchLogs();
+            console.log(filterUrl);
+          }}
+          type="text"
+          placeholder="URL contains"
+          class="block w-full py-1 text-gray-700 placeholder-gray-400/70 bg-white border border-gray-200 rounded-lg pl-8 pr-5 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+        />
+      </div>
+    </div>
 
-  This component comes with some `rtl` classes. Please remove them if they are not needed in your project.
--->
+    <!-- Status -->
+    <div class="w-2/12">
+      <div class="relative flex items-center">
+        <input
+          bind:value={filterStatus}
+          on:input={() => {
+            const statuses = statusesNumbers();
+            if (!validateStatusFilter(statuses)) {
+              return;
+            }
+
+            logs = [];
+            fetchLogs();
+          }}
+          type="text"
+          placeholder="Status starting with"
+          class="block w-full py-1 text-gray-700 placeholder-gray-400/70 bg-white border border-gray-200 rounded-lg pl-2 pr-5 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+        />
+      </div>
+      <!-- Statuses error -->
+      <!-- svelte-ignore a11y-label-has-associated-control -->
+      {#if filterStatusError}
+        <label class="text-red-400 mt-1 block text-xs"
+          >{filterStatusError}</label
+        >
+      {/if}
+    </div>
+
+    <div class="w-2/12">
+      <Dropdown
+        title="Methods"
+        onChange={(selected) => {
+          filterMethods = selected;
+          logs = [];
+          fetchLogs();
+        }}
+        values={["GET", "POST", "PUT", "PATCH", "DELETE"]}
+      />
+    </div>
+
+    <div class="w-2/12">
+      <Dropdown
+        title="Response Type"
+        onChange={(selected) => {
+          filterResponseTypes = selected;
+          logs = [];
+          fetchLogs();
+        }}
+        values={["HTML", "JSON"]}
+      />
+    </div>
+
+    <div class="w-2/12">
+      <Dropdown
+        title="Applied Rules"
+        onChange={(selected) => {
+          filterAppliedRules = selected;
+          logs = [];
+          fetchLogs();
+        }}
+        values={[
+          "cancel",
+          "redirect",
+          "modifyRequestHeader",
+          "modifyResponseHeader",
+          "modifyRequestBody",
+          "modifyResponseBody",
+          "delay",
+        ]}
+      />
+    </div>
+  </div>
 
   <div
     id="logs"
@@ -90,46 +218,53 @@
 
             <td class="text-sm w-36 truncate">
               <div class="flex justify-between">
-
                 <!-- Delay, Cancelled -->
                 {#if log.delayed > 0 || log.cancelled || log.redirected}
-                <div class="flex gap-2">
-                  {#if log.delayed > 0}
-                  <i class="bi bi-clock" title="Request Delayed by {log.delayed}s"></i>
-                  {/if}
-                  {#if log.cancelled}
-                  <i class="bi bi-x-square" title="Request Cancelled"></i>
-                  {/if}
-                  {#if log.redirected}
-                  <i class="bi bi-shuffle" title="Request Redirected"></i>
-                  {/if}
-                </div>
+                  <div class="flex gap-2">
+                    {#if log.delayed > 0}
+                      <i
+                        class="bi bi-clock"
+                        title="Request Delayed by {log.delayed}s"
+                      ></i>
+                    {/if}
+                    {#if log.cancelled}
+                      <i class="bi bi-x-square" title="Request Cancelled"></i>
+                    {/if}
+                    {#if log.redirected}
+                      <i class="bi bi-shuffle" title="Request Redirected"></i>
+                    {/if}
+                  </div>
                 {/if}
 
                 <!-- Request header, body -->
                 {#if log.requestHeaderModified || log.requestBodyModified}
-                <div class="flex gap-2 text-green-400">
-                  {#if log.requestBodyModified}
-                  <i class="bi bi-body-text" title="Request Body Modified"></i>
-                  {/if}
-                  {#if log.requestHeaderModified}
-                  <i class="bi bi-h-square" title="Request Headers Modified"></i>
-                  {/if}
-                </div>
+                  <div class="flex gap-2 text-green-400">
+                    {#if log.requestBodyModified}
+                      <i class="bi bi-body-text" title="Request Body Modified"
+                      ></i>
+                    {/if}
+                    {#if log.requestHeaderModified}
+                      <i class="bi bi-h-square" title="Request Headers Modified"
+                      ></i>
+                    {/if}
+                  </div>
                 {/if}
 
                 <!-- Response header, body -->
                 {#if log.responseHeaderModified || log.responseBodyModified}
-                <div class="flex gap-2 text-yellow-400">
-                  {#if log.responseBodyModified}
-                  <i class="bi bi-body-text" title="Response Body Modified"></i>
-                  {/if}
-                  {#if log.responseHeaderModified}
-                  <i class="bi bi-h-square" title="Response Headers Modified"></i>
-                  {/if}
-                </div>
+                  <div class="flex gap-2 text-yellow-400">
+                    {#if log.responseBodyModified}
+                      <i class="bi bi-body-text" title="Response Body Modified"
+                      ></i>
+                    {/if}
+                    {#if log.responseHeaderModified}
+                      <i
+                        class="bi bi-h-square"
+                        title="Response Headers Modified"
+                      ></i>
+                    {/if}
+                  </div>
                 {/if}
-
               </div>
             </td>
           </tr>
