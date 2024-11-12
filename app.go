@@ -199,9 +199,9 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 			}
 
 			// Change request headers
-			modifyHeaders, err := a.database.GetManyRules(MODIFY_HEADERS)
+			modifyHeaders, err := a.database.GetManyRules(MODIFY_REQUEST_HEADERS)
 			if err != nil {
-				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_HEADERS, err))
+				a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_REQUEST_HEADERS, err))
 			} else {
 				for _, modifyHeader := range modifyHeaders {
 
@@ -209,7 +209,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						continue
 					}
 					if matches(modifyHeader, r) {
-						a.logger.Info("ModifyRequestHeader rule matched", getRequestLogValues(r, "rule", MODIFY_HEADERS)...)
+						a.logger.Info("ModifyRequestHeader rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_HEADERS)...)
 						ctx.UserData.(*State).IsRequestHeaderModified = true
 
 						for _, v := range modifyHeader.RequestHeaderMods {
@@ -282,16 +282,17 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 		}
 
 		// Change response headers
-		modifyHeaders, err := a.database.GetManyRules(MODIFY_HEADERS)
+		modifyHeaders, err := a.database.GetManyRules(MODIFY_RESPONSE_HEADERS)
 		if err != nil {
-			a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_HEADERS, err))
+			a.logger.Error(fmt.Sprintf("Error getting %s: %s", MODIFY_RESPONSE_HEADERS, err))
 		} else {
 			for _, modifyHeader := range modifyHeaders {
 				if !modifyHeader.Enabled {
 					continue
 				}
+				fmt.Println("HERE")
 				if matches(modifyHeader, resp.Request) {
-					a.logger.Info("ModifyResponseHeader rule matched", getRequestLogValues(resp.Request, "rule", MODIFY_HEADERS)...)
+					a.logger.Info("ModifyResponseHeader rule matched", getRequestLogValues(resp.Request, "rule", MODIFY_RESPONSE_HEADERS)...)
 					ctx.UserData.(*State).IsResponseHeaderModified = true
 
 					for _, v := range modifyHeader.ResponseHeaderMods {
