@@ -6,7 +6,8 @@
     import RedirectList from "../redirects/RequestRedirectScreen.svelte";
     import {
         RULE_CANCEL,
-        RULE_MOD_HEADER,
+        RULE_MOD_REQUEST_HEADER,
+        RULE_MOD_RESPONSE_HEADER,
         RULE_INFO,
         RULE_REDIRECT,
         RULE_DELAY,
@@ -18,14 +19,15 @@
     import { currentPage, refreshList } from "../../stores";
     import CancelScreen from "../cancels/CancelScreen.svelte";
     import DelayScreen from "../delays/DelayScreen.svelte";
-    import ModifyHeadersScreen from "../modify_headers/ModifyHeadersScreen.svelte";
     import ModifyRequestBodyScreen from "../modify_request_body/ModifyRequestBodyScreen.svelte";
     import ModifyResponseBodyScreen from "../modify_response_body/ModifyResponseBodyScreen.svelte";
+    import ModifyRequestHeadersScreen from "../modify_headers/ModifyRequestHeadersScreen.svelte";
+    import ModifyResponseHeadersScreen from "../modify_headers/ModifyResponseHeadersScreen.svelte";
 
     let selectedRule;
     let currPage;
     const initAttributes = { enabled: true, entity: "host", op: "contains" };
-
+    
     $: ruleInfo = RULE_INFO[selectedRule];
 
     const unSubCurrentRule = currentRule.subscribe((value) => {
@@ -89,8 +91,10 @@
                 <CancelScreen />
             {:else if selectedRule == RULE_DELAY}
                 <DelayScreen />
-            {:else if selectedRule == RULE_MOD_HEADER}
-                <ModifyHeadersScreen />
+            {:else if selectedRule == RULE_MOD_REQUEST_HEADER}
+                <ModifyRequestHeadersScreen />
+            {:else if selectedRule == RULE_MOD_RESPONSE_HEADER}
+                <ModifyResponseHeadersScreen />
             {:else if selectedRule == RULE_MODIFY_REQUEST_BODY}
                 <ModifyRequestBodyScreen />
             {:else if selectedRule == RULE_MODIFY_RESPONSE_BODY}
