@@ -196,7 +196,7 @@
   >
     <table class="table-fixed w-full">
       <tbody>
-        {#each logs as log}
+        {#each logs as log, i (log.id )}
           <tr
             on:click={() => selectRequest(log)}
             class=" odd:bg-gray-800/50 hover:bg-blue-500/30"
