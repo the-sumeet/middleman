@@ -27,3 +27,13 @@
 @tailwind components;
 @tailwind utilities;
 @tailwindcss forms;
+
+@layer components {
+    .rule select {
+        @apply appearance-none p-2 rounded bg-gray-700 text-white cursor-pointer focus:outline-none ;
+    }
+
+    .rule {
+        @apply  p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700
+    }
+}

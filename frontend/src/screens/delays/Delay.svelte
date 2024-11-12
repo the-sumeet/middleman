@@ -78,10 +78,10 @@
     });
 </script>
 
-<div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
-    <h1 class="text-md text-white">If</h1>
+<div class="rule">
+    <h1 class="font-bold text-sm text-white">If</h1>
 
-    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-2">
+    <div class="flex items-center justify-center gap-2 mx-2 rounded-md mt-2">
         <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
@@ -107,9 +107,9 @@
         />
     </div>
 
-    <h1 class="mt-2 text-md text-white">Then Delay the Request by Seconds:</h1>
+    <h1 class="mt-2 font-bold text-sm text-white">Then Delay the Request by Seconds</h1>
 
-    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-2">
+    <div class="flex items-center justify-center gap-2 mx-2 rounded-md mt-2">
         <input
             bind:value={delaySec}
             on:input={setChanged}

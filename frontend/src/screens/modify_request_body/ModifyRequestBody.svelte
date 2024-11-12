@@ -85,10 +85,10 @@
     });
 </script>
 
-<div class="p-2 flex flex-col rounded-md bg-gray-800 border border-gray-700">
-    <h1 class="text-md text-white">If</h1>
+<div class="rule">
+    <h1 class="font-bold text-sm text-white">If</h1>
 
-    <div class="flex items-center justify-center gap-2 p-4 rounded-md mt-4">
+    <div class="flex items-center justify-center gap-2 mx-2 rounded-md mt-2">
         <EntitySelect bind:entity {setChanged} />
 
         <!-- Op -->
@@ -114,11 +114,11 @@
         />
     </div>
 
-    <h1 class="mt-4 text-md text-white">Then use the following body</h1>
+    <h1 class="mt-2 font-bold text-sm text-white">Then use the following body</h1>
 
     <div
         id={editorId}
-        class="border border-gray-700 mt-4 w-full rounded"
+        class="mx-2 border border-gray-700 mt-2 w-full rounded"
         style="height: 256px;"
     ></div>
 

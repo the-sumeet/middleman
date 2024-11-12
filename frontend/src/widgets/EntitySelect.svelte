@@ -5,7 +5,7 @@
 <select
   bind:value={entity}
   on:change={setChanged}
-  class="p-2 rounded text-whites"
+  class=""
   name=""
   id=""
 >
