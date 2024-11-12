@@ -4,7 +4,8 @@
     RULE_DELAY,
     RULE_MODIFY_REQUEST_BODY,
     RULE_MODIFY_RESPONSE_BODY,
-    RULE_MOD_HEADER,
+    RULE_MOD_REQUEST_HEADER,
+    RULE_MOD_RESPONSE_HEADER,
     RULE_REDIRECT,
   } from "../../../src/constants";
   import RuleTile from "./RuleTile.svelte";
@@ -29,8 +30,13 @@
     />
     <RuleTile
       icon={"bi bi-h-square"}
-      title={"Modify Headers"}
-      rule={RULE_MOD_HEADER}
+      title={"Modify Request Headers"}
+      rule={RULE_MOD_REQUEST_HEADER}
+    />
+    <RuleTile
+      icon={"bi bi-h-square"}
+      title={"Modify Response Headers"}
+      rule={RULE_MOD_RESPONSE_HEADER}
     />
     <RuleTile
       icon={"bi bi-x-square"}
