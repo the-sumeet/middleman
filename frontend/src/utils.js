@@ -10,6 +10,9 @@ export const scrollToBottom = async (el) => {
 };
 
 export const isAtBottom = async (el) => {
+  if (!el) {
+    return false;
+  }
   return el.scrollHeight - el.scrollTop === el.clientHeight;
 }
 

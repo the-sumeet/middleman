@@ -1,7 +1,7 @@
 <script>
   import { errorMessage, selectedRequest } from "../../../src/stores";
   import { GetLogs } from "../../../wailsjs/go/main/App";
-  import { scrollToBottomIfAtBottom } from "../../../src/utils";
+  import { scrollToBottomIfAtBottom, isAtBottom } from "../../../src/utils";
   import RequestContent from "./RequestContent.svelte";
   export const tabSelectedStyle =
     "border-blue-400 text-blue-300  focus:outline-none";
@@ -46,7 +46,14 @@
     return `${log.scheme}://${log.host}${log.path}`;
   }
 
-  function fetchLogs() {
+  async function fetchLogs() {
+    const logsEl = document.getElementById("logs");
+    
+    // Only fetch if at bottom
+    if (!(await isAtBottom(logsEl))) {
+      return;
+    }
+    
     let statuses = statusesNumbers();
 
     GetLogs(
@@ -55,13 +62,13 @@
       statuses,
       filterResponseTypes,
       filterAppliedRules,
-      logs.length,
+      0,
     ).then((res) => {
       if (res.error != "") {
         errorMessage.set(res.error);
       } else if (res.httpRequests) {
-        logs = [...logs, ...res.httpRequests];
-        scrollToBottomIfAtBottom(document.getElementById("logs"));
+        logs = res.httpRequests;
+        scrollToBottomIfAtBottom(logsEl);
       }
     });
   }
