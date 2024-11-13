@@ -32,29 +32,6 @@
     return filterStatus.split(",");
   }
 
-  function validateStatusFilter(statuses) {
-    for (const status of statuses) {
-      // Check if status is a number
-      if (isNaN(Number(status))) {
-        if (statuses.length > 1) {
-          filterStatusError =
-            "Input should be a comma separated list of numbers.";
-        } else {
-          filterStatusError = "Input should be a number";
-        }
-        return false;
-      }
-
-      if (status < 1 || status > 1000) {
-        filterStatusError =
-          "Status code length must be more than 0 and less than 4";
-        return false;
-      }
-    }
-    filterStatusError = "";
-    return true;
-  }
-
   function selectRequest(log) {
     GetOneRequest(log.id).then((res) => {
       if (res.error != "") {
@@ -71,9 +48,6 @@
 
   function fetchLogs() {
     let statuses = statusesNumbers();
-    if (!validateStatusFilter(statuses)) {
-      statuses = [];
-    }
 
     GetLogs(
       filterUrl,
@@ -131,9 +105,6 @@
           bind:value={filterStatus}
           on:input={() => {
             const statuses = statusesNumbers();
-            if (!validateStatusFilter(statuses)) {
-              return;
-            }
             logs = [];
             fetchLogs();
           }}
