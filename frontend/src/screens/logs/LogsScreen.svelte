@@ -12,6 +12,7 @@
   import StatusTableCol from "./StatusTableCol.svelte";
   import { GetOneRequest } from "../../../wailsjs/go/main/App";
   import Dropdown from "./Dropdown.svelte";
+    import { onMount } from "svelte";
 
   let logs = [];
   let clear;
@@ -23,7 +24,6 @@
   let filterResponseTypes = [];
   let filterAppliedRules = [];
 
-  fetchLogs();
 
   function statusesNumbers() {
     if (filterStatus == "") {
@@ -70,6 +70,10 @@
     clearInterval(clear);
     clear = setInterval(fetchLogs, 1000);
   }
+
+  onMount(() => {
+    fetchLogs();
+  });
 </script>
 
 <div class="flex flex-col h-screen p-4 w-full">
@@ -109,7 +113,7 @@
             fetchLogs();
           }}
           type="text"
-          placeholder="Status starting with"
+          placeholder="Status starting with, comma saperated"
           class="block w-full py-1 text-gray-700 placeholder-gray-400/70 bg-white border border-gray-200 rounded-lg pl-2 pr-5 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
         />
       </div>
