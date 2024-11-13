@@ -35,7 +35,7 @@
         }}
         class="{textColor} m-0 flex items-center w-full relative z-10 p-2 bg-white border border-transparent rounded-md focus:border-blue-500 focus:ring-opacity-40 dark:focus:ring-opacity-40 focus:ring-blue-300 dark:focus:ring-blue-400 focus:ring dark:bg-gray-800 focus:outline-none"
     >
-        <span class="truncate flex gap-2 text-xs truncate">
+        <span class="flex gap-2 text-xs truncate">
             {#if opened}
             <i class=" bi bi-chevron-up"></i>
             {:else}
