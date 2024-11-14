@@ -8,7 +8,7 @@ require (
 	github.com/AdguardTeam/gomitmproxy v0.2.1
 	github.com/elazarl/goproxy v0.0.0-20240909085733-6741dbfc16a1
 	github.com/google/uuid v1.6.0
-	github.com/wailsapp/wails/v2 v2.9.1
+	github.com/wailsapp/wails/v2 v2.8.1
 	modernc.org/sqlite v1.33.1
 )
 

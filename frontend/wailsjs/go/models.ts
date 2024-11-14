@@ -93,7 +93,7 @@ export namespace main {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -118,8 +118,6 @@ export namespace main {
 	    delaySec: number;
 	    requestBody: string;
 	    responseBody: string;
-	    requestHeaderMods: Header[];
-	    responseHeaderMods: Header[];
 	    headerMods: Header[];
 	
 	    static createFrom(source: any = {}) {
@@ -138,8 +136,6 @@ export namespace main {
 	        this.delaySec = source["delaySec"];
 	        this.requestBody = source["requestBody"];
 	        this.responseBody = source["responseBody"];
-	        this.requestHeaderMods = this.convertValues(source["requestHeaderMods"], Header);
-	        this.responseHeaderMods = this.convertValues(source["responseHeaderMods"], Header);
 	        this.headerMods = this.convertValues(source["headerMods"], Header);
 	    }
 	
@@ -147,7 +143,7 @@ export namespace main {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -179,7 +175,7 @@ export namespace main {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -217,7 +213,7 @@ export namespace main {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
