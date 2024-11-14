@@ -226,10 +226,7 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 						a.logger.Info("ModifyRequestHeader rule matched", getRequestLogValues(r, "rule", MODIFY_REQUEST_HEADERS)...)
 						ctx.UserData.(*State).IsRequestHeaderModified = true
 
-						for _, v := range modifyHeader.RequestHeaderMods {
-							if !v.IsRequest {
-								continue
-							}
+						for _, v := range modifyHeader.HeaderMods {
 							if v.Action == "add" {
 								a.logger.Info("Adding request header", "name", v.Name, "value", v.Value, "action", v.Action)
 								r.Header.Add(v.Name, v.Value)
@@ -304,15 +301,11 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 				if !modifyHeader.Enabled {
 					continue
 				}
-				fmt.Println("HERE")
 				if matches(modifyHeader, resp.Request) {
 					a.logger.Info("ModifyResponseHeader rule matched", getRequestLogValues(resp.Request, "rule", MODIFY_RESPONSE_HEADERS)...)
 					ctx.UserData.(*State).IsResponseHeaderModified = true
 
-					for _, v := range modifyHeader.ResponseHeaderMods {
-						if v.IsRequest {
-							continue
-						}
+					for _, v := range modifyHeader.HeaderMods {
 						if v.Action == "add" {
 							a.logger.Info("Adding response header", "name", v.Name, "value", v.Value)
 							resp.Header.Add(v.Name, v.Value)
