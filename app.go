@@ -310,10 +310,10 @@ func (a *App) getOnResponse() func(resp *http.Response, ctx *goproxy.ProxyCtx) *
 							a.logger.Info("Adding response header", "name", v.Name, "value", v.Value)
 							resp.Header.Add(v.Name, v.Value)
 						} else if v.Action == "remove" {
-							a.logger.Info("Removing response header: ", "name", v.Name, "value", v.Value)
+							a.logger.Info("Removing response header", "name", v.Name)
 							resp.Header.Del(v.Name)
 						} else if v.Action == "override" {
-							a.logger.Info("Overriding response header: ", "name", v.Name, "value", v.Value)
+							a.logger.Info("Overriding response header", "name", v.Name, "value", v.Value)
 							resp.Header.Set(v.Name, v.Value)
 						}
 					}
