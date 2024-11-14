@@ -125,15 +125,6 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 		ctx.UserData = &State{requestId: requestId}
 		state := ctx.UserData.(*State)
 
-		// Store request body in state
-		responseBytes, err := io.ReadAll(r.Body)
-		if err != nil {
-			a.logger.Error(fmt.Sprintf("Error reading request body: %s", err))
-		}
-		r.Body.Close() //  must close
-		r.Body = io.NopCloser(bytes.NewBuffer(responseBytes))
-		state.RequestBody = string(responseBytes)
-
 		// Cancels
 		cancels, err := a.database.GetManyRules(CANCEL)
 		if err != nil {
@@ -156,6 +147,15 @@ func (a *App) getOnRequest() func(r *http.Request, ctx *goproxy.ProxyCtx) (*http
 					}
 
 					a.responseToLog(resp, state, requestId)
+
+					// Store request body in state
+					responseBytes, err := io.ReadAll(r.Body)
+					if err != nil {
+						a.logger.Error(fmt.Sprintf("Error reading request body: %s", err))
+					}
+					r.Body.Close() //  must close
+					r.Body = io.NopCloser(bytes.NewBuffer(responseBytes))
+					state.RequestBody = string(responseBytes)
 
 					return nil, resp
 				}
