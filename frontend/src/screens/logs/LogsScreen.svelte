@@ -49,11 +49,6 @@
   async function fetchLogs() {
     const logsEl = document.getElementById("logs");
     
-    // Only fetch if at bottom
-    if (!(await isAtBottom(logsEl))) {
-      return;
-    }
-    
     let statuses = statusesNumbers();
 
     GetLogs(
