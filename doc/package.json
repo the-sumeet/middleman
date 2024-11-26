@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "tailwind": "npx tailwindcss -c ./tailwind.config.js -i css/input.css -o css/styles.css --watch"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.14"
+  }
+}
